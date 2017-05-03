@@ -1,6 +1,35 @@
 import React, { PropTypes } from 'react'
+import {
+    BrowserRouter as Router,
+    Route,
+    Link,
+    Redirect,
+    withRouter
+} from 'react-router-dom'
 
-const LoginForm = ({ onHandleClick }) => {
+const onHandleClick = (user, password, history) => {
+    let options = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Origin': '',
+            'Host': 'localhost'
+        },
+        body: JSON.stringify({
+            'client_id': user,
+            'client_secret': password,
+            'grant_type': 'client_credentials'
+        })
+    }
+    return fetch('/Login', options)
+        .then(response => response.json())
+        .then(json => {
+            history.push('/Home')
+        })
+}
+
+const LoginForm = withRouter(({ history }) => {
     let user
     let password
 
@@ -27,7 +56,7 @@ const LoginForm = ({ onHandleClick }) => {
                         e.preventDefault()
                         if (!user.value.trim()) return
                         if (!password.value.trim()) return
-                        onHandleClick(user.value, password.value);
+                        onHandleClick(user.value, password.value, history);
                         user.value = ''
                         password.value = ''
                     }} >Sign In</a>
@@ -35,38 +64,31 @@ const LoginForm = ({ onHandleClick }) => {
             </div>
         </div>
     )
-}
+})
 
-const LoginBoxBody = ({ onHandleClick }) => (
+const LoginBoxBody = () => (
     <div className="login-box-body">
         <p className="login-box-msg">Sign in to start your session</p>
-        <LoginForm onHandleClick={onHandleClick} />
+        <LoginForm />
         <a href="javascript:void(0);">I forgot my password</a><br />
         <a href="javascript:void(0);" className="text-center">Register a new membership</a>
-
     </div>
 )
 
-const LoginBody = ({ onHandleClick }) => (
+const LoginBody = () => (
     <div className="login-box">
         <div className="login-logo">
             <a href="javascript:void(0);"><b>Cloud</b> Manager</a>
         </div>
-        <LoginBoxBody onHandleClick={onHandleClick} />
+        <LoginBoxBody />
     </div>
 )
 
 class Login extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    componentDidMount() {
-
-    }
     render() {
         return (
             <div className="login-page">
-                <LoginBody onHandleClick={this.props.onHandleClick} />
+                <LoginBody />
             </div>
         )
     }

@@ -2,16 +2,21 @@ import React from 'react'
 import {
     BrowserRouter as Router,
     Route,
-    Link
+    Link,
+    Redirect,
+    withRouter
 } from 'react-router-dom'
 
 import Login from './login.react'
+import Home from './home.react'
 
 function Main() {
     return (
         <Router>
             <div>
-                <Route path="/" component={Login} />
+                <Redirect from="/" to="/Login" />
+                <Route path="/Login" component={Login} />
+                <Route path="/Home" component={Home} />
             </div>
         </Router>
     );

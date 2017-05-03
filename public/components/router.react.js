@@ -7,7 +7,9 @@ import {
 
 import Login from './login.react'
 
-function Main() {
+var MainSidebar = require('./mainsidebar.react');
+
+function MainRouter() {
     return (
         <Router>
             <div>
@@ -17,4 +19,4 @@ function Main() {
     );
 }
 
-module.exports = Main;
+module.exports = MainRouter;

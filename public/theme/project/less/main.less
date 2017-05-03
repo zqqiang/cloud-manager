@@ -1,26 +1,16 @@
 // npm modules path
 @npm_modules: '../../../../node_modules';
-// Fonts
 @import url('http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800');
 @import url('http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic');
 @import url('http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic');
-// admin-lte all-skins
 @import (inline) '../css/_all-skins.min.css';
-// admin-lte
 @import (inline) '../css/_admin-lte.min.css';
-// Bootstrap
 @import url('https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css');
-// Optional Theme
 @import url('https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css');
-// Font Asesome
 @import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css');
-// react-select
-@import (inline) '@{npm_modules}/react-select/dist/react-select.css';
-// main sidebar
+@import '@{npm_modules}/bootstrap/less/bootstrap.less';
+@import 'variables.less';
 @import 'sidebar.less';
-// content wrapper
 @import 'wrapper.less';
-// table
 @import 'table.less';
-// filter
-@import 'filter.less';
+@import 'login_and_register.less';

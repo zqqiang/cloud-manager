@@ -14,7 +14,7 @@ function Main() {
     return (
         <Router>
             <div>
-                <Redirect from="/" to="/Login" />
+                <Redirect from="/" to="/Home" />
                 <Route path="/Login" component={Login} />
                 <Route path="/Home" component={Home} />
             </div>

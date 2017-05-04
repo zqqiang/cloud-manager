@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 import {
     HashRouter as Router,
     Route,
@@ -8,17 +8,16 @@ import {
 } from 'react-router-dom'
 
 var Header = require('./header.react');
-var Form = require('./form.react');
+var SystemSettings = require('./system.react');
+import Config from './config.react'
 var Footer = require('./footer.react');
 
 const routes = [{
-    path: '/Home/bubblegum',
-    sidebar: () => <div>bubblegum!</div>,
-    main: () => <h2>Bubblegum</h2>
+    path: '/Home/System',
+    main: () => <SystemSettings />
 }, {
-    path: '/Home/shoelaces',
-    sidebar: () => <div>shoelaces!</div>,
-    main: () => <h2>Shoelaces</h2>
+    path: '/Home/Config',
+    main: () => <Config />
 }]
 
 class Home extends React.Component {
@@ -26,31 +25,32 @@ class Home extends React.Component {
         return (
             <Router>
                 <div>
-                <Header />
-                <div style={{ display: 'flex' }}>
-                  <div style={{
-                    padding: '10px',
-                    width: '230px',
-                    background: '#f0f0f0'
-                  }}>
-                    <ul style={{ listStyleType: 'none', padding: 0 }}>
-                      <li><Link to="/Home/bubblegum">Bubblegum</Link></li>
-                      <li><Link to="/Home/shoelaces">Shoelaces</Link></li>
-                    </ul>
-                  </div>
-
-                  <div style={{ flex: 1, padding: '10px' }}>
-                    {routes.map((route, index) => (
-                      <Route
-                        key={index}
-                        path={route.path}
-                        exact={route.exact}
-                        component={route.main}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <Footer />
+                    <Header />
+                    <div className="home-container">
+                        <div className="home-sidebar">
+                            <li className="treeview">
+                                <Link to="/Home/System">
+                                    <i className="fa fa-dashboard"></i> <span>System Settings</span>
+                                </Link>
+                            </li>
+                            <li className="treeview">
+                                <Link to="/Home/Config">
+                                    <i className="fa fa-dashboard"></i> <span>IP&SN Config</span>
+                                </Link>
+                            </li>
+                        </div>
+                        <div className="home-content">
+                            {routes.map((route, index) => (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    exact={route.exact}
+                                    component={route.main}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <Footer />
                 </div>
             </Router>
         )

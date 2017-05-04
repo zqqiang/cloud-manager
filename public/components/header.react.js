@@ -1,12 +1,19 @@
-var React = require('react');
+import React from 'react';
+import {
+    HashRouter as Router,
+    Route,
+    Link,
+    Redirect,
+    withRouter
+} from 'react-router-dom'
 
 function MainHeaderLogo() {
     return (
-        <a href="javascript:void(0);" className="logo">
+        <Link to="/Home" className="logo">
             <span className="logo-lg">
                 <i className="fa fa-cloud" aria-hidden="true"></i> Cloud Manager
             </span>
-        </a>
+        </Link>
     );
 }
 

@@ -9,16 +9,32 @@ import {
 
 var Header = require('./header.react');
 var SystemSettings = require('./system.react');
-import Config from './config.react'
+import Rule from './rule.react'
+import Sidebar from './sidebar.react'
 var Footer = require('./footer.react');
 
 const routes = [{
     path: '/Home/System',
     main: () => <SystemSettings />
 }, {
-    path: '/Home/Config',
-    main: () => <Config />
+    path: '/Home/Rule',
+    main: () => <Rule />
 }]
+
+function Content() {
+    return (
+        <div className="content-wrapper" style={{minHeight: '946px'}}>
+            {routes.map((route, index) => (
+                <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    component={route.main}
+                />
+            ))}
+        </div>
+    )
+}
 
 class Home extends React.Component {
     render() {
@@ -26,30 +42,8 @@ class Home extends React.Component {
             <Router>
                 <div>
                     <Header />
-                    <div className="home-container">
-                        <div className="home-sidebar">
-                            <li className="treeview">
-                                <Link to="/Home/System">
-                                    <i className="fa fa-dashboard"></i> <span>System Settings</span>
-                                </Link>
-                            </li>
-                            <li className="treeview">
-                                <Link to="/Home/Config">
-                                    <i className="fa fa-dashboard"></i> <span>IP&SN Config</span>
-                                </Link>
-                            </li>
-                        </div>
-                        <div className="home-content">
-                            {routes.map((route, index) => (
-                                <Route
-                                    key={index}
-                                    path={route.path}
-                                    exact={route.exact}
-                                    component={route.main}
-                                />
-                            ))}
-                        </div>
-                    </div>
+                    <Sidebar />
+                    <Content />
                     <Footer />
                 </div>
             </Router>

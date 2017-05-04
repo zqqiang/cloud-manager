@@ -8,8 +8,8 @@ function Header() {
                 <small>Config</small>
             </h1>
             <ol className="breadcrumb">
-                <li><a href="#"><i className="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#"> Settings</a></li>
+                <li><a href="javascript:void(0);"><i className="fa fa-dashboard"></i> Home</a></li>
+                <li><a href="javascript:void(0);"> Settings</a></li>
                 <li className="active"> Config</li>
             </ol>
         </section>
@@ -27,7 +27,7 @@ function Content() {
                         </div>
                         <div className="box-body">
                             <div className="form-group">
-                                <label>IP</label>
+                                <label>IP Address</label>
                                 <input 
                                     type="text"
                                     className="form-control" 
@@ -35,12 +35,34 @@ function Content() {
                                     placeholder="Enter IP" 
                                 />
                             </div>
-                            <div className="checkbox">
-                                <label>
+                            <div className="form-group">
+                                <label>External FortiManager Server IP Address (Default FortiManager)</label>
+                                <input 
+                                    type="text"
+                                    className="form-control" 
+                                    id="extip" 
+                                    placeholder="Enter IP" 
+                                />
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>FortiManager IP Address base on SN</label>
                                     <input 
-                                        type="checkbox" 
-                                    /> Enable Log
-                                </label>
+                                        type="text"
+                                        className="form-control" 
+                                        id="snip" 
+                                        placeholder="Enter IP" 
+                                    />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label>FortiGate SN</label>
+                                    <input 
+                                        type="text"
+                                        className="form-control" 
+                                        id="sn" 
+                                        placeholder="Enter SN" 
+                                    />
+                                </div>
                             </div>
                         </div>
                         <div className="box-footer">

@@ -6917,6 +6917,7 @@ a.reactable-current-page {
 }
 .home-container {
   display: flex;
+  height: 848px;
 }
 .home-sidebar {
   padding: 10px;

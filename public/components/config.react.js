@@ -1,13 +1,12 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-
-function onAfterInsertRow(row) {
-
-}
-
-function onAfterDeleteRow(rowKeys) {
-
-}
+import {
+    HashRouter as Router,
+    Route,
+    Link,
+    Redirect,
+    withRouter
+} from 'react-router-dom'
 
 const selectRowProp = {
     mode: 'checkbox'
@@ -15,22 +14,37 @@ const selectRowProp = {
 
 var products = [{
     id: 1,
-    name: "Product1",
-    price: 120
+    'fgt-ip-sn': 'FGT60D4615006818',
+    'fmg-sn': 'FMG-VM0A11000137',
+    'fmg-ip': '172.16.95.58',
 }, {
     id: 2,
-    name: "Product2",
-    price: 80
+    'fgt-ip-sn': '192.168.0.2',
+    'fmg-sn': 'FMG-VM0A11000138',
+    'fmg-ip': '172.16.95.59',
 }];
 
-const options = {
-    afterInsertRow: onAfterInsertRow,
-    afterDeleteRow: onAfterDeleteRow
-};
+function handleInsertButtonClick(history) {
+    history.push('/Home/New');
+}
 
-const cellEditProp = {
-    mode: 'dbclick',
-    blurToSave: true
+const insertBtn = withRouter(({ history }) => {
+    return (
+        <InsertButton
+            btnText='New'
+            btnContextual='btn-primary'
+            btnGlyphicon='glyphicon-edit'
+            onClick={ () => handleInsertButtonClick(history) }/>
+    );
+})
+
+function onAfterDeleteRow(rowKeys) {
+
+}
+
+const options = {
+    afterDeleteRow: onAfterDeleteRow,
+    insertBtn: insertBtn
 };
 
 class Config extends React.Component {
@@ -38,15 +52,15 @@ class Config extends React.Component {
         return (
             <BootstrapTable 
                 data={ products } 
-                insertRow={ true } 
                 deleteRow={ true } 
                 selectRow={ selectRowProp } 
                 options={ options } 
-                cellEdit={ cellEditProp }
-            >
-                <TableHeaderColumn dataField='id' isKey>Product ID</TableHeaderColumn>
-                <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
-                <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+                insertRow 
+                pagination>
+                <TableHeaderColumn dataField='id' isKey>ID</TableHeaderColumn>
+                <TableHeaderColumn dataField='fgt-ip-sn' filter={ { type: 'TextFilter', delay: 100 } }>FortiGate</TableHeaderColumn>
+                <TableHeaderColumn dataField='fmg-sn'>FortiManager SN</TableHeaderColumn>
+                <TableHeaderColumn dataField='fmg-ip'>FortiManager IP</TableHeaderColumn>
             </BootstrapTable>
         );
     }

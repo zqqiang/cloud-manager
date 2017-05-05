@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom'
 import { observable, action } from 'mobx'
 import { observer } from 'mobx-react'
+var S = require('string');
 
 function TableHeader() {
     return (
@@ -54,6 +55,9 @@ function RuleTableHeader() {
 }
 
 function RuleTableTr({ row }) {
+    let location = {
+        pathname: '/Home/Rule/' + row.id
+    }
     return (
         <tr>
             <td>{row.id}</td>
@@ -61,7 +65,7 @@ function RuleTableTr({ row }) {
             <td>{row.fmgsn}</td>
             <td>{row.fmgip}</td>
             <td>
-                <i className="fa fa-pencil fa-lg" aria-hidden="true"></i>
+                <Link to={location}><i className="fa fa-pencil fa-lg" aria-hidden="true"></i></Link>
             </td>
             <td>
                 <i className="fa fa-trash fa-lg" aria-hidden="true"></i>
@@ -206,10 +210,16 @@ function InputText({ options, onChange, value }) {
     )
 }
 
-var appState = observable({
-    fgtIpSn: ' FGT60D4615007833',
-    interfaceDevice: 'wan1',
-});
+let states = [
+    observable({
+        fgtIpSn: ' FGT60D4615007833',
+        interfaceDevice: 'wan1',
+    }),
+    observable({
+        fgtIpSn: ' FGT60D4615007834',
+        interfaceDevice: 'wan2',
+    }),
+]
 
 @observer
 class Condition extends React.Component {
@@ -253,7 +263,7 @@ function Interface() {
     return (
         <div className="row">
             <div className="col-md-6">
-                <InterfaceDevice appState={appState}/>
+                <InterfaceDevice appState={states[0]}/>
             </div>
             <div className="col-md-6">
                 <InterfaceIpMask />
@@ -393,10 +403,15 @@ class FormBody extends React.Component {
         super(props);
     }
     render() {
+        // #/Home/Rule/1
+        let key = S(window.location.hash).strip('#/Home/Rule/').s;
+        console.log(key)
+        let selfState = S(key).isNumeric() ? states[key - 1] : {};
+
         return (
             <div role="form">
             <div className="box-body">
-                <Condition appState={appState}/>
+                <Condition appState={selfState}/>
                 <Interface />
                 <Routing />
                 <Switch />

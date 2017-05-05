@@ -41,6 +41,10 @@ const routes = [{
     exact: true,
     main: () => <Rule />
 }, {
+    path: '/Home/Rule/:id',
+    exact: true,
+    main: () => <RuleForm />
+}, {
     path: '/Home/New',
     exact: true,
     main: () => <RuleForm />

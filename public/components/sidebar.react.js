@@ -7,8 +7,6 @@ import {
     withRouter
 } from 'react-router-dom'
 
-
-
 function Sidebar() {
     return (
         <aside className="main-sidebar">

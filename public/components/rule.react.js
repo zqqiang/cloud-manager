@@ -23,18 +23,20 @@ function TableHeader() {
     )
 }
 
-function BoxHeader() {
+const BoxHeader = withRouter(({ history }) => {
     return (
         <div className="box-header with-border">
             <h3 className="box-title">Rule Table</h3>
             <div className="box-tools">
-                <button type="button" className="btn btn-block btn-primary">
+                <button type="button" className="btn btn-block btn-primary" onClick={(e) => {
+                    history.push("/Home/New")
+                }}>
                     <i className="fa fa-plus" aria-hidden="true"></i> Create New
                 </button>
             </div>
         </div>
     )
-}
+})
 
 function RuleTableHeader() {
     return (

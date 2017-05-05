@@ -208,6 +208,7 @@ function InputText({ options, onChange, value }) {
 
 var appState = observable({
     fgtIpSn: ' FGT60D4615007833',
+    interfaceDevice: 'wan1',
 });
 
 @observer
@@ -216,7 +217,6 @@ class Condition extends React.Component {
         super(props);
     }
     onChange(event) {
-        console.log(event.target.value)
         this.props.appState.fgtIpSn = event.target.value;
     }
     render() {
@@ -227,10 +227,20 @@ class Condition extends React.Component {
     }
 }
 
-function InterfaceDevice() {
-    return (
-        <InputText options={{label: 'Device', placeholder: 'Enter Interface Device'}} />
-    )
+@observer
+class InterfaceDevice extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    onChange(event) {
+        this.props.appState.interfaceDevice = event.target.value;
+    }
+    render() {
+        let options = { label: 'Device', placeholder: 'Enter Interface Device' };
+        return (
+            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.interfaceDevice}/>
+        )
+    }
 }
 
 function InterfaceIpMask() {
@@ -243,7 +253,7 @@ function Interface() {
     return (
         <div className="row">
             <div className="col-md-6">
-                <InterfaceDevice />
+                <InterfaceDevice appState={appState}/>
             </div>
             <div className="col-md-6">
                 <InterfaceIpMask />

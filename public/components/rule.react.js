@@ -259,11 +259,11 @@ function InterfaceIpMask() {
     )
 }
 
-function Interface() {
+function Interface({appState}) {
     return (
         <div className="row">
             <div className="col-md-6">
-                <InterfaceDevice appState={states[0]}/>
+                <InterfaceDevice appState={appState} />
             </div>
             <div className="col-md-6">
                 <InterfaceIpMask />
@@ -411,8 +411,8 @@ class FormBody extends React.Component {
         return (
             <div role="form">
             <div className="box-body">
-                <Condition appState={selfState}/>
-                <Interface />
+                <Condition appState={selfState} />
+                <Interface appState={selfState} />
                 <Routing />
                 <Switch />
                 <HA />
@@ -432,7 +432,7 @@ function FormContent() {
     return (
         <section className="content">
             <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <div className="box box-primary">
                         <FormTitle />
                         <FormBody />

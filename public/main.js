@@ -1,8 +1,8 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Main = require('./components/main.react');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Main from './components/main.react'
 
 ReactDOM.render(
     <Main />,
     document.getElementById('main')
-);
+)

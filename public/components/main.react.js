@@ -10,16 +10,30 @@ import {
 import Login from './login.react'
 import Home from './home.react'
 
-function Main() {
-    return (
-        <Router>
-            <div>
-                <Redirect from="/" to="/Home" />
-                <Route path="/Login" component={Login} />
-                <Route path="/Home" component={Home} />
-            </div>
-        </Router>
-    );
+class Main extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = { isLoggedIn: false }
+    }
+    onHandleClick() {
+        if (!this.state.isLoggedIn) {
+            this.setState({ isLoggedIn: true })
+        }
+    }
+    render() {
+        const isLoggedIn = this.state.isLoggedIn
+        let page = null
+        if (isLoggedIn) {
+            page = <Home />
+        } else {
+            page = <Login onClick={this.onHandleClick.bind(this)} />
+        }
+        return (
+            <Router>
+                {page}
+            </Router>
+        )
+    }
 }
 
-module.exports = Main;
+export default Main

@@ -405,7 +405,6 @@ class FormBody extends React.Component {
     render() {
         // #/Home/Rule/1
         let key = S(window.location.hash).strip('#/Home/Rule/').s;
-        console.log(key)
         let selfState = S(key).isNumeric() ? states[key - 1] : {};
 
         return (

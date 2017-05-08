@@ -18,9 +18,6 @@ class LoginForm extends React.Component {
     onHandleClick(e) {
         e.preventDefault()
 
-        // if (!user.value.trim()) return
-        // if (!password.value.trim()) return
-
         let options = {
             method: 'POST',
             headers: {
@@ -42,22 +39,34 @@ class LoginForm extends React.Component {
                 action()
             })
     }
+    onHandleChange(event) {
+        const target = event.target
+        const value = target.value
+        const name = target.name
+        this.setState({
+            [name]: value
+        })
+    }
     render() {
         return (
             <div className="">
                 <div className="form-group has-feedback">
                     <input type="email" 
+                           name="user" 
                            className="form-control" 
                            placeholder="Email" 
-                           ref={node => {this.setState({user: node})}} 
+                           value={this.state.user} 
+                           onChange={this.onHandleChange.bind(this)}
                     />
                     <span className="glyphicon glyphicon-envelope form-control-feedback"></span>
                 </div>
                 <div className="form-group has-feedback">
                     <input type="password" 
+                           name="password" 
                            className="form-control" 
                            placeholder="Password" 
-                           ref={node => {this.setState({password: node})}} 
+                           value={this.state.password} 
+                           onChange={this.onHandleChange.bind(this)}
                     />
                     <span className="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>

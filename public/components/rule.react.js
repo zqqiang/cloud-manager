@@ -32,7 +32,7 @@ ruleStore.updateRules = action(function update() {
 });
 
 autorun(function() {
-    console.log(ruleStore.rules)
+
 });
 
 function TableHeader() {
@@ -600,11 +600,15 @@ class FormBody extends React.Component {
             },
             body: JSON.stringify(this.selfState)
         }
-        return fetch(url, options)
+
+        fetch(url, options)
             .then(response => response.json())
             .then(json => {
                 console.log(json)
             })
+
+        const { match, location, history } = this.props
+        history.push('/Home/Rule')
     }
     render() {
         // #/Home/Rule/1
@@ -636,6 +640,8 @@ class FormBody extends React.Component {
     }
 }
 
+const FormBodyWithRouter = withRouter(FormBody)
+
 function FormContent() {
     return (
         <section className="content">
@@ -643,7 +649,7 @@ function FormContent() {
                 <div className="col-md-12">
                     <div className="box box-primary">
                         <FormTitle />
-                        <FormBody />
+                        <FormBodyWithRouter />
                     </div>
                 </div>
             </div>

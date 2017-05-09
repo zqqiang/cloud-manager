@@ -17,10 +17,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(__dirname + '/public/theme/project/img/cloud.png'));
 
 let Login = require('./routes/login');
-let Submit = require('./routes/submit');
+let Rule = require('./routes/rule');
 
 app.use('/Login', Login);
-app.use('/Submit', Submit);
+app.use('/Rule', Rule);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -54,24 +54,46 @@ function RuleTableHeader() {
     )
 }
 
-function RuleTableTr({ row }) {
-    let location = {
-        pathname: '/Home/Rule/' + row.id
+class RuleTableTr extends React.Component {
+    constructor(props) {
+        super(props)
     }
-    return (
-        <tr>
-            <td>{row.id}</td>
-            <td>{row.fgt}</td>
-            <td>{row.fmgsn}</td>
-            <td>{row.fmgip}</td>
-            <td>
-                <Link to={location}><i className="fa fa-pencil fa-lg" aria-hidden="true"></i></Link>
-            </td>
-            <td>
-                <i className="fa fa-trash fa-lg" aria-hidden="true"></i>
-            </td>
-        </tr>
-    )
+    onHandleClick(event) {
+        let options = {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Origin': '',
+                'Host': 'localhost'
+            },
+        }
+        let url = '/Rule?key=' + this.props.row.id
+        return fetch(url, options)
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+            })
+    }
+    render() {
+        let location = {
+            pathname: '/Home/Rule/' + this.props.row.id
+        }
+        return (
+            <tr>
+                <td>{this.props.row.id}</td>
+                <td>{this.props.row.fgt}</td>
+                <td>{this.props.row.fmgsn}</td>
+                <td>{this.props.row.fmgip}</td>
+                <td>
+                    <Link to={location}><i className="fa fa-pencil fa-lg" aria-hidden="true"></i></Link>
+                </td>
+                <td>
+                    <a><i className="fa fa-trash fa-lg" aria-hidden="true" onClick={this.onHandleClick.bind(this)}></i></a>
+                </td>
+            </tr>
+        )
+    }
 }
 
 function RuleTable({ data }) {
@@ -589,7 +611,7 @@ class FormBody extends React.Component {
     }
     onHandleSubmit(event) {
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
-        let url = '/Submit' + (S(key).isNumeric() ? ('?key=' + key) : '')
+        let url = '/Rule' + (S(key).isNumeric() ? ('?key=' + key) : '')
         
         let options = {
             method: S(key).isNumeric() ? 'PUT' : 'POST',

@@ -6914,3 +6914,7 @@ a.reactable-current-page {
 .lockscreen-footer {
   margin-top: 10px;
 }
+div.form-horizontal .form-group {
+  margin-right: -15px;
+  margin-left: -15px;
+}

@@ -241,14 +241,16 @@ Example:
 function InputText({ options, onChange, name, value }) {
     return (
         <div className="form-group">
-            <label >{options.label}</label>
-            <input type="text" 
-                className="form-control" 
-                placeholder={options.placeholder} 
-                name={name}
-                value={value} 
-                onChange={onChange}
-            />
+            <label className="col-sm-3 control-label">{options.label}</label>
+            <div className="col-sm-9">
+                <input type="text" 
+                    className="form-control" 
+                    placeholder={options.placeholder} 
+                    name={name}
+                    value={value} 
+                    onChange={onChange}
+                />
+            </div>
         </div>
     )
 }
@@ -299,19 +301,6 @@ class InterfaceIpMask extends React.Component {
             <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.interfaceIpMask} />
         )
     }
-}
-
-function Interface({ appState }) {
-    return (
-        <div className="row">
-            <div className="col-md-6">
-                <InterfaceDevice appState={appState} />
-            </div>
-            <div className="col-md-6">
-                <InterfaceIpMask appState={appState} />
-            </div>
-        </div>
-    )
 }
 
 // <id> <device> <dst> <gateway>
@@ -376,25 +365,6 @@ class RoutingGateway extends React.Component {
     }
 }
 
-function Routing({ appState }) {
-    return (
-        <div className="row">
-            <div className="col-md-3">
-                <RoutingId appState={appState} />
-            </div>
-            <div className="col-md-3">
-                <RoutingDevice appState={appState} />
-            </div>
-            <div className="col-md-3">
-                <RoutingDest appState={appState} />
-            </div>
-            <div className="col-md-3">
-                <RoutingGateway appState={appState} />
-            </div>
-        </div>
-    )
-}
-
 @observer
 class Switch extends React.Component {
     constructor(props) {
@@ -406,11 +376,12 @@ class Switch extends React.Component {
     render() {
         return (
             <div className="form-group">
-                <label >Virtual Switch</label>
-                <div className="checkbox">
-                    <label>
-                        <input type="checkbox" checked={this.props.appState.switch} onChange={this.onChange.bind(this)} /> Purge
-                    </label>
+                <div className="col-sm-offset-3 col-sm-9">
+                    <div className="checkbox">
+                        <label>
+                            <input type="checkbox" checked={this.props.appState.switch} onChange={this.onChange.bind(this)} /> Purge
+                        </label>
+                    </div>
                 </div>
             </div>
         )
@@ -431,18 +402,16 @@ class HA extends React.Component {
     }
     render() {
         return (
-            <div className="row">
-                <div className="col-md-2">
-                    <InputText 
-                        options={{label:'Group Name', placeholder: 'Enter Name'}}
-                        onChange={this.onChange.bind(this)}
-                        name="groupName"
-                        value={this.props.appState.groupId}
-                    />
-                </div>
-                <div className="col-md-2">
-                    <div className="form-group">
-                        <label>Password</label>
+            <div>
+                <InputText 
+                    options={{label:'Group Name', placeholder: 'Enter Name'}}
+                    onChange={this.onChange.bind(this)}
+                    name="groupName"
+                    value={this.props.appState.groupId}
+                />
+                <div className="form-group">
+                    <label className="col-sm-3 control-label">Password</label>
+                    <div className="col-sm-9" >
                         <input 
                             type="password" 
                             className="form-control" 
@@ -453,38 +422,30 @@ class HA extends React.Component {
                         />
                     </div>
                 </div>
-                <div className="col-md-2">
-                    <InputText 
-                        options={{label: 'Group ID', placeholder: 'Enter ID'}}
-                        onChange={this.onChange.bind(this)}
-                        name="groupId"
-                        value={this.props.appState.groupId}
-                    />
-                </div>
-                <div className="col-md-2">
-                    <InputText 
-                        options={{label: 'HA Mode', placeholder: 'Enter Mode'}}
-                        onChange={this.onChange.bind(this)}
-                        name="haMode"
-                        value={this.props.appState.haMode}
-                    />
-                </div>
-                <div className="col-md-2">
-                    <InputText 
-                        options={{label: 'HA Device', placeholder: 'Enter Device'}}
-                        onChange={this.onChange.bind(this)}
-                        name="haDevice"
-                        value={this.props.appState.haDevice}
-                    />
-                </div>
-                <div className="col-md-2">
-                    <InputText 
-                        options={{label: 'HA Priority', placeholder: 'Enter Priority'}}
-                        onChange={this.onChange.bind(this)}
-                        name="haPriority"
-                        value={this.props.appState.haPriority}
-                    />
-                </div>
+                <InputText 
+                    options={{label: 'Group ID', placeholder: 'Enter ID'}}
+                    onChange={this.onChange.bind(this)}
+                    name="groupId"
+                    value={this.props.appState.groupId}
+                />
+                <InputText 
+                    options={{label: 'HA Mode', placeholder: 'Enter Mode'}}
+                    onChange={this.onChange.bind(this)}
+                    name="haMode"
+                    value={this.props.appState.haMode}
+                />
+                <InputText 
+                    options={{label: 'HA Device', placeholder: 'Enter Device'}}
+                    onChange={this.onChange.bind(this)}
+                    name="haDevice"
+                    value={this.props.appState.haDevice}
+                />
+                <InputText 
+                    options={{label: 'HA Priority', placeholder: 'Enter Priority'}}
+                    onChange={this.onChange.bind(this)}
+                    name="haPriority"
+                    value={this.props.appState.haPriority}
+                />
             </div>
         )
     }
@@ -503,31 +464,25 @@ class HAMgmt extends React.Component {
     }
     render() {
         return (
-            <div className="row">
-                <div className="col-md-4">
-                    <InputText 
-                        options={{label:'HA Mgmt Interface', placeholder: 'Enter Interface'}}
-                        name="mgmtInterface"
-                        value={this.props.appState.mgmtInterface}
-                        onChange={this.onChange.bind(this)}
-                    />
-                </div>
-                <div className="col-md-4">
-                    <InputText 
-                        options={{label:'HA Mgmt Gateway', placeholder: 'Enter Gateway'}}
-                        name="mgmtGateway"
-                        value={this.props.appState.mgmtGateway}
-                        onChange={this.onChange.bind(this)}
-                    />
-                </div>
-                <div className="col-md-4">
-                    <InputText 
-                        options={{label: 'HA Mgmt Gateway6', placeholder: 'Enter Gateway6'}}
-                        name="mgmtGateway6"
-                        value={this.props.appState.mgmtGateway6}
-                        onChange={this.onChange.bind(this)}
-                    />
-                </div>
+            <div>
+                <InputText 
+                    options={{label:'HA Mgmt Interface', placeholder: 'Enter Interface'}}
+                    name="mgmtInterface"
+                    value={this.props.appState.mgmtInterface}
+                    onChange={this.onChange.bind(this)}
+                />
+                <InputText 
+                    options={{label:'HA Mgmt Gateway', placeholder: 'Enter Gateway'}}
+                    name="mgmtGateway"
+                    value={this.props.appState.mgmtGateway}
+                    onChange={this.onChange.bind(this)}
+                />
+                <InputText 
+                    options={{label: 'HA Mgmt Gateway6', placeholder: 'Enter Gateway6'}}
+                    name="mgmtGateway6"
+                    value={this.props.appState.mgmtGateway6}
+                    onChange={this.onChange.bind(this)}
+                />
             </div>
         )
     }
@@ -545,23 +500,19 @@ class FortiManager extends React.Component {
     }
     render() {
         return (
-            <div className="row">
-                <div className="col-md-6">
-                    <InputText 
-                        options={{label:'FortiManager SN', placeholder: 'Enter SN'}}
-                        name="mgmtSN"
-                        value={this.props.appState.mgmtSN}
-                        onChange={this.onChange.bind(this)}
-                    />
-                </div>
-                <div className="col-md-6">
-                    <InputText 
-                        options={{label:'FortiManager IP', placeholder: 'Enter IP'}}
-                        name="mgmtIP"
-                        value={this.props.appState.mgmtIP}
-                        onChange={this.onChange.bind(this)}
-                    />
-                </div>
+            <div>
+                <InputText 
+                    options={{label:'FortiManager SN', placeholder: 'Enter SN'}}
+                    name="mgmtSN"
+                    value={this.props.appState.mgmtSN}
+                    onChange={this.onChange.bind(this)}
+                />
+                <InputText 
+                    options={{label:'FortiManager IP', placeholder: 'Enter IP'}}
+                    name="mgmtIP"
+                    value={this.props.appState.mgmtIP}
+                    onChange={this.onChange.bind(this)}
+                />
             </div>
         )
     }
@@ -615,11 +566,15 @@ class FormBody extends React.Component {
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
         this.selfState = S(key).isNumeric() && ruleStore.rules[key - 1] ? ruleStore.rules[key - 1] : {};
         return (
-            <div role="form">
+            <div className="form-horizontal">
                 <div className="box-body">
                     <Condition appState={this.selfState} />
-                    <Interface appState={this.selfState} />
-                    <Routing appState={this.selfState} />
+                    <InterfaceDevice appState={this.selfState} />
+                    <InterfaceIpMask appState={this.selfState} />
+                    <RoutingId appState={this.selfState} />
+                    <RoutingDevice appState={this.selfState} />
+                    <RoutingDest appState={this.selfState} />
+                    <RoutingGateway appState={this.selfState} />
                     <Switch appState={this.selfState} />
                     <HA appState={this.selfState} />
                     <HAMgmt appState={this.selfState} />
@@ -646,7 +601,7 @@ function FormContent() {
     return (
         <section className="content">
             <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-6">
                     <div className="box box-primary">
                         <FormTitle />
                         <FormBodyWithRouter />

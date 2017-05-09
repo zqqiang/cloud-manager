@@ -12,7 +12,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(__dirname + '/public/theme/project/img/cloud.png'));
 
@@ -58,17 +58,17 @@ var server = app.listen(app.get('port'), function() {
 });
 
 udp4Server.on('error', (err) => {
-    console.log(`server error:\n${err.stack}`);
+    console.log(`udp server error:\n${err.stack}`);
     udp4Server.close();
 });
 
 udp4Server.on('message', (msg, rinfo) => {
-    console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+    console.log(`udp server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
 });
 
 udp4Server.on('listening', () => {
     var address = udp4Server.address();
-    console.log(`server listening ${address.address}:${address.port}`);
+    console.log(`udp server listening ${address.address}:${address.port}`);
 });
 
 udp4Server.bind(8080);

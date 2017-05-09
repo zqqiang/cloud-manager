@@ -17,7 +17,7 @@ router.use('/', function(req, res, next) {
     });
 
     const client = dgram.createSocket('udp4');
-    client.send(message, 6000, 'localhost', (err) => {
+    client.send(message, 8080, 'localhost', (err) => {
         client.close();
     });
 })

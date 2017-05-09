@@ -11,6 +11,7 @@
     "build-css": "catw -c 'lessc -' 'public/theme/project/less/main.less' > public/theme/project/css/main.css",
     "build-js": "browserify public/main.js > public/bundle.js",
     "build": "npm run build-css && npm run build-js",
+    "debug": "DEBUG=express:* supervisor index.js",
     "start": "supervisor index.js"
   },
   "repository": {

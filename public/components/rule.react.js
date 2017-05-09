@@ -6,9 +6,34 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
-import { observable, action } from 'mobx'
+import { observable, action, autorun } from 'mobx'
 import { observer } from 'mobx-react'
 var S = require('string');
+
+let ruleStore = observable({
+    rules: [],
+});
+
+ruleStore.updateRules = action(function update() {
+    let options = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Origin': '',
+            'Host': 'localhost'
+        },
+    }
+    return fetch('Rule', options)
+        .then(response => response.json())
+        .then(json => {
+            ruleStore.rules = json.rules
+        })
+});
+
+autorun(function() {
+    console.log(ruleStore.rules)
+});
 
 function TableHeader() {
     return (
@@ -82,9 +107,9 @@ class RuleTableTr extends React.Component {
         return (
             <tr>
                 <td>{this.props.row.id}</td>
-                <td>{this.props.row.fgt}</td>
-                <td>{this.props.row.fmgsn}</td>
-                <td>{this.props.row.fmgip}</td>
+                <td>{this.props.row.fgtIpSn}</td>
+                <td>{this.props.row.mgmtSN}</td>
+                <td>{this.props.row.mgmtIP}</td>
                 <td>
                     <Link to={location}><i className="fa fa-pencil fa-lg" aria-hidden="true"></i></Link>
                 </td>
@@ -111,24 +136,19 @@ function RuleTable({ data }) {
     )
 }
 
-let data = [{
-    id: 1,
-    fgt: '192.168.0.2',
-    fmgsn: 'FMG-VM0A11000137',
-    fmgip: '172.16.95.58',
-}, {
-    id: 2,
-    fgt: 'FGT60D4615007833',
-    fmgsn: 'FMG-VM0A11000138',
-    fmgip: '172.16.95.59',
-}]
-
-function BoxBody() {
-    return (
-        <div className="box-body">
-            <RuleTable data={data}/>
-        </div>
-    )
+@observer
+class BoxBody extends React.Component {
+    constructor(props) {
+        super(props)
+        ruleStore.updateRules()
+    }
+    render() {
+        return (
+            <div className="box-body">
+                <RuleTable data={ruleStore.rules}/>
+            </div>
+        )
+    }
 }
 
 function BoxFooter() {
@@ -232,49 +252,6 @@ function InputText({ options, onChange, name, value }) {
         </div>
     )
 }
-
-let states = [
-    observable({
-        fgtIpSn: ' FGT60D4615007833',
-        interfaceDevice: 'wan1',
-        interfaceIpMask: '3.3.3.3/24',
-        routingId: 1,
-        routingDevice: 'wan1',
-        routingDest: '0.0.0.0/0',
-        routingGateway: '192.168.0.1',
-        switch: true,
-        groupId: 'one',
-        groupName: 'one',
-        haMode: 'one',
-        haDevice: 'one',
-        haPriority: 'top',
-        mgmtInterface: 'one',
-        mgmtGateway: '192.168.1.1',
-        mgmtGateway6: '192.168.1.1',
-        mgmtSN: 'XXXXX',
-        mgmtIP: '192.168.1.1',
-    }),
-    observable({
-        fgtIpSn: ' FGT60D4615007834',
-        interfaceDevice: 'wan2',
-        interfaceIpMask: '4.4.4.4/24',
-        routingId: 2,
-        routingDevice: 'wan2',
-        routingDest: '0.0.0.0/0',
-        routingGateway: '192.168.0.1',
-        switch: false,
-        groupId: 'two',
-        groupName: 'two',
-        haMode: 'two',
-        haDevice: 'two',
-        haPriority: 'low',
-        mgmtInterface: 'one',
-        mgmtGateway: '192.168.1.1',
-        mgmtGateway6: '192.168.1.1',
-        mgmtSN: 'XXXXX',
-        mgmtIP: '192.168.1.1',
-    }),
-]
 
 @observer
 class Condition extends React.Component {
@@ -590,16 +567,16 @@ class FortiManager extends React.Component {
     }
 }
 
-const CancelButton = withRouter(({history}) => {
-    return (
-        <button 
-            type="submit" 
-            className="btn btn-default"
-            onClick={() => {
-                history.push('/Home/Rule')
-            }}
-        >
-            Cancel
+const CancelButton = withRouter(({ history }) => {
+    return ( 
+        <button type = "submit"
+                className = "btn btn-default"
+                onClick = {
+                    () => {
+                        history.push('/Home/Rule')
+                    }
+                }>
+            Cancel 
         </button>
     )
 })
@@ -611,8 +588,8 @@ class FormBody extends React.Component {
     }
     onHandleSubmit(event) {
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
-        let url = '/Rule' + (S(key).isNumeric() ? ('?key=' + key) : '')
-        
+        let url = '/Rule' + (S(key).isNumeric() ? ('?key=' + key) : '');
+
         let options = {
             method: S(key).isNumeric() ? 'PUT' : 'POST',
             headers: {
@@ -632,7 +609,7 @@ class FormBody extends React.Component {
     render() {
         // #/Home/Rule/1
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
-        this.selfState = S(key).isNumeric() ? states[key - 1] : {};
+        this.selfState = S(key).isNumeric() && ruleStore.rules[key - 1] ? ruleStore.rules[key - 1] : {};
         return (
             <div role="form">
                 <div className="box-body">

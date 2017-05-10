@@ -569,15 +569,21 @@ class FormBody extends React.Component {
             <div className="form-horizontal">
                 <div className="box-body">
                     <Condition appState={this.selfState} />
+                    <div className="hr-line-dashed"></div>
                     <InterfaceDevice appState={this.selfState} />
                     <InterfaceIpMask appState={this.selfState} />
+                    <div className="hr-line-dashed"></div>
                     <RoutingId appState={this.selfState} />
                     <RoutingDevice appState={this.selfState} />
                     <RoutingDest appState={this.selfState} />
                     <RoutingGateway appState={this.selfState} />
+                    <div className="hr-line-dashed"></div>
                     <Switch appState={this.selfState} />
+                    <div className="hr-line-dashed"></div>
                     <HA appState={this.selfState} />
+                    <div className="hr-line-dashed"></div>
                     <HAMgmt appState={this.selfState} />
+                    <div className="hr-line-dashed"></div>
                     <FortiManager appState={this.selfState} />
                 </div>
                 <div className="box-footer">

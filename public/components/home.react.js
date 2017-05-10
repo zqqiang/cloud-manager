@@ -12,6 +12,7 @@ var SystemSettings = require('./system.react');
 import { Rule, RuleForm } from './rule.react'
 import Sidebar from './sidebar.react'
 var Footer = require('./footer.react');
+import Admin from './admin.react'
 
 function Dashboard() {
     return (
@@ -48,6 +49,10 @@ const routes = [{
     path: '/Home/New',
     exact: true,
     main: () => <RuleForm />
+}, {
+    path: '/Home/Admin',
+    exact: true,
+    main: () => <Admin />
 }]
 
 function Content() {

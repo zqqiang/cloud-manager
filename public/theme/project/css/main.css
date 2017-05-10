@@ -6918,3 +6918,10 @@ div.form-horizontal .form-group {
   margin-right: -15px;
   margin-left: -15px;
 }
+.hr-line-dashed {
+  border-top: 1px dashed #e7eaec;
+  color: #ffffff;
+  background-color: #ffffff;
+  height: 1px;
+  margin: 20px 0;
+}

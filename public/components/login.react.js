@@ -51,10 +51,10 @@ class LoginForm extends React.Component {
         return (
             <div className="">
                 <div className="form-group has-feedback">
-                    <input type="email" 
+                    <input type="text" 
                            name="user" 
                            className="form-control" 
-                           placeholder="Email" 
+                           placeholder="User" 
                            value={this.state.user} 
                            onChange={this.onHandleChange.bind(this)}
                     />

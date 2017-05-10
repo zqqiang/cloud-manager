@@ -32,12 +32,15 @@ class LoginForm extends React.Component {
                 'grant_type': 'client_credentials'
             })
         }
-        let action = this.props.onClick
+
+        const { match, location, history } = this.props
+
         return fetch('/Login', options)
             .then(response => response.json())
             .then(json => {
-                action()
+                history.push('/Home')
             })
+
     }
     onHandleChange(event) {
         const target = event.target
@@ -89,10 +92,12 @@ class LoginForm extends React.Component {
     }
 }
 
+const LoginFormWithRouter = withRouter(LoginForm)
+
 const LoginBoxBody = ({ onClick }) => (
     <div className="login-box-body">
         <p className="login-box-msg">Sign in to start your session</p>
-        <LoginForm onClick={onClick}/>
+        <LoginFormWithRouter />
         <a href="javascript:void(0);">I forgot my password</a><br />
         <a href="javascript:void(0);" className="text-center">Register a new membership</a>
     </div>
@@ -103,7 +108,7 @@ const LoginBody = ({ onClick }) => (
         <div className="login-logo">
             <a href="javascript:void(0);"><b>Cloud</b> Manager</a>
         </div>
-        <LoginBoxBody onClick={onClick} />
+        <LoginBoxBody />
     </div>
 )
 
@@ -114,7 +119,7 @@ class Login extends React.Component {
     render() {
         return (
             <div className="login-page">
-                <LoginBody onClick={this.props.onClick} />
+                <LoginBody />
             </div>
         )
     }

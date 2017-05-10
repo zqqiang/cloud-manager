@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    HashRouter as Router,
     Route,
     Link,
     Redirect,
@@ -73,14 +72,12 @@ function Content() {
 class Home extends React.Component {
     render() {
         return (
-            <Router>
-                <div>
-                    <Header />
-                    <Sidebar />
-                    <Content />
-                    <Footer />
-                </div>
-            </Router>
+            <div>
+                <Header />
+                <Sidebar />
+                <Content />
+                <Footer />
+            </div>
         )
     }
 }

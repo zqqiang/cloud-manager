@@ -15,6 +15,9 @@ class Main extends React.Component {
         super(props)
     }
     render() {
+        if (true) {
+            <Redirect to="/"/>
+        }
         return (
             <Router>
                 <div>

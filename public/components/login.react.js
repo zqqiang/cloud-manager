@@ -6,6 +6,7 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
+import Auth from '../auth'
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -27,8 +28,8 @@ class LoginForm extends React.Component {
                 'Host': 'localhost'
             },
             body: JSON.stringify({
-                'client_id': this.state.user.value,
-                'client_secret': this.state.password.value,
+                'client_id': this.state.user,
+                'client_secret': this.state.password,
                 'grant_type': 'client_credentials'
             })
         }
@@ -38,6 +39,7 @@ class LoginForm extends React.Component {
         return fetch('/Login', options)
             .then(response => response.json())
             .then(json => {
+                Auth.authenticate(json)
                 history.push('/Home')
             })
 

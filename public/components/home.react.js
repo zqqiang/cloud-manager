@@ -12,6 +12,7 @@ import { Rule, RuleForm } from './rule.react'
 import Sidebar from './sidebar.react'
 var Footer = require('./footer.react');
 import Admin from './admin.react'
+import Auth from '../auth'
 
 function Dashboard() {
     return (
@@ -71,14 +72,20 @@ function Content() {
 
 class Home extends React.Component {
     render() {
-        return (
-            <div>
-                <Header />
-                <Sidebar />
-                <Content />
-                <Footer />
-            </div>
-        )
+        if (Auth.isAuthenticated) {
+            return (
+                <div>
+                    <Header />
+                    <Sidebar />
+                    <Content />
+                    <Footer />
+                </div>
+            )
+        } else {
+            return (
+                <Redirect to="/" />
+            )
+        }
     }
 }
 

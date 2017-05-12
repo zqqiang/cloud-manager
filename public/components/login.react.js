@@ -17,8 +17,6 @@ class LoginForm extends React.Component {
         }
     }
     onHandleClick(e) {
-        e.preventDefault()
-
         let options = {
             method: 'POST',
             headers: {
@@ -52,6 +50,11 @@ class LoginForm extends React.Component {
             [name]: value
         })
     }
+    onHandleKeyPress(event) {
+        if (event.key === 'Enter') {
+            this.onHandleClick()
+        }
+    }
     render() {
         return (
             <div className="">
@@ -62,6 +65,7 @@ class LoginForm extends React.Component {
                            placeholder="User" 
                            value={this.state.user} 
                            onChange={this.onHandleChange.bind(this)}
+                           onKeyPress={this.onHandleKeyPress.bind(this)}
                     />
                     <span className="glyphicon glyphicon-envelope form-control-feedback"></span>
                 </div>
@@ -72,6 +76,7 @@ class LoginForm extends React.Component {
                            placeholder="Password" 
                            value={this.state.password} 
                            onChange={this.onHandleChange.bind(this)}
+                           onKeyPress={this.onHandleKeyPress.bind(this)}
                     />
                     <span className="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
@@ -85,8 +90,11 @@ class LoginForm extends React.Component {
                     </div>
                     <div className="col-xs-4">
                         <a href="javascript:void(0);" 
-                           className="btn btn-primary btn-block btn-flat" 
-                           onClick={this.onHandleClick.bind(this)} >Sign In</a>
+                            className="btn btn-primary btn-block btn-flat" 
+                            onClick={this.onHandleClick.bind(this)} 
+                        >
+                            Sign In
+                        </a>
                     </div>
                 </div>
             </div>

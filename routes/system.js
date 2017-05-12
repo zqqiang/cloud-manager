@@ -8,7 +8,7 @@ router.get('/', function(req, res) {
         method: 'get',
     }
 
-    const client = net.connect({ port: 8080 }, () => {
+    const client = net.connect({ port: 8080, host: '127.0.0.1' }, () => {
         client.write(JSON.stringify(payload));
     });
 
@@ -27,7 +27,7 @@ router.put('/', function(req, res) {
         setting: req.body
     }
 
-    const client = net.connect({ port: 8080 }, () => {
+    const client = net.connect({ port: 8080, host: '127.0.0.1' }, () => {
         client.write(JSON.stringify(payload));
     });
 

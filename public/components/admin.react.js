@@ -77,7 +77,20 @@ class Content extends React.Component {
         history.push('/Home')
     }
     onSubmit() {
-
+        let options = {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Origin': '',
+                'Host': 'localhost'
+            },
+        }
+        return fetch('Admin', options)
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+            })
     }
     handleChange(e) {
         const target = e.target

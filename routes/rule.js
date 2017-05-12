@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
         }
     }
 
-    const client = net.connect({ port: 8080 }, () => {
+    const client = net.connect({ port: 8080, host: '127.0.0.1' }, () => {
         client.write(JSON.stringify(payload));
     });
 
@@ -31,7 +31,7 @@ router.post('/', function(req, res, next) {
         rule: req.body
     }
 
-    const client = net.connect({ port: 8080 }, () => {
+    const client = net.connect({ port: 8080, host: '127.0.0.1' }, () => {
         client.write(JSON.stringify(payload));
     });
 
@@ -49,7 +49,7 @@ router.put('/', function(req, res, next) {
         rule: req.body
     }
 
-    const client = net.connect({ port: 8080 }, () => {
+    const client = net.connect({ port: 8080, host: '127.0.0.1' }, () => {
         client.write(JSON.stringify(payload));
     });
 
@@ -69,7 +69,7 @@ router.delete('/', function(req, res, next) {
         }
     }
 
-    const client = net.connect({ port: 8080 }, () => {
+    const client = net.connect({ port: 8080, host: '127.0.0.1' }, () => {
         client.write(JSON.stringify(payload));
     });
 

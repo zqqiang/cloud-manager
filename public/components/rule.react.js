@@ -109,8 +109,8 @@ class RuleTableTr extends React.Component {
             <tr>
                 <td></td>
                 <td>{this.props.row.fgtIpSn}</td>
-                <td>{this.props.row.mgmtSN}</td>
-                <td>{this.props.row.mgmtIP}</td>
+                <td>{this.props.row.fmgSn}</td>
+                <td>{this.props.row.fmgIp}</td>
                 <td>
                     <Link to={location}><i className="fa fa-pencil fa-lg" aria-hidden="true"></i></Link>
                 </td>
@@ -278,12 +278,12 @@ class InterfaceDevice extends React.Component {
         super(props);
     }
     onChange(event) {
-        this.props.appState.interfaceDevice = event.target.value;
+        this.props.appState.intfName = event.target.value;
     }
     render() {
         let options = { label: 'Device', placeholder: 'Enter Interface Device' };
         return (
-            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.interfaceDevice}/>
+            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.intfName}/>
         )
     }
 }
@@ -294,12 +294,12 @@ class InterfaceIpMask extends React.Component {
         super(props)
     }
     onChange(event) {
-        this.props.appState.interfaceIpMask = event.target.value
+        this.props.appState.intfIpMask = event.target.value
     }
     render() {
         let options = { label: 'IP&Mask', placeholder: 'Enter Interface IP&Mask' }
         return (
-            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.interfaceIpMask} />
+            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.intfIpMask} />
         )
     }
 }
@@ -311,12 +311,12 @@ class RoutingId extends React.Component {
         super(props)
     }
     onChange(event) {
-        this.props.appState.routingId = event.target.value
+        this.props.appState.routeId = event.target.value
     }
     render() {
         let options = { label: 'ID', placeholder: 'Enter Routing ID' }
         return (
-            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routingId} />
+            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routeId} />
         )
     }
 }
@@ -326,12 +326,12 @@ class RoutingDevice extends React.Component {
         super(props)
     }
     onChange(event) {
-        this.props.appState.routingDevice = event.target.value
+        this.props.appState.routeIntf = event.target.value
     }
     render() {
         let options = { label: 'Device', placeholder: 'Enter Routing Device' }
         return (
-            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routingDevice} />
+            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routeIntf} />
         )
     }
 }
@@ -341,12 +341,12 @@ class RoutingDest extends React.Component {
         super(props)
     }
     onChange(event) {
-        this.props.appState.routingDest = event.target.value
+        this.props.appState.routeDst = event.target.value
     }
     render() {
         let options = { label: 'Dest', placeholder: 'Enter Routing Dest' }
         return (
-            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routingDest} />
+            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routeDst} />
         )
     }
 }
@@ -356,12 +356,12 @@ class RoutingGateway extends React.Component {
         super(props)
     }
     onChange(event) {
-        this.props.appState.routingGateway = event.target.value
+        this.props.appState.routeGw = event.target.value
     }
     render() {
         let options = { label: 'Gateway', placeholder: 'Enter Routing Gateway' }
         return (
-            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routingGateway} />
+            <InputText options={options} onChange={this.onChange.bind(this)} value={this.props.appState.routeGw} />
         )
     }
 }
@@ -372,7 +372,7 @@ class Switch extends React.Component {
         super(props)
     }
     onChange(event) {
-        this.props.appState.switch = event.target.value
+        this.props.appState.purgeVirtualSwitch = event.target.value
     }
     render() {
         return (
@@ -380,7 +380,7 @@ class Switch extends React.Component {
                 <div className="col-sm-offset-3 col-sm-9">
                     <div className="checkbox">
                         <label>
-                            <input type="checkbox" checked={this.props.appState.switch} onChange={this.onChange.bind(this)} /> Purge
+                            <input type="checkbox" checked={this.props.appState.purgeVirtualSwitch} onChange={this.onChange.bind(this)} /> Purge
                         </label>
                     </div>
                 </div>
@@ -407,8 +407,8 @@ class HA extends React.Component {
                 <InputText 
                     options={{label:'Group Name', placeholder: 'Enter Name'}}
                     onChange={this.onChange.bind(this)}
-                    name="groupName"
-                    value={this.props.appState.groupId}
+                    name="haGroupName"
+                    value={this.props.appState.haGroupName}
                 />
                 <div className="form-group">
                     <label className="col-sm-3 control-label">Password</label>
@@ -417,8 +417,8 @@ class HA extends React.Component {
                             type="password" 
                             className="form-control" 
                             placeholder="Password"
-                            name="groupPassword"
-                            value={this.props.appState.groupPassword}
+                            name="haGroupPasswd"
+                            value={this.props.appState.haGroupPasswd}
                             onChange={this.onChange.bind(this)}
                         />
                     </div>
@@ -426,8 +426,8 @@ class HA extends React.Component {
                 <InputText 
                     options={{label: 'Group ID', placeholder: 'Enter ID'}}
                     onChange={this.onChange.bind(this)}
-                    name="groupId"
-                    value={this.props.appState.groupId}
+                    name="haGroupId"
+                    value={this.props.appState.haGroupId}
                 />
                 <InputText 
                     options={{label: 'HA Mode', placeholder: 'Enter Mode'}}
@@ -438,8 +438,8 @@ class HA extends React.Component {
                 <InputText 
                     options={{label: 'HA Device', placeholder: 'Enter Device'}}
                     onChange={this.onChange.bind(this)}
-                    name="haDevice"
-                    value={this.props.appState.haDevice}
+                    name="haPrimary"
+                    value={this.props.appState.haPrimary}
                 />
                 <InputText 
                     options={{label: 'HA Priority', placeholder: 'Enter Priority'}}
@@ -468,20 +468,20 @@ class HAMgmt extends React.Component {
             <div>
                 <InputText 
                     options={{label:'HA Mgmt Interface', placeholder: 'Enter Interface'}}
-                    name="mgmtInterface"
-                    value={this.props.appState.mgmtInterface}
+                    name="haMgmtIntf"
+                    value={this.props.appState.haMgmtIntf}
                     onChange={this.onChange.bind(this)}
                 />
                 <InputText 
                     options={{label:'HA Mgmt Gateway', placeholder: 'Enter Gateway'}}
-                    name="mgmtGateway"
-                    value={this.props.appState.mgmtGateway}
+                    name="haMgmtIntfGw"
+                    value={this.props.appState.haMgmtIntfGw}
                     onChange={this.onChange.bind(this)}
                 />
                 <InputText 
                     options={{label: 'HA Mgmt Gateway6', placeholder: 'Enter Gateway6'}}
-                    name="mgmtGateway6"
-                    value={this.props.appState.mgmtGateway6}
+                    name="haMgmtIntfGw6"
+                    value={this.props.appState.haMgmtIntfGw6}
                     onChange={this.onChange.bind(this)}
                 />
             </div>
@@ -504,14 +504,14 @@ class FortiManager extends React.Component {
             <div>
                 <InputText 
                     options={{label:'FortiManager SN', placeholder: 'Enter SN'}}
-                    name="mgmtSN"
-                    value={this.props.appState.mgmtSN}
+                    name="fmgSn"
+                    value={this.props.appState.fmgSn}
                     onChange={this.onChange.bind(this)}
                 />
                 <InputText 
                     options={{label:'FortiManager IP', placeholder: 'Enter IP'}}
-                    name="mgmtIP"
-                    value={this.props.appState.mgmtIP}
+                    name="fmgIp"
+                    value={this.props.appState.fmgIp}
                     onChange={this.onChange.bind(this)}
                 />
             </div>

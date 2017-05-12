@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
         filter: "",
         page: {
             "offset": 0,
-            "limit": 10
+            "limit": 50
         }
     }
 

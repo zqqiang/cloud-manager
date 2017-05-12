@@ -117,7 +117,7 @@ class Content extends React.Component {
                                         type="text"
                                         className="form-control" 
                                         name="defaultFortimanageIp" 
-                                        value={this.state.defaultFortimanageIp}
+                                        value={this.state.defaultFortiManageIp}
                                         placeholder="Enter IP" 
                                         onChange={this.onHandleChange.bind(this)}
                                     />

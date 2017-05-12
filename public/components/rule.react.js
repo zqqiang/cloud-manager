@@ -454,6 +454,7 @@ class HA extends React.Component {
 
 // [ <ha-mgmt-interface> <ha-mgmt-interface-gateway> [ha-mgmt-interface-gateway6] ];
 
+@observer
 class HAMgmt extends React.Component {
     constructor(props) {
         super(props)
@@ -490,6 +491,7 @@ class HAMgmt extends React.Component {
 }
 
 // FMG := FMG: <fmg-ip> <fmg-sn>;
+@observer
 class FortiManager extends React.Component {
     constructor(props) {
         super(props)

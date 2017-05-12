@@ -30,6 +30,9 @@ class AdminForm extends React.Component {
     }
     render() {
         const newUser = this.props.options.newUser
+        const oldPassword = this.props.options.oldPassword
+        const newPassword = this.props.options.newPassword
+        const confirmPassword = this.props.options.confirmPassword
         const handleChange = this.props.onChange
         return (
             <form className="form-horizontal">
@@ -38,9 +41,18 @@ class AdminForm extends React.Component {
                         labelClass="col-sm-3" label="New user" editorClass="col-sm-9" placeholder="New user" 
                         name="newUser" value={newUser} onChange={handleChange}
                     />
-                    <Input labelClass="col-sm-3" label="Old password" editorClass="col-sm-9" placeholder="Old password" />
-                    <Input labelClass="col-sm-3" label="New password" editorClass="col-sm-9" placeholder="New password" />
-                    <Input labelClass="col-sm-3" label="Re-enter password" editorClass="col-sm-9" placeholder="Re-enter password" />
+                    <Input 
+                        labelClass="col-sm-3" label="Old password" editorClass="col-sm-9" placeholder="Old password"
+                        name="oldPassword" value={oldPassword} onChange={handleChange}
+                    />
+                    <Input 
+                        labelClass="col-sm-3" label="New password" editorClass="col-sm-9" placeholder="New password" 
+                        name="newPassword" value={newPassword} onChange={handleChange}
+                    />
+                    <Input 
+                        labelClass="col-sm-3" label="Re-enter password" editorClass="col-sm-9" placeholder="Re-enter password" 
+                        name="confirmPassword" value={confirmPassword} onChange={handleChange}
+                    />
                 </div>
             </form>
         )
@@ -55,6 +67,9 @@ class Content extends React.Component {
         this.handleChange = this.handleChange.bind(this)
         this.state = {
             newUser: '',
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: '',
         }
     }
     onCancel() {

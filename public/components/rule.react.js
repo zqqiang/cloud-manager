@@ -9,6 +9,7 @@ import {
 import { observable, action, autorun } from 'mobx'
 import { observer } from 'mobx-react'
 var S = require('string');
+var _ = require('lodash');
 
 let ruleStore = observable({
     rules: [],
@@ -27,7 +28,7 @@ ruleStore.updateRules = action(function update() {
     return fetch('Rule', options)
         .then(response => response.json())
         .then(json => {
-            ruleStore.rules = json.rules
+            ruleStore.rules = json.result
         })
 });
 
@@ -93,7 +94,7 @@ class RuleTableTr extends React.Component {
                 'Host': 'localhost'
             },
         }
-        let url = '/Rule?key=' + this.props.row.id
+        let url = '/Rule?key=' + this.props.row.fgtIpSn
         return fetch(url, options)
             .then(response => response.json())
             .then(json => {
@@ -102,11 +103,11 @@ class RuleTableTr extends React.Component {
     }
     render() {
         let location = {
-            pathname: '/Home/Rule/' + this.props.row.id
+            pathname: '/Home/Rule/' + this.props.row.fgtIpSn
         }
         return (
             <tr>
-                <td>{this.props.row.id}</td>
+                <td></td>
                 <td>{this.props.row.fgtIpSn}</td>
                 <td>{this.props.row.mgmtSN}</td>
                 <td>{this.props.row.mgmtIP}</td>
@@ -124,7 +125,7 @@ class RuleTableTr extends React.Component {
 function RuleTable({ data }) {
     let rows = [];
     data.forEach((row) => {
-        rows.push(<RuleTableTr row={row} key={row.id}/>)
+        rows.push(<RuleTableTr row={row} key={row.fgtIpSn}/>)
     })
     return (
         <table className="table table-bordered">
@@ -520,13 +521,15 @@ class FortiManager extends React.Component {
 
 const CancelButton = withRouter(({ history }) => {
     return ( 
-        <button type = "submit"
-                className = "btn btn-default"
-                onClick = {
-                    () => {
-                        history.push('/Home/Rule')
-                    }
-                }>
+        <button 
+            type = "submit"
+            className = "btn btn-default"
+            onClick = {
+                () => {
+                    history.push('/Home/Rule')
+                }
+            } 
+        >
             Cancel 
         </button>
     )
@@ -539,13 +542,23 @@ class FormBody extends React.Component {
     }
     onHandleSubmit(event) {
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
-        let url = '/Rule' + (S(key).isNumeric() ? ('?key=' + key) : '');
+
+        let url = '';
+        let method = '';
+        
+        if (key) {
+            url = '/Rule?key=' + key;
+            method = 'PUT';
+        } else {
+            url = '/Rule';
+            method = 'POST';
+        }
 
         let options = {
-            method: S(key).isNumeric() ? 'PUT' : 'POST',
+            method: method,
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Accept': 'application\/json',
+                'Content-Type': 'application\/json',
                 'Origin': '',
                 'Host': 'localhost'
             },
@@ -562,9 +575,18 @@ class FormBody extends React.Component {
         history.push('/Home/Rule')
     }
     render() {
-        // #/Home/Rule/1
+        // #/Home/Rule/xxxx
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
-        this.selfState = S(key).isNumeric() && ruleStore.rules[key - 1] ? ruleStore.rules[key - 1] : {};
+
+        if (key) {
+            let index = _.findIndex(ruleStore.rules, function(o) {
+                return o.fgtIpSn === key;
+            })
+            if (index >= 0) {
+                this.selfState = ruleStore.rules[index];
+            }
+        }
+
         return (
             <div className="form-horizontal">
                 <div className="box-body">

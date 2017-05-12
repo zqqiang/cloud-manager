@@ -4,92 +4,110 @@ const dgram = require('dgram');
 
 router.get('/', function(req, res, next) {
     let payload = {
-        url: '/rule',
-        method: req.method,
+        method: "get",
+        url: "/rules",
+        filter: "",
+        page: {
+            "offset": 0,
+            "limit": 10
+        }
     }
 
     const message = Buffer.from(JSON.stringify(payload));
 
-    res.json({
-        method: req.method,
-        status: 'OK',
-        rules: [{
-            id: 1,
-            fgtIpSn: '1.1.1.1',
-            mgmtSN: 'FGTXXX0123456789',
-            mgmtIP: '2.2.2.2'
-        }, {
-            id: 2,
-            fgtIpSn: '1.1.1.2',
-            mgmtSN: 'FGTXXX0123456788',
-            mgmtIP: '2.2.2.3'
-        }]
+    const client = dgram.createSocket('udp4');
+
+    client.bind(9090);
+
+    client.send(message, 8080, 'localhost', (err) => {
+
     });
 
-    const client = dgram.createSocket('udp4');
-    client.send(message, 8080, 'localhost', (err) => {
+    client.on('message', (msg, rinfo) => {
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+
+        res.json(JSON.parse(msg));
+
         client.close();
     });
 })
 
 router.post('/', function(req, res, next) {
     let payload = {
-        url: '/rule',
-        method: req.method,
-        params: [req.body]
+        method: "post",
+        url: "/rules",
+        rule: req.body
     }
 
     const message = Buffer.from(JSON.stringify(payload));
 
-    res.json({
-        method: req.method,
-        status: 'OK'
+    const client = dgram.createSocket('udp4');
+
+    client.bind(9090);
+
+    client.send(message, 8080, 'localhost', (err) => {
+
     });
 
-    const client = dgram.createSocket('udp4');
-    client.send(message, 8080, 'localhost', (err) => {
+    client.on('message', (msg, rinfo) => {
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+
+        res.json(JSON.parse(msg));
+
         client.close();
     });
 })
 
 router.put('/', function(req, res, next) {
     let payload = {
-        url: '/rule',
-        method: req.method,
-        key: req.query.key,
-        params: [req.body]
+        method: "put",
+        url: "/rules",
+        rule: req.body
     }
 
     const message = Buffer.from(JSON.stringify(payload));
 
-    res.json({
-        method: req.method,
-        status: 'OK'
+    const client = dgram.createSocket('udp4');
+
+    client.bind(9090);
+
+    client.send(message, 8080, 'localhost', (err) => {
+
     });
 
-    const client = dgram.createSocket('udp4');
-    client.send(message, 8080, 'localhost', (err) => {
+    client.on('message', (msg, rinfo) => {
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+
+        res.json(JSON.parse(msg));
+
         client.close();
     });
 })
 
 router.delete('/', function(req, res, next) {
     let payload = {
-        url: '/rule',
-        method: req.method,
-        key: req.query.key,
-        params: [req.body]
+        method: "delete",
+        url: "/rules",
+        rule: {
+            "id": req.query.key
+        }
     }
 
     const message = Buffer.from(JSON.stringify(payload));
 
-    res.json({
-        method: req.method,
-        status: 'OK'
+    const client = dgram.createSocket('udp4');
+
+    client.bind(9090);
+
+    client.send(message, 8080, 'localhost', (err) => {
+
     });
 
-    const client = dgram.createSocket('udp4');
-    client.send(message, 8080, 'localhost', (err) => {
+    client.on('message', (msg, rinfo) => {
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+
+        res.json(JSON.parse(msg));
+
         client.close();
     });
 })

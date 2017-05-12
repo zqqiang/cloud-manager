@@ -6,6 +6,7 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
+import { Input, Button } from './editor.jsx'
 
 function Header() {
     return (
@@ -24,66 +25,85 @@ function Header() {
 }
 
 class AdminForm extends React.Component {
+    constructor(props) {
+        super(props)
+    }
     render() {
+        const newUser = this.props.options.newUser
+        const handleChange = this.props.onChange
         return (
             <form className="form-horizontal">
                 <div className="box-body">
-                    <div className="form-group">
-                        <label className="col-sm-3 control-label">New user</label>
-                        <div className="col-sm-9">
-                            <input type="text" className="form-control" placeholder="New user" />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-3 control-label">Old password</label>
-                        <div className="col-sm-9">
-                            <input type="password" className="form-control" placeholder="Old password" />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-3 control-label">New password</label>
-                        <div className="col-sm-9">
-                            <input type="password" className="form-control" placeholder="New password" />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="col-sm-3 control-label">Re-enter password</label>
-                        <div className="col-sm-9">
-                            <input type="password" className="form-control" placeholder="Re-enter password" />
-                        </div>
-                    </div>
+                    <Input 
+                        labelClass="col-sm-3" label="New user" editorClass="col-sm-9" placeholder="New user" 
+                        name="newUser" value={newUser} onChange={handleChange}
+                    />
+                    <Input labelClass="col-sm-3" label="Old password" editorClass="col-sm-9" placeholder="Old password" />
+                    <Input labelClass="col-sm-3" label="New password" editorClass="col-sm-9" placeholder="New password" />
+                    <Input labelClass="col-sm-3" label="Re-enter password" editorClass="col-sm-9" placeholder="Re-enter password" />
                 </div>
             </form>
         )
     }
 }
 
-function Content() {
-    return (
-        <section className="content">
-            <div className="row">
-                <div className="col-md-6">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <h3 className="box-title">Admin System Settings</h3>
-                        </div>
-                        <AdminForm />
-                        <div className="box-footer">
-                            <button type="submit" className="btn btn-default">Cancel</button>
-                            <button type="submit" className="btn btn-info pull-right" >Submit</button>
+class Content extends React.Component {
+    constructor(props) {
+        super(props)
+        this.onCancel = this.onCancel.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.state = {
+            newUser: '',
+        }
+    }
+    onCancel() {
+        const history = this.props.history
+        history.push('/Home')
+    }
+    onSubmit() {
+
+    }
+    handleChange(e) {
+        const target = e.target
+        const name = target.name
+        const value = target.value
+        this.setState({
+            [name]: value
+        })
+    }
+    render() {
+        const options = {
+            newUser: this.state.newUser
+        }
+        return (
+            <section className="content">
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Admin System Settings</h3>
+                            </div>
+                            <AdminForm options={options} onChange={this.handleChange} />
+                            <div className="box-footer">
+                                <Button buttonClass="btn-default" label="Cancel" action={this.onCancel} />
+                                <Button buttonClass="btn-info pull-right" label="Submit" action={this.onSubmit} />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    );
+            </section>
+        )
+    }
 }
+
+const ContentWithRouter = withRouter(Content)
 
 function Admin() {
     return (
         <div className="">
             <Header />
-            <Content />
+            <ContentWithRouter />
         </div>
     );
 }

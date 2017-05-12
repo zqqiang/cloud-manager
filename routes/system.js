@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const dgram = require('dgram');
+const net = require('net');
 
 router.get('/', function(req, res) {
     let payload = {
@@ -8,22 +8,14 @@ router.get('/', function(req, res) {
         method: 'get',
     }
 
-    const message = Buffer.from(JSON.stringify(payload));
-
-    const client = dgram.createSocket('udp4');
-
-    client.bind(9090);
-
-    client.send(message, 8080, 'localhost', (err) => {
-
+    const client = net.connect({ port: 8080 }, () => {
+        client.write(JSON.stringify(payload));
     });
 
-    client.on('message', (msg, rinfo) => {
-        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-
-        res.json(JSON.parse(msg));
-
-        client.close();
+    client.on('data', (data) => {
+        console.log(data.toString());
+        res.json(JSON.parse(data));
+        client.end();
     });
 
 });
@@ -35,22 +27,14 @@ router.put('/', function(req, res) {
         setting: req.body
     }
 
-    const message = Buffer.from(JSON.stringify(payload));
-
-    const client = dgram.createSocket('udp4');
-
-    client.bind(9090);
-
-    client.send(message, 8080, 'localhost', (err) => {
-
+    const client = net.connect({ port: 8080 }, () => {
+        client.write(JSON.stringify(payload));
     });
 
-    client.on('message', (msg, rinfo) => {
-        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-
-        res.json(JSON.parse(msg));
-
-        client.close();
+    client.on('data', (data) => {
+        console.log(data.toString());
+        res.json(JSON.parse(data));
+        client.end();
     });
 })
 

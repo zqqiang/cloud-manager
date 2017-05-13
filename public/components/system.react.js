@@ -23,7 +23,7 @@ class Content extends React.Component {
             ip: '',
             netmask: '',
             gateway: '',
-            defaultFortimanageIp: ''
+            defaultFortiManageIp: ''
         }
     }
     onHandleChange(event) {

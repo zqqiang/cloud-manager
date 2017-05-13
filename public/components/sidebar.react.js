@@ -24,6 +24,12 @@ function Sidebar() {
                             <span>Rules Config</span>
                         </Link>
                     </li>
+                    <li className="treeview">
+                        <Link to="/Home/Backup">
+                            <i className="fa fa-undo" aria-hidden="true"></i>
+                            <span>Backup & Restore</span>
+                        </Link>
+                    </li>
                 </ul>
             </section>
         </aside>

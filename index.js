@@ -18,10 +18,12 @@ app.use(favicon(__dirname + '/public/theme/project/img/cloud.png'));
 let Login = require('./routes/login');
 let Rule = require('./routes/rule');
 let SystemSetting = require('./routes/system');
+let Backup = require('./routes/backup');
 
 app.use('/Login', Login);
 app.use('/Rule', Rule);
 app.use('/System', SystemSetting);
+app.use('/Backup', Backup);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -54,6 +56,9 @@ app.use(function(err, req, res, next) {
 
 app.set('port', process.env.PORT || 80);
 
-var server = app.listen(app.get('port'), '127.0.0.1', function() {
-    console.log('Express server listening on 127.0.0.1:' + server.address().port);
+console.log('argv', process.argv[2]);
+let host = process.argv[2] === 'develop' ? undefined : '127.0.0.1';
+
+var server = app.listen(app.get('port'), host, function() {
+    console.log('Express server listening on ' + (host ? host : 'localhost') + ':' + server.address().port);
 });

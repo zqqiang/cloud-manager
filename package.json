@@ -11,7 +11,7 @@
     "build-css": "catw -c 'lessc -' 'public/theme/project/less/main.less' > public/theme/project/css/main.css",
     "build-js": "browserify public/main.js > public/bundle.js",
     "build": "npm run build-css && npm run build-js",
-    "debug": "DEBUG=express:* supervisor index.js",
+    "debug": "DEBUG=express:* supervisor -- index.js 'develop'",
     "start": "supervisor index.js"
   },
   "repository": {
@@ -27,6 +27,7 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "bootstrap": "^3.3.7",
+    "downloadjs": "^1.4.7",
     "express": "^4.15.2",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",

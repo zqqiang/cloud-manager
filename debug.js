@@ -92,6 +92,12 @@ const server = net.createServer((c) => {
                 code: 0,
                 message: "ok",
             }
+        } else if (json.url === '/system/backup' && json.method === 'get') {
+            payload = {
+                code: 0,
+                message: "ok",
+                filename: "/var/log/auth.log",
+            }
         }
 
         c.write(JSON.stringify(payload))

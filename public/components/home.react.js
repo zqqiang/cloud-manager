@@ -12,6 +12,7 @@ import { Rule, RuleForm } from './rule.react'
 import Sidebar from './sidebar.react'
 var Footer = require('./footer.react');
 import Admin from './admin.react'
+import Backup from './backup.jsx'
 import Auth from '../auth'
 
 function Dashboard() {
@@ -53,6 +54,10 @@ const routes = [{
     path: '/Home/Admin',
     exact: true,
     main: () => <Admin />
+}, {
+    path: '/Home/Backup',
+    exact: true,
+    main: () => <Backup />
 }]
 
 function Content() {

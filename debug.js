@@ -98,6 +98,11 @@ const server = net.createServer((c) => {
                 message: "ok",
                 filename: "/var/log/auth.log",
             }
+        } else if (json.url === '/system/restore' && json.method === 'put') {
+            payload = {
+                code: 0,
+                message: "ok",
+            }
         }
 
         c.write(JSON.stringify(payload))

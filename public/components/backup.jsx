@@ -27,8 +27,8 @@ class Content extends React.Component {
         let options = {
             method: 'GET',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Accept': 'text/plain',
+                'Content-Type': 'text/plain',
                 'Origin': '',
                 'Host': 'localhost'
             },
@@ -37,6 +37,29 @@ class Content extends React.Component {
             .then(response => response.blob())
             .then(blob => {
                 download(blob, 'backup.conf', 'text/plain')
+            })
+    }
+    handleRestore() {
+        var input = document.querySelector('input[type="file"]')
+
+        var data = new FormData()
+        data.append('file', input.files[0])
+
+        let options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'text/plain',
+                'Origin': '',
+                'Host': 'localhost',
+            },
+            body: data
+        }
+
+        return fetch('Restore', options)
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
             })
     }
     render() {
@@ -58,7 +81,7 @@ class Content extends React.Component {
                             <a className="btn btn-app" onClick={this.handleBackup}>
                                 <i className="fa fa-save"></i> Backup
                             </a>
-                            <a className="btn btn-app">
+                            <a className="btn btn-app" onClick={this.handleRestore}>
                                 <i className="fa fa-repeat"></i> Restore
                             </a>
                         </div>

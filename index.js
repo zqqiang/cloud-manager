@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 app.use(bodyParser.json());
+app.use(bodyParser.text({ type: 'text/plain' }))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(__dirname + '/public/theme/project/img/cloud.png'));
@@ -19,11 +20,13 @@ let Login = require('./routes/login');
 let Rule = require('./routes/rule');
 let SystemSetting = require('./routes/system');
 let Backup = require('./routes/backup');
+let Restore = require('./routes/restore');
 
 app.use('/Login', Login);
 app.use('/Rule', Rule);
 app.use('/System', SystemSetting);
 app.use('/Backup', Backup);
+app.use('/Restore', Restore);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

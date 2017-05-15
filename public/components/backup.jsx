@@ -1,4 +1,5 @@
 import React from 'react'
+
 const download = require('downloadjs')
 
 function Header() {
@@ -17,15 +18,6 @@ function Header() {
     );
 }
 
-function downloadFile(filename) {
-    var fs = require('fs')
-
-    fs.readFile(filename, (err, data) => {
-        if (err) throw err;
-        download(data, "backup.conf", "text/plain")
-    });
-}
-
 class Content extends React.Component {
     constructor(props) {
         super(props)
@@ -42,10 +34,9 @@ class Content extends React.Component {
             },
         }
         return fetch('Backup', options)
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
-                downloadFile(json.filename)
+            .then(response => response.blob())
+            .then(blob => {
+                download(blob, 'backup.conf', 'text/plain')
             })
     }
     render() {

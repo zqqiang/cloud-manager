@@ -14,8 +14,18 @@ router.get('/', function(req, res) {
 
     client.on('data', (data) => {
         console.log(data.toString());
-        res.json(JSON.parse(data));
-        client.end();
+
+        let filename = JSON.parse(data).filename;
+
+        res.download(filename, 'backup.conf', function(err) {
+            if (err) {
+                console.err(err);
+            } else {
+                console.log('download finished')
+            }
+            client.end();
+        });
+
     });
 
 });

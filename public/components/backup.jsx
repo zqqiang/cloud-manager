@@ -41,9 +41,14 @@ class Content extends React.Component {
     }
     handleRestore() {
         var input = document.querySelector('input[type="file"]')
+        const file = input.files[0]
+        if (!file) {
+            alert('Please select your restore file first!');
+            return;
+        }
 
         var data = new FormData()
-        data.append('file', input.files[0])
+        data.append('file', file)
 
         let options = {
             method: 'POST',
@@ -69,7 +74,21 @@ class Content extends React.Component {
                     <div className="col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Configuration Backup & Restore</h3>
+                                <h3 className="box-title">Configuration Backup</h3>
+                            </div>
+                            <div className="box-body">
+                                <a className="btn btn-app" onClick={this.handleBackup}>
+                                    <i className="fa fa-save"></i> Backup
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">Configuration Restore</h3>
                             </div>
                             <div className="box-body">
                                 <div className="form-group">
@@ -77,13 +96,10 @@ class Content extends React.Component {
                                     <input type="file" />
                                     <p className="help-block">Choose your file here</p>
                                 </div>
+                                <a className="btn btn-app" onClick={this.handleRestore}>
+                                    <i className="fa fa-repeat"></i> Restore
+                                </a>
                             </div>
-                            <a className="btn btn-app" onClick={this.handleBackup}>
-                                <i className="fa fa-save"></i> Backup
-                            </a>
-                            <a className="btn btn-app" onClick={this.handleRestore}>
-                                <i className="fa fa-repeat"></i> Restore
-                            </a>
                         </div>
                     </div>
                 </div>

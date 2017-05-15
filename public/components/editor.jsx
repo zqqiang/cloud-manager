@@ -14,7 +14,7 @@ export class Input extends React.Component {
                 <label className={this.props.labelClass + " control-label"}>{this.props.label}</label>
                 <div className={this.props.editorClass}>
                     <input 
-                        type="text" 
+                        type={this.props.type ? this.props.type : "text"} 
                         name={this.props.name}
                         value={this.props.value}
                         onChange={this.handleChange}

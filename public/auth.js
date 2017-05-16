@@ -9,7 +9,6 @@ import {
 const Auth = {
     isAuthenticated: false,
     authenticate(res) {
-        console.log(res)
         if (res.result === 'success') {
             this.isAuthenticated = true
         } else {

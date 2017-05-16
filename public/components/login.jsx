@@ -12,7 +12,7 @@ class LoginForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            user: '',
+            username: '',
             password: ''
         }
     }
@@ -26,19 +26,26 @@ class LoginForm extends React.Component {
                 'Host': 'localhost'
             },
             body: JSON.stringify({
-                'client_id': this.state.user,
-                'client_secret': this.state.password,
-                'grant_type': 'client_credentials'
+                'username': this.state.username,
+                'password': this.state.password,
             })
         }
 
         const { match, location, history } = this.props
 
         return fetch('/Login', options)
+            .then((response) => {
+                if (response.status === 401) {
+                    throw error
+                }
+                return response
+            })
             .then(response => response.json())
             .then(json => {
                 Auth.authenticate(json)
                 history.push('/Home')
+            }).catch(function(error) {
+                alert('Authenticate failed!')
             })
 
     }
@@ -60,10 +67,10 @@ class LoginForm extends React.Component {
             <div className="">
                 <div className="form-group has-feedback">
                     <input type="text" 
-                           name="user" 
+                           name="username" 
                            className="form-control" 
                            placeholder="User" 
-                           value={this.state.user} 
+                           value={this.state.username} 
                            onChange={this.onHandleChange.bind(this)}
                            onKeyPress={this.onHandleKeyPress.bind(this)}
                     />

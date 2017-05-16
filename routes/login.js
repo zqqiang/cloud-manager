@@ -1,20 +1,13 @@
 var express = require('express');
+var passport = require('../auth/auth');
+
 var router = express.Router();
 
-router.post('/', function(req, res) {
-    console.log(req.body)
-
-    const body = req.body;
-
-    if (body.client_id === 'admin') {
-        res.json({
-            result: 'success'
-        });
-    } else {
-        res.json({
-            result: 'failed'
-        });
-    }
+router.post('/', passport.authenticate('local'), function(req, res) {
+    res.json({
+        result: 'success',
+        token: passport.auth[req.body.username]
+    });
 });
 
 module.exports = router;

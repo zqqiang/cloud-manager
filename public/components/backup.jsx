@@ -1,5 +1,12 @@
 import React from 'react'
-import AuthInstance from '../modules/auth'
+import {
+    HashRouter as Router,
+    Route,
+    Link,
+    Redirect,
+    withRouter
+} from 'react-router-dom'
+import Fetch from '../modules/net'
 
 const download = require('downloadjs')
 
@@ -23,23 +30,19 @@ class Content extends React.Component {
     constructor(props) {
         super(props)
         this.handleBackup = this.handleBackup.bind(this)
+        this.handleRestore = this.handleRestore.bind(this)
     }
     handleBackup() {
-        let options = {
+        const { history } = this.props
+        return Fetch({
             method: 'GET',
-            headers: {
-                'Accept': 'text/plain',
-                'Content-Type': 'text/plain',
-                'Origin': '',
-                'Host': 'localhost',
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            },
-        }
-        return fetch('/api/Backup', options)
-            .then(response => response.blob())
-            .then(blob => {
+            url: '/api/Backup',
+            type: 'text',
+            history: history,
+            cb: (blob) => {
                 download(blob, 'backup.conf', 'text/plain')
-            })
+            }
+        })
     }
     handleRestore() {
         var input = document.querySelector('input[type="file"]')
@@ -52,23 +55,17 @@ class Content extends React.Component {
         var data = new FormData()
         data.append('file', file)
 
-        let options = {
+        const { history } = this.props
+        return Fetch({
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'text/plain',
-                'Origin': '',
-                'Host': 'localhost',
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            },
-            body: data
-        }
-
-        return fetch('/api/Restore', options)
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
-            })
+            url: '/api/Restore',
+            type: 'text',
+            body: data,
+            history: history,
+            cb: (json) => {
+                alert('Configuration Restore Success!')
+            }
+        })
     }
     render() {
         return (
@@ -111,12 +108,14 @@ class Content extends React.Component {
     }
 }
 
+const ContentWithRouter = withRouter(Content)
+
 class Backup extends React.Component {
     render() {
         return (
             <div className="">
                 <Header />
-                <Content />
+                <ContentWithRouter />
             </div>
         )
     }

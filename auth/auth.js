@@ -23,7 +23,7 @@ passport.use(new Strategy(
             console.log(user)
             console.log(payload)
             // const token = jwt.sign(payload, 'secret', { expiresIn: '1h' });
-            const token = jwt.sign(payload, 'secret', { expiresIn: 5 });
+            const token = jwt.sign(payload, 'secret', { expiresIn: 10 });
             passport.auth[user.username] = token;
             return cb(null, user);
         });

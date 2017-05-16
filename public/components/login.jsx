@@ -7,6 +7,7 @@ import {
     withRouter
 } from 'react-router-dom'
 import AuthInstance from '../modules/auth'
+import Fetch from '../modules/net'
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -17,37 +18,20 @@ class LoginForm extends React.Component {
         }
     }
     onHandleClick(e) {
-        let options = {
+        const { history } = this.props
+        return Fetch({
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Origin': '',
-                'Host': 'localhost'
-            },
-            body: JSON.stringify({
+            url: '/Login',
+            body: {
                 'username': this.state.username,
                 'password': this.state.password,
-            })
-        }
-
-        const { match, location, history } = this.props
-
-        return fetch('/Login', options)
-            .then((response) => {
-                if (response.status === 401) {
-                    AuthInstance.signOut()
-                    throw error
-                }
-                return response
-            })
-            .then(response => response.json())
-            .then(json => {
+            },
+            history: history,
+            cb: (json) => {
                 AuthInstance.authenticate(json.token)
                 history.push('/Home')
-            }).catch(function(error) {
-                alert('Authenticate failed!')
-            })
+            }
+        })
     }
     onHandleChange(event) {
         const target = event.target

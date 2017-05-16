@@ -7,7 +7,7 @@ import {
     withRouter
 } from 'react-router-dom'
 import { Input, Button } from './editor.jsx'
-import AuthInstance from '../modules/auth'
+import Fetch from '../modules/net'
 
 function Header() {
     return (
@@ -74,26 +74,17 @@ class Content extends React.Component {
         }
     }
     onCancel() {
-        const history = this.props.history
+        const { history } = this.props
         history.push('/Home')
     }
     onSubmit() {
-        let options = {
+        const { history } = this.props
+        return Fetch({
             method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Origin': '',
-                'Host': 'localhost',
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            },
-            body: JSON.stringify(this.state)
-        }
-        return fetch('/api/Admin', options)
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
-            })
+            url: '/api/Admin',
+            body: this.state,
+            history: history
+        })
     }
     handleChange(e) {
         const target = e.target

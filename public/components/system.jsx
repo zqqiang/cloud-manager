@@ -6,7 +6,7 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
-import AuthInstance from '../modules/auth'
+import Fetch from '../modules/net'
 
 function Header() {
     return (
@@ -43,60 +43,24 @@ class Content extends React.Component {
         })
     }
     onHandleSubmit(event) {
-        let options = {
+        const { history } = this.props
+        return Fetch({
             method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Origin': '',
-                'Host': 'localhost',
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            },
-            body: JSON.stringify(this.state)
-        }
-        return fetch('/api/System', options)
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
-            })
+            url: '/api/System',
+            body: this.state,
+            history: history
+        })
     }
     componentDidMount() {
-        let options = {
+        const { history } = this.props
+        return Fetch({
             method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Origin': '',
-                'Host': 'localhost',
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            },
-        }
-
-        const { match, location, history } = this.props
-
-        return fetch('/api/System', options)
-            .then((response) => {
-                if (response.status !== 200) {
-                    var error = new Error(response.statusText)
-                    error.response = response
-                    throw error
-                }
-                return response
-            })
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
+            url: '/api/System',
+            history: history,
+            cb: (json) => {
                 this.setState(json.result)
-            })
-            .catch((error) => {
-                let status = error.response.status
-                if (status === 401) {
-                    AuthInstance.signOut()
-                    history.push('/')
-                } else {
-                    console.log(error)
-                }
-            })
+            }
+        })
     }
     render() {
         return (

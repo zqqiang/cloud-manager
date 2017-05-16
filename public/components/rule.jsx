@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 import { observable, action, autorun } from 'mobx'
 import { observer } from 'mobx-react'
-import AuthInstance from '../modules/auth'
+import Fetch from '../modules/net'
 
 var S = require('string');
 var _ = require('lodash');
@@ -17,26 +17,15 @@ let ruleStore = observable({
     rules: [],
 });
 
-ruleStore.updateRules = action(function update() {
-    let options = {
+ruleStore.updateRules = action(function update(history) {
+    return Fetch({
         method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Origin': '',
-            'Host': 'localhost',
-            'Authorization': 'Bearer ' + AuthInstance.getToken()
-        },
-    }
-    return fetch('/api/Rule', options)
-        .then(response => response.json())
-        .then(json => {
+        url: '/api/Rule',
+        history: history,
+        cb: (json) => {
             ruleStore.rules = json.result
-        })
-});
-
-autorun(function() {
-
+        }
+    })
 });
 
 function TableHeader() {
@@ -88,22 +77,13 @@ class RuleTableTr extends React.Component {
         super(props)
     }
     onHandleClick(event) {
-        let options = {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Origin': '',
-                'Host': 'localhost',
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            },
-        }
+        const { history } = this.props
         let url = '/api/Rule?key=' + this.props.row.fgtIpSn
-        return fetch(url, options)
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
-            })
+        return Fetch({
+            method: 'DELETE',
+            url: url,
+            history: history
+        })
     }
     render() {
         let location = {
@@ -126,10 +106,12 @@ class RuleTableTr extends React.Component {
     }
 }
 
+const RuleTableTrWithRouter = withRouter(RuleTableTr)
+
 function RuleTable({ data }) {
     let rows = [];
     data.forEach((row) => {
-        rows.push(<RuleTableTr row={row} key={row.fgtIpSn}/>)
+        rows.push(<RuleTableTrWithRouter row={row} key={row.fgtIpSn}/>)
     })
     return (
         <table className="table table-bordered">
@@ -145,7 +127,8 @@ function RuleTable({ data }) {
 class BoxBody extends React.Component {
     constructor(props) {
         super(props)
-        ruleStore.updateRules()
+        const { history } = this.props
+        ruleStore.updateRules(history)
     }
     render() {
         return (
@@ -155,6 +138,8 @@ class BoxBody extends React.Component {
         )
     }
 }
+
+const BoxBodyWithRouter = withRouter(BoxBody)
 
 function BoxFooter() {
     return (
@@ -177,7 +162,7 @@ function TableContent() {
                 <div className="col-md-12">
                     <div className="box">
                         <BoxHeader />
-                        <BoxBody />
+                        <BoxBodyWithRouter />
                         <BoxFooter />
                     </div>
                 </div>
@@ -525,7 +510,7 @@ class FortiManager extends React.Component {
     }
 }
 
-const CancelButton = withRouter(({ history }) => {
+const CancelButton = withRouter((history) => {
     return ( 
         <button 
             type = "submit"
@@ -536,7 +521,7 @@ const CancelButton = withRouter(({ history }) => {
                 }
             } 
         >
-            Cancel 
+            Cancel
         </button>
     )
 })
@@ -551,7 +536,7 @@ class FormBody extends React.Component {
 
         let url = '';
         let method = '';
-        
+
         if (key) {
             url = '/api/Rule?key=' + key;
             method = 'PUT';
@@ -560,26 +545,16 @@ class FormBody extends React.Component {
             method = 'POST';
         }
 
-        let options = {
+        const { history } = this.props
+        return Fetch({
             method: method,
-            headers: {
-                'Accept': 'application\/json',
-                'Content-Type': 'application\/json',
-                'Origin': '',
-                'Host': 'localhost',
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            },
-            body: JSON.stringify(this.selfState)
-        }
-
-        fetch(url, options)
-            .then(response => response.json())
-            .then(json => {
-                console.log(json)
-            })
-
-        const { match, location, history } = this.props
-        history.push('/Home/Rule')
+            url: url,
+            body: this.selfState,
+            history: history,
+            cb: (json) => {
+                history.push('/Home/Rule')
+            }
+        })
     }
     render() {
         // #/Home/Rule/xxxx

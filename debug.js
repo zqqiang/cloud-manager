@@ -1,4 +1,5 @@
 const net = require('net');
+var _ = require('lodash');
 
 let datas = [{
     "id": 1,
@@ -112,7 +113,9 @@ const server = net.createServer((c) => {
                 message: "ok",
             }
         } else if (json.url === '/rules' && json.method === 'delete') {
-            delete datas[json.rule.id - 1]
+            datas = _.filter(datas, function(o) {
+                return (o.id != json.rule['id'])
+            })
             payload = {
                 code: 0,
                 message: "ok",

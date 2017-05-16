@@ -83,7 +83,10 @@ class RuleTableTr extends React.Component {
         return Fetch({
             method: 'DELETE',
             url: url,
-            history: history
+            history: history,
+            cb: (json) => {
+                history.push('/Home/Rule')
+            }
         })
     }
     render() {
@@ -100,7 +103,7 @@ class RuleTableTr extends React.Component {
                     <Link to={location}><i className="fa fa-pencil fa-lg" aria-hidden="true"></i></Link>
                 </td>
                 <td>
-                    <a><i className="fa fa-trash fa-lg" aria-hidden="true" onClick={this.onHandleClick.bind(this)}></i></a>
+                    <Link to={location}><i className="fa fa-trash fa-lg" aria-hidden="true" onClick={this.onHandleClick.bind(this)}></i></Link>
                 </td>
             </tr>
         )
@@ -520,13 +523,24 @@ const selectRowProp = {
 class InterfaceTable extends React.Component {
     constructor(props) {
         super(props)
+        this.onAfterInsertRow = this.onAfterInsertRow.bind(this)
+        this.insertOptions = {
+            afterInsertRow: this.onAfterInsertRow
+        }
+    }
+    onAfterInsertRow(row) {
+        if (!this.props.appState.interfaces) {
+            this.props.appState.interfaces = []
+        }
+        this.props.appState.interfaces.push(row)
     }
     render() {
         return (
             <BootstrapTable 
-                data={ this.props.interfaces } 
+                data={ this.props.appState.interfaces } 
                 cellEdit={ cellEditProp } 
                 insertRow={ true } 
+                options={ this.insertOptions } 
                 deleteRow={ true } 
                 selectRow={ selectRowProp } 
             >
@@ -590,7 +604,7 @@ class FormBody extends React.Component {
                     <div className="hr-line-dashed"></div>
                     <div>
                         <p className="lead">Interface</p>
-                        <InterfaceTable interfaces={this.selfState.interfaces} />
+                        <InterfaceTable appState={this.selfState} />
                     </div>
                     <div className="hr-line-dashed"></div>
                     <div>

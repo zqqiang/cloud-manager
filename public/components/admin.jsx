@@ -7,6 +7,7 @@ import {
     withRouter
 } from 'react-router-dom'
 import { Input, Button } from './editor.jsx'
+import AuthInstance from './auth.jsx'
 
 function Header() {
     return (
@@ -83,11 +84,12 @@ class Content extends React.Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Origin': '',
-                'Host': 'localhost'
+                'Host': 'localhost',
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
             body: JSON.stringify(this.state)
         }
-        return fetch('/Admin', options)
+        return fetch('/api/Admin', options)
             .then(response => response.json())
             .then(json => {
                 console.log(json)

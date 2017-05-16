@@ -6,7 +6,7 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
-import Auth from '../auth'
+import AuthInstance from './auth.jsx'
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -36,18 +36,18 @@ class LoginForm extends React.Component {
         return fetch('/Login', options)
             .then((response) => {
                 if (response.status === 401) {
+                    AuthInstance.signOut()
                     throw error
                 }
                 return response
             })
             .then(response => response.json())
             .then(json => {
-                Auth.authenticate(json)
+                AuthInstance.authenticate(json.token)
                 history.push('/Home')
             }).catch(function(error) {
                 alert('Authenticate failed!')
             })
-
     }
     onHandleChange(event) {
         const target = event.target

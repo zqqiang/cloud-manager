@@ -1,4 +1,5 @@
 import React from 'react'
+import AuthInstance from './auth.jsx'
 
 const download = require('downloadjs')
 
@@ -30,10 +31,11 @@ class Content extends React.Component {
                 'Accept': 'text/plain',
                 'Content-Type': 'text/plain',
                 'Origin': '',
-                'Host': 'localhost'
+                'Host': 'localhost',
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
         }
-        return fetch('Backup', options)
+        return fetch('/api/Backup', options)
             .then(response => response.blob())
             .then(blob => {
                 download(blob, 'backup.conf', 'text/plain')
@@ -57,11 +59,12 @@ class Content extends React.Component {
                 'Content-Type': 'text/plain',
                 'Origin': '',
                 'Host': 'localhost',
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
             body: data
         }
 
-        return fetch('Restore', options)
+        return fetch('/api/Restore', options)
             .then(response => response.json())
             .then(json => {
                 console.log(json)

@@ -13,7 +13,7 @@ import Sidebar from './sidebar.jsx'
 var Footer = require('./footer.jsx');
 import Admin from './admin.jsx'
 import Backup from './backup.jsx'
-import Auth from '../auth'
+import AuthInstance from './auth.jsx'
 
 function Dashboard() {
     return (
@@ -77,7 +77,7 @@ function Content() {
 
 class Home extends React.Component {
     render() {
-        if (Auth.isAuthenticated) {
+        if (AuthInstance.isAuthed()) {
             return (
                 <div>
                     <Header />

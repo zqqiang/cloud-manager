@@ -1,4 +1,5 @@
 import React from 'react';
+import AuthInstance from './auth.jsx'
 
 function Header() {
     return (
@@ -41,11 +42,12 @@ class Content extends React.Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Origin': '',
-                'Host': 'localhost'
+                'Host': 'localhost',
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
             body: JSON.stringify(this.state)
         }
-        return fetch('System', options)
+        return fetch('/api/System', options)
             .then(response => response.json())
             .then(json => {
                 console.log(json)
@@ -58,10 +60,11 @@ class Content extends React.Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Origin': '',
-                'Host': 'localhost'
+                'Host': 'localhost',
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
         }
-        return fetch('System', options)
+        return fetch('/api/System', options)
             .then(response => response.json())
             .then(json => {
                 console.log(json)

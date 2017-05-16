@@ -30,14 +30,12 @@ let Admin = require('./routes/admin');
 const Checker = require('./auth/checker');
 
 app.use('/Login', Login);
-
-app.use('/Rule', Checker);
-
-app.use('/Rule', Rule);
-app.use('/System', SystemSetting);
-app.use('/Backup', Backup);
-app.use('/Restore', Restore);
-app.use('/Admin', Admin);
+app.use('/api', Checker);
+app.use('/api/Rule', Rule);
+app.use('/api/System', SystemSetting);
+app.use('/api/Backup', Backup);
+app.use('/api/Restore', Restore);
+app.use('/api/Admin', Admin);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

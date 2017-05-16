@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom'
 import { observable, action, autorun } from 'mobx'
 import { observer } from 'mobx-react'
+import AuthInstance from './auth.jsx'
+
 var S = require('string');
 var _ = require('lodash');
 
@@ -22,10 +24,11 @@ ruleStore.updateRules = action(function update() {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Origin': '',
-            'Host': 'localhost'
+            'Host': 'localhost',
+            'Authorization': 'Bearer ' + AuthInstance.getToken()
         },
     }
-    return fetch('Rule', options)
+    return fetch('/api/Rule', options)
         .then(response => response.json())
         .then(json => {
             ruleStore.rules = json.result
@@ -91,10 +94,11 @@ class RuleTableTr extends React.Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Origin': '',
-                'Host': 'localhost'
+                'Host': 'localhost',
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
         }
-        let url = '/Rule?key=' + this.props.row.fgtIpSn
+        let url = '/api/Rule?key=' + this.props.row.fgtIpSn
         return fetch(url, options)
             .then(response => response.json())
             .then(json => {
@@ -549,10 +553,10 @@ class FormBody extends React.Component {
         let method = '';
         
         if (key) {
-            url = '/Rule?key=' + key;
+            url = '/api/Rule?key=' + key;
             method = 'PUT';
         } else {
-            url = '/Rule';
+            url = '/api/Rule';
             method = 'POST';
         }
 
@@ -562,7 +566,8 @@ class FormBody extends React.Component {
                 'Accept': 'application\/json',
                 'Content-Type': 'application\/json',
                 'Origin': '',
-                'Host': 'localhost'
+                'Host': 'localhost',
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
             body: JSON.stringify(this.selfState)
         }

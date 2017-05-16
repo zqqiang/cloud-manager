@@ -6,6 +6,7 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
+import AuthInstance from './auth.jsx'
 
 var S = require('string');
 
@@ -24,7 +25,7 @@ class MainHeaderNavbar extends React.Component {
         super(props)
     }
     onHandleClick(event) {
-
+        AuthInstance.signOut()
     }
     render() {
         return (
@@ -39,7 +40,11 @@ class MainHeaderNavbar extends React.Component {
                         </li>
                         <li>
                             <Link to="/" data-toggle="control-sidebar">
-                                <i className="fa fa-sign-out fa-2" aria-hidden="true" onClick={this.onHandleClick.bind(this)}></i>
+                                <i 
+                                    className="fa fa-sign-out fa-2" aria-hidden="true" 
+                                    onClick={this.onHandleClick.bind(this)}
+                                >
+                                </i>
                             </Link>
                         </li>
                     </ul>

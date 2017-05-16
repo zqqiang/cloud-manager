@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     let payload = {
-        method: "post",
+        method: "put",
         url: "/rules",
         rule: req.body
     }

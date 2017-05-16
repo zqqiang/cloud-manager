@@ -340,8 +340,9 @@ class Switch extends React.Component {
     constructor(props) {
         super(props)
     }
-    onChange(event) {
-        this.props.appState.purgeVirtualSwitch = event.target.value
+    onClick() {
+        let state = this.props.appState
+        state.purgeVirtualSwitch = !state.purgeVirtualSwitch
     }
     render() {
         return (
@@ -349,7 +350,7 @@ class Switch extends React.Component {
                 <div className="col-sm-offset-3 col-sm-9">
                     <div className="checkbox">
                         <label>
-                            <input type="checkbox" checked={this.props.appState.purgeVirtualSwitch} onChange={this.onChange.bind(this)} /> Purge
+                            <input type="checkbox" checked={this.props.appState.purgeVirtualSwitch} onClick={this.onClick.bind(this)} /> Purge
                         </label>
                     </div>
                 </div>
@@ -561,6 +562,185 @@ class InterfaceTable extends React.Component {
 }
 
 const CancelButtonWithRouter = withRouter(CancelButton)
+@observer
+class Interface extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleToggleClick = this.handleToggleClick.bind(this)
+        let hasTable = this.props.appState.interfaces && this.props.appState.interfaces.length != 0;
+        this.state = {
+            showTable: hasTable,
+            isEdit: hasTable
+        }
+    }
+    handleToggleClick(e) {
+        let hasTable = this.props.appState.interfaces && this.props.appState.interfaces.length != 0;
+        this.setState(prevState => ({
+            showTable: !prevState.showTable,
+            isEdit: hasTable
+        }))
+    }
+    render() {
+        if (this.state.showTable) {
+            return (
+                <div>
+                    <p className="lead">Interface <i className="fa fa-expand" aria-hidden="true" onClick={this.handleToggleClick} ></i></p>
+                    <InterfaceTable appState={this.props.appState} />
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <p className="lead">
+                        Interface <i className="fa fa-compress" aria-hidden="true" onClick={this.handleToggleClick} >
+                        </i>{ this.state.isEdit && <i className="fa fa-bars" aria-hidden="true"></i> }
+                    </p>
+                </div>
+            )
+        }
+    }
+}
+@observer
+class Routing extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleToggleClick = this.handleToggleClick.bind(this)
+        const state = this.props.appState
+        let hasContent = state.routeId || state.routeGw || state.routeDst || state.routeIntf
+        this.state = {
+            showContent: hasContent,
+            isEdit: hasContent
+        }
+    }
+    handleToggleClick(e) {
+        const state = this.props.appState
+        let hasContent = state.routeId || state.routeGw || state.routeDst || state.routeIntf
+        this.setState(prevState => ({
+            showContent: !prevState.showContent,
+            isEdit: hasContent
+        }))
+    }
+    render() {
+        if (this.state.showContent) {
+            return (
+                <div>
+                    <p className="lead">Routing <i className="fa fa-expand" aria-hidden="true" onClick={this.handleToggleClick} ></i></p>
+                    <RoutingId appState={this.props.appState} />
+                    <RoutingDevice appState={this.props.appState} />
+                    <RoutingDest appState={this.props.appState} />
+                    <RoutingGateway appState={this.props.appState} />
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <p className="lead">
+                        Routing <i className="fa fa-compress" aria-hidden="true" onClick={this.handleToggleClick} >
+                        </i>{ this.state.isEdit && <i className="fa fa-bars" aria-hidden="true"></i> }
+                    </p>
+                </div>
+            )
+        }
+    }
+}
+@observer
+class VirtualSwitch extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleToggleClick = this.handleToggleClick.bind(this)
+        const state = this.props.appState
+        let hasContent = state.purgeVirtualSwitch
+        this.state = {
+            showContent: hasContent,
+            isEdit: hasContent
+        }
+    }
+    handleToggleClick(e) {
+        const state = this.props.appState
+        let hasContent = state.purgeVirtualSwitch
+        this.setState(prevState => ({
+            showContent: !prevState.showContent,
+            isEdit: hasContent
+        }))
+    }
+    render() {
+        if (this.state.showContent) {
+            return (
+                <div>
+                    <p className="lead">Virtual Switch <i className="fa fa-expand" aria-hidden="true" onClick={this.handleToggleClick} ></i></p>
+                    <Switch appState={this.props.appState} />
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <p className="lead">
+                        Virtual Switch <i className="fa fa-compress" aria-hidden="true" onClick={this.handleToggleClick} >
+                        </i>{ this.state.isEdit && <i className="fa fa-bars" aria-hidden="true"></i> }
+                    </p>
+                </div>
+            )
+        }
+    }
+}
+
+@observer
+class HAConfig extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleToggleClick = this.handleToggleClick.bind(this)
+        const state = this.props.appState
+        let hasContent = state.haGroupId ||
+            state.haMode ||
+            state.haPriority ||
+            state.haPrimary ||
+            state.haGroupName ||
+            state.haGroupPasswd ||
+            state.haMgmtIntf ||
+            state.haMgmtIntfGw ||
+            state.haMgmtIntfGw6
+        this.state = {
+            showContent: hasContent,
+            isEdit: hasContent
+        }
+    }
+    handleToggleClick(e) {
+        const state = this.props.appState
+        let hasContent = state.haGroupId ||
+            state.haMode ||
+            state.haPriority ||
+            state.haPrimary ||
+            state.haGroupName ||
+            state.haGroupPasswd ||
+            state.haMgmtIntf ||
+            state.haMgmtIntfGw ||
+            state.haMgmtIntfGw6
+        this.setState(prevState => ({
+            showContent: !prevState.showContent,
+            isEdit: hasContent
+        }))
+    }
+    render() {
+        if (this.state.showContent) {
+            return (
+                <div>
+                    <p className="lead">HA <i className="fa fa-expand" aria-hidden="true" onClick={this.handleToggleClick} ></i></p>
+                    <HA appState={this.props.appState} />
+                    <HAMgmt appState={this.props.appState} />
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <p className="lead">
+                        HA <i className="fa fa-compress" aria-hidden="true" onClick={this.handleToggleClick} >
+                        </i>{ this.state.isEdit && <i className="fa fa-bars" aria-hidden="true"></i> }
+                    </p>
+                </div>
+            )
+        }
+    }
+}
 
 class FormBody extends React.Component {
     constructor(props) {
@@ -610,33 +790,13 @@ class FormBody extends React.Component {
                 <div className="box-body">
                     <Condition appState={this.selfState} />
                     <div className="hr-line-dashed"></div>
-                    <div>
-                        <p className="lead">Interface</p>
-                        <InterfaceTable appState={this.selfState} />
-                    </div>
+                    <Interface appState={this.selfState} />
                     <div className="hr-line-dashed"></div>
-                    <div>
-                        <p className="lead">Routing</p>
-                        <RoutingId appState={this.selfState} />
-                        <RoutingDevice appState={this.selfState} />
-                        <RoutingDest appState={this.selfState} />
-                        <RoutingGateway appState={this.selfState} />
-                    </div>
+                    <Routing appState={this.selfState} />
                     <div className="hr-line-dashed"></div>
-                    <div>
-                        <p className="lead">Virtual Switch</p>
-                        <Switch appState={this.selfState} />
-                    </div>
+                    <VirtualSwitch appState={this.selfState} />
                     <div className="hr-line-dashed"></div>
-                    <div>
-                        <p className="lead">HA</p>
-                        <HA appState={this.selfState} />
-                    </div>
-                    <div className="hr-line-dashed"></div>
-                    <div>
-                        <p className="lead">HA Managment</p>
-                        <HAMgmt appState={this.selfState} />
-                    </div>
+                    <HAConfig appState={this.selfState} />
                     <div className="hr-line-dashed"></div>
                     <div>
                         <p className="lead">FortiManager</p>

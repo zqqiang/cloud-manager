@@ -524,8 +524,10 @@ class InterfaceTable extends React.Component {
     constructor(props) {
         super(props)
         this.onAfterInsertRow = this.onAfterInsertRow.bind(this)
-        this.insertOptions = {
-            afterInsertRow: this.onAfterInsertRow
+        this.onAfterDeleteRow = this.onAfterDeleteRow.bind(this)
+        this.options = {
+            afterInsertRow: this.onAfterInsertRow,
+            afterDeleteRow: this.onAfterDeleteRow,
         }
     }
     onAfterInsertRow(row) {
@@ -534,13 +536,19 @@ class InterfaceTable extends React.Component {
         }
         this.props.appState.interfaces.push(row)
     }
+    onAfterDeleteRow(rowKeys) {
+        this.props.appState.interfaces = _.filter(this.props.appState.interfaces, function(o) {
+            return _.indexOf(rowKeys, o.id) < 0
+        })
+        console.log(this.props.appState.interfaces)
+    }
     render() {
         return (
             <BootstrapTable 
                 data={ this.props.appState.interfaces } 
                 cellEdit={ cellEditProp } 
                 insertRow={ true } 
-                options={ this.insertOptions } 
+                options={ this.options } 
                 deleteRow={ true } 
                 selectRow={ selectRowProp } 
             >

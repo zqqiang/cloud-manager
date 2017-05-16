@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/zqqiang/cloud-manager#readme",
   "dependencies": {
+    "admin-lte": "^2.3.11",
     "body-parser": "^1.17.1",
     "bootstrap": "^3.3.7",
     "downloadjs": "^1.4.7",

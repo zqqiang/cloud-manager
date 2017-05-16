@@ -78,7 +78,7 @@ class RuleTableTr extends React.Component {
     }
     onHandleClick(event) {
         const { history } = this.props
-        let url = '/api/Rule?key=' + this.props.row.fgtIpSn
+        let url = '/api/Rule?key=' + this.props.row.id
         return Fetch({
             method: 'DELETE',
             url: url,
@@ -87,11 +87,11 @@ class RuleTableTr extends React.Component {
     }
     render() {
         let location = {
-            pathname: '/Home/Rule/' + this.props.row.fgtIpSn
+            pathname: '/Home/Rule/' + this.props.row.id
         }
         return (
             <tr>
-                <td></td>
+                <td>{this.props.row.id}</td>
                 <td>{this.props.row.fgtIpSn}</td>
                 <td>{this.props.row.fmgSn}</td>
                 <td>{this.props.row.fmgIp}</td>
@@ -111,7 +111,7 @@ const RuleTableTrWithRouter = withRouter(RuleTableTr)
 function RuleTable({ data }) {
     let rows = [];
     data.forEach((row) => {
-        rows.push(<RuleTableTrWithRouter row={row} key={row.fgtIpSn}/>)
+        rows.push(<RuleTableTrWithRouter row={row} key={row.id}/>)
     })
     return (
         <table className="table table-bordered">
@@ -510,7 +510,7 @@ class FortiManager extends React.Component {
     }
 }
 
-const CancelButton = withRouter((history) => {
+const CancelButton = withRouter(({history}) => {
     return ( 
         <button 
             type = "submit"
@@ -537,7 +537,7 @@ class FormBody extends React.Component {
         let url = '';
         let method = '';
 
-        if (key) {
+        if (parseInt(key)) {
             url = '/api/Rule?key=' + key;
             method = 'PUT';
         } else {
@@ -562,10 +562,12 @@ class FormBody extends React.Component {
 
         if (key) {
             let index = _.findIndex(ruleStore.rules, function(o) {
-                return o.fgtIpSn === key;
+                return o.id == key;
             })
             if (index >= 0) {
                 this.selfState = ruleStore.rules[index];
+            } else {
+                console.log('findIndex failed, index', index)
             }
         }
 

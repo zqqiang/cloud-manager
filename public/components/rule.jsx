@@ -9,6 +9,7 @@ import {
 import { observable, action, autorun } from 'mobx'
 import { observer } from 'mobx-react'
 import Fetch from '../modules/net'
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
 var S = require('string');
 var _ = require('lodash');
@@ -203,30 +204,6 @@ function FormTitle() {
         </div>
     )
 }
-
-/*
-Update deployment rule definition:
-
-  RULE := <CONDITION> [INTERFACE] [ROUTING] [VIRTUAL-SWITCH] [HA] <FMG>
-  CONDITION := <fgt-sn> | <fgt-ip>
-  INTERFACE := Interface: <device> <ip&mask>;
-  ROUTING := Router-Static: <id> <device> <dst> <gateway>;
-  VIRTUAL-SWITCH := Virtual-Switch: purge;
-  HA := HA: <group-name> <password> <group-id> <ha-mode> <ha-dev> <priority> [ <ha-mgmt-interface> <ha-mgmt-interface-gateway> [ha-mgmt-interface-gateway6] ];
-  FMG := FMG: <fmg-ip> <fmg-sn>;
-
-Example:
-  192.168.0.2 Interface: wan1 192.168.0.2/24; Router-Static: 1 wan1 0.0.0.0/0 192.168.0.1; Virtual-Switch: purge; HA: Group00001 Password00001 1 a-p internal7 128; FMG: 172.16.95.58 FMG-VM0A11000137
-  
-  # enable HA MGMT INTF with IPv6 GW
-  192.168.0.3 Interface: wan1 192.168.0.3/24; Router-Static: 1 wan1 0.0.0.0/0 192.168.0.1; Virtual-Switch: purge; HA: Group00002 Password00002 1 a-p internal7 64 enable wan2 192.168.0.1 2a06:b501:c675:1::1; FMG: 172.16.95.58 FMG-VM0A11000137
-  
-  # eanble HA MGMT INTF without IPv6 GW
-  192.168.0.4 Interface: wan1 192.168.0.4/24; Router-Static: 1 wan1 0.0.0.0/0 192.168.0.1; Virtual-Switch: purge; HA: Group00002 Password00002 1 a-p internal7 64 enable wan2 192.168.0.1; FMG: 172.16.95.58 FMG-VM0A11000137
-  
-  # disable HA MGMT INTF
-  192.168.0.5 Interface: wan1 192.168.0.5/24; Router-Static: 1 wan1 0.0.0.0/0 192.168.0.1; Virtual-Switch: purge; HA: Group00003 Password00003 1 a-p internal7 128 disable; FMG: 172.16.95.58 FMG-VM0A11000137
-*/
 
 function InputText({ options, onChange, name, value }) {
     return (
@@ -510,21 +487,58 @@ class FortiManager extends React.Component {
     }
 }
 
-const CancelButton = withRouter(({history}) => {
-    return ( 
-        <button 
-            type = "submit"
-            className = "btn btn-default"
-            onClick = {
-                () => {
-                    history.push('/Home/Rule')
-                }
-            } 
-        >
-            Cancel
-        </button>
-    )
-})
+class CancelButton extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleClick = this.handleClick.bind(this)
+    }
+    handleClick() {
+        const { history } = this.props
+        history.push('/Home/Rule')
+    }
+    render() {
+        return (
+            <button 
+                type = "submit"
+                className = "btn btn-default"
+                onClick = {this.handleClick}
+            >
+                Cancel
+            </button>
+        )
+    }
+}
+
+const cellEditProp = {
+    mode: 'click'
+};
+
+const selectRowProp = {
+    mode: 'checkbox'
+};
+
+class InterfaceTable extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        return (
+            <BootstrapTable 
+                data={ this.props.interfaces } 
+                cellEdit={ cellEditProp } 
+                insertRow={ true } 
+                deleteRow={ true } 
+                selectRow={ selectRowProp } 
+            >
+                <TableHeaderColumn dataField='id' isKey>Interface ID</TableHeaderColumn>
+                <TableHeaderColumn dataField='intfName'>Device</TableHeaderColumn>
+                <TableHeaderColumn dataField='intfIpMask'>IP & Mask</TableHeaderColumn>
+            </BootstrapTable>
+        )
+    }
+}
+
+const CancelButtonWithRouter = withRouter(CancelButton)
 
 class FormBody extends React.Component {
     constructor(props) {
@@ -566,8 +580,6 @@ class FormBody extends React.Component {
             })
             if (index >= 0) {
                 this.selfState = ruleStore.rules[index];
-            } else {
-                console.log('findIndex failed, index', index)
             }
         }
 
@@ -576,24 +588,41 @@ class FormBody extends React.Component {
                 <div className="box-body">
                     <Condition appState={this.selfState} />
                     <div className="hr-line-dashed"></div>
-                    <InterfaceDevice appState={this.selfState} />
-                    <InterfaceIpMask appState={this.selfState} />
+                    <div>
+                        <p className="lead">Interface</p>
+                        <InterfaceTable interfaces={this.selfState.interfaces} />
+                    </div>
                     <div className="hr-line-dashed"></div>
-                    <RoutingId appState={this.selfState} />
-                    <RoutingDevice appState={this.selfState} />
-                    <RoutingDest appState={this.selfState} />
-                    <RoutingGateway appState={this.selfState} />
+                    <div>
+                        <p className="lead">Routing</p>
+                        <RoutingId appState={this.selfState} />
+                        <RoutingDevice appState={this.selfState} />
+                        <RoutingDest appState={this.selfState} />
+                        <RoutingGateway appState={this.selfState} />
+                    </div>
                     <div className="hr-line-dashed"></div>
-                    <Switch appState={this.selfState} />
+                    <div>
+                        <p className="lead">Virtual Switch</p>
+                        <Switch appState={this.selfState} />
+                    </div>
                     <div className="hr-line-dashed"></div>
-                    <HA appState={this.selfState} />
+                    <div>
+                        <p className="lead">HA</p>
+                        <HA appState={this.selfState} />
+                    </div>
                     <div className="hr-line-dashed"></div>
-                    <HAMgmt appState={this.selfState} />
+                    <div>
+                        <p className="lead">HA Managment</p>
+                        <HAMgmt appState={this.selfState} />
+                    </div>
                     <div className="hr-line-dashed"></div>
-                    <FortiManager appState={this.selfState} />
+                    <div>
+                        <p className="lead">FortiManager</p>
+                        <FortiManager appState={this.selfState} />
+                    </div>
                 </div>
                 <div className="box-footer">
-                    <CancelButton />
+                    <CancelButtonWithRouter />
                     <button 
                         type="submit" 
                         className="btn btn-primary pull-right" 

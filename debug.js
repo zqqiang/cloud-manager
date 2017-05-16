@@ -5,6 +5,15 @@ let datas = [{
     "fgtIpSn": "FGT60D4613053384",
     "fmgIp": "172.16.95.58",
     "fmgSn": "FMG-VM0A11000137\n",
+    "interfaces": [{
+        "id": 1,
+        "intfName": "wan1",
+        "intfIpMask": "172.16.95.101/255.255.255.0",
+    }, {
+        "id": 2,
+        "intfName": "wan2",
+        "intfIpMask": "172.16.95.102/255.255.255.0",
+    }],
     "haDev": "wan1",
     "haGroupId": 1,
     "haGroupName": "Group00001",
@@ -28,6 +37,15 @@ let datas = [{
     "fgtIpSn": "FGT60D4613053385",
     "fmgIp": "172.16.95.58",
     "fmgSn": "FMG-VM0A11000137\n",
+    "interfaces": [{
+        "id": 1,
+        "intfName": "wan1",
+        "intfIpMask": "172.16.95.101/255.255.255.0",
+    }, {
+        "id": 2,
+        "intfName": "wan2",
+        "intfIpMask": "172.16.95.102/255.255.255.0",
+    }],
     "haDev": "wan1",
     "haGroupId": 1,
     "haGroupName": "Group00001",

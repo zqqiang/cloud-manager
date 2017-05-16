@@ -1,5 +1,5 @@
 import React from 'react'
-import AuthInstance from './auth.jsx'
+import AuthInstance from '../modules/auth'
 
 const download = require('downloadjs')
 

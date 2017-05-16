@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 import { observable, action, autorun } from 'mobx'
 import { observer } from 'mobx-react'
-import AuthInstance from './auth.jsx'
+import AuthInstance from '../modules/auth'
 
 var S = require('string');
 var _ = require('lodash');

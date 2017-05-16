@@ -7,7 +7,7 @@ import {
     withRouter
 } from 'react-router-dom'
 import { Input, Button } from './editor.jsx'
-import AuthInstance from './auth.jsx'
+import AuthInstance from '../modules/auth'
 
 function Header() {
     return (

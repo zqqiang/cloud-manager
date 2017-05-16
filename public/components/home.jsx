@@ -13,7 +13,7 @@ import Sidebar from './sidebar.jsx'
 var Footer = require('./footer.jsx');
 import Admin from './admin.jsx'
 import Backup from './backup.jsx'
-import AuthInstance from './auth.jsx'
+import AuthInstance from '../modules/auth'
 
 function Dashboard() {
     return (

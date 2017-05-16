@@ -6,7 +6,7 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
-import AuthInstance from './auth.jsx'
+import AuthInstance from '../modules/auth'
 
 var S = require('string');
 

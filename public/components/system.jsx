@@ -1,5 +1,12 @@
 import React from 'react';
-import AuthInstance from './auth.jsx'
+import {
+    HashRouter as Router,
+    Route,
+    Link,
+    Redirect,
+    withRouter
+} from 'react-router-dom'
+import AuthInstance from '../modules/auth'
 
 function Header() {
     return (
@@ -64,11 +71,31 @@ class Content extends React.Component {
                 'Authorization': 'Bearer ' + AuthInstance.getToken()
             },
         }
+
+        const { match, location, history } = this.props
+
         return fetch('/api/System', options)
+            .then((response) => {
+                if (response.status !== 200) {
+                    var error = new Error(response.statusText)
+                    error.response = response
+                    throw error
+                }
+                return response
+            })
             .then(response => response.json())
             .then(json => {
                 console.log(json)
                 this.setState(json.result)
+            })
+            .catch((error) => {
+                let status = error.response.status
+                if (status === 401) {
+                    AuthInstance.signOut()
+                    history.push('/')
+                } else {
+                    console.log(error)
+                }
             })
     }
     render() {
@@ -143,11 +170,13 @@ class Content extends React.Component {
     }
 }
 
+const ContentWithRouter = withRouter(Content)
+
 function Form() {
     return (
         <div className="">
             <Header />
-            <Content />
+            <ContentWithRouter />
         </div>
     );
 }

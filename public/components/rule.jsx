@@ -287,6 +287,10 @@ class FormBody extends React.Component {
         super(props)
         this.selfState = {}
         this.handleChange = this.handleChange.bind(this)
+        this.handleClick = this.handleClick.bind(this)
+        this.state = {
+            show: true
+        }
     }
     onHandleSubmit(event) {
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
@@ -326,6 +330,12 @@ class FormBody extends React.Component {
             this.selfState[name] = value
         }
     }
+    handleClick(e) {
+        const target = e.target
+        // this.setState(prevState => {
+        //     show: !prevState.show
+        // })
+    }
     render() {
         // #/Home/Rule/xxxx
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
@@ -356,7 +366,12 @@ class FormBody extends React.Component {
                         <InterfaceTable appState={this.selfState} />
                     </div>
                     <div>
-                        <p className="lead">Routing</p>
+                        <p 
+                            className="lead" 
+                            onClick={this.handleClick} 
+                        >
+                            {this.state.show ? <i className="fa fa-minus-square" aria-hidden="true"></i> : <i className="fa fa-plus-square" aria-hidden="true"></i>} Routing
+                        </p>
                         <Input 
                             name="routeId"
                             label="Routing ID"

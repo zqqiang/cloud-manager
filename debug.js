@@ -7,11 +7,9 @@ let datas = [{
     "fmgIp": "172.16.95.58",
     "fmgSn": "FMG-VM0A11000137\n",
     "interfaces": [{
-        "id": 1,
         "intfName": "wan1",
         "intfIpMask": "172.16.95.101/255.255.255.0",
     }, {
-        "id": 2,
         "intfName": "wan2",
         "intfIpMask": "172.16.95.102/255.255.255.0",
     }],
@@ -39,11 +37,9 @@ let datas = [{
     "fmgIp": "172.16.95.58",
     "fmgSn": "FMG-VM0A11000137\n",
     "interfaces": [{
-        "id": 1,
         "intfName": "wan1",
         "intfIpMask": "172.16.95.101/255.255.255.0",
     }, {
-        "id": 2,
         "intfName": "wan2",
         "intfIpMask": "172.16.95.102/255.255.255.0",
     }],

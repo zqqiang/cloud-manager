@@ -264,9 +264,8 @@ class InterfaceTable extends React.Component {
     }
     onAfterDeleteRow(rowKeys) {
         this.props.appState.interfaces = _.filter(this.props.appState.interfaces, function(o) {
-            return _.indexOf(rowKeys, o.id) < 0
+            return _.indexOf(rowKeys, o.intfName) < 0
         })
-        console.log(this.props.appState.interfaces)
     }
     render() {
         return (
@@ -278,8 +277,7 @@ class InterfaceTable extends React.Component {
                 deleteRow={ true } 
                 selectRow={ selectRowProp } 
             >
-                <TableHeaderColumn dataField='id' isKey>Interface ID</TableHeaderColumn>
-                <TableHeaderColumn dataField='intfName'>Device</TableHeaderColumn>
+                <TableHeaderColumn dataField='intfName' isKey>Device</TableHeaderColumn>
                 <TableHeaderColumn dataField='intfIpMask'>IP & Mask</TableHeaderColumn>
             </BootstrapTable>
         )
@@ -394,15 +392,15 @@ class FormBody extends React.Component {
         const intfInitState = this.selfState.interfaces && this.selfState.interfaces.length != 0
         const routeInitState = this.selfState.routeId || this.selfState.routeDst || this.selfState.routeIntf || this.selfState.routeGw
         const switchInitState = this.selfState.purgeVirtualSwitch
-        const haInitState = this.selfState.haMode || 
-                            this.selfState.haPriority || 
-                            this.selfState.haPrimary || 
-                            this.selfState.haGroupName ||
-                            this.selfState.haGroupPasswd ||
-                            this.selfState.haGroupId ||
-                            this.selfState.haMgmtIntf ||
-                            this.selfState.haMgmtIntfGw ||
-                            this.selfState.haMgmtIntfGw6
+        const haInitState = this.selfState.haMode ||
+            this.selfState.haPriority ||
+            this.selfState.haPrimary ||
+            this.selfState.haGroupName ||
+            this.selfState.haGroupPasswd ||
+            this.selfState.haGroupId ||
+            this.selfState.haMgmtIntf ||
+            this.selfState.haMgmtIntfGw ||
+            this.selfState.haMgmtIntfGw6
 
         return (
             <div className="form-horizontal">

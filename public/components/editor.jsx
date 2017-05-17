@@ -27,6 +27,34 @@ export class Input extends React.Component {
     }
 }
 
+export class Checkbox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleChange = this.handleChange.bind(this)
+    }
+    handleChange(e) {
+        this.props.onChange(e)
+    }
+    render() {
+        return (
+            <div className="form-group">
+                <div className={this.props.labelOffset + " " + this.props.editorClass}>
+                    <div className="checkbox">
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                name={this.props.name} 
+                                checked={this.props.checked}
+                                onChange={this.handleChange}
+                            /> {this.props.label}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
 export class Button extends React.Component {
     constructor(props) {
         super(props)

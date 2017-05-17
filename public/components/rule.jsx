@@ -10,7 +10,7 @@ import { observable, action, autorun } from 'mobx'
 import { observer } from 'mobx-react'
 import Fetch from '../modules/net'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { Input, Checkbox } from './editor.jsx'
+import { Input, Checkbox, Select } from './editor.jsx'
 
 var S = require('string');
 var _ = require('lodash');
@@ -495,14 +495,14 @@ class FormBody extends React.Component {
                             onChange={this.handleChange}
                             placeholder="Enter Group ID"
                         />
-                        <Input 
+                        <Select 
                             name="haMode"
                             label="HA Mode"
                             labelClass="col-sm-3"
                             editorClass="col-sm-9"
                             value={this.selfState.haMode}
                             onChange={this.handleChange}
-                            placeholder="Enter HA Mode"
+                            options={['a-p', 'a-a']}
                         />
                         <Input 
                             name="haPrimary"

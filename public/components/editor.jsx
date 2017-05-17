@@ -71,3 +71,33 @@ export class Button extends React.Component {
         )
     }
 }
+
+export class Select extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleChange = this.handleChange.bind(this)
+    }
+    handleChange(e) {
+        this.props.onChange(e)
+    }
+    render() {
+        const options = this.props.options.map((option, index) =>
+            <option key={index}>{option}</option>
+        )
+        return (
+            <div className="form-group">
+                <label className={this.props.labelClass + " control-label"}>{this.props.label}</label>
+                <div className={this.props.editorClass}>
+                    <select 
+                        className={this.props.editorClass + " form-control"}
+                        name={this.props.name}
+                        value={this.props.value}
+                        onChange={this.handleChange}
+                    >
+                        {options}
+                    </select>
+                </div>
+            </div>
+        )
+    }
+}

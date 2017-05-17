@@ -291,7 +291,7 @@ const CancelButtonWithRouter = withRouter(CancelButton)
 class FoldForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { show: true }
+        this.state = { show: this.props.initState }
         this.handleClick = this.handleClick.bind(this)
     }
     handleClick(e) {
@@ -391,6 +391,19 @@ class FormBody extends React.Component {
             }
         }
 
+        const intfInitState = this.selfState.interfaces && this.selfState.interfaces.length != 0
+        const routeInitState = this.selfState.routeId || this.selfState.routeDst || this.selfState.routeIntf || this.selfState.routeGw
+        const switchInitState = this.selfState.purgeVirtualSwitch
+        const haInitState = this.selfState.haMode || 
+                            this.selfState.haPriority || 
+                            this.selfState.haPrimary || 
+                            this.selfState.haGroupName ||
+                            this.selfState.haGroupPasswd ||
+                            this.selfState.haGroupId ||
+                            this.selfState.haMgmtIntf ||
+                            this.selfState.haMgmtIntfGw ||
+                            this.selfState.haMgmtIntfGw6
+
         return (
             <div className="form-horizontal">
                 <div className="box-body">
@@ -403,10 +416,10 @@ class FormBody extends React.Component {
                             onChange={this.handleChange}
                             placeholder="Enter FortiGate SN or IP"
                     />
-                    <FoldForm header="Interface" >
+                    <FoldForm header="Interface" initState={intfInitState} >
                         <InterfaceTable appState={this.selfState} />
                     </FoldForm>
-                    <FoldForm header="Routing" >
+                    <FoldForm header="Routing" initState={routeInitState}>
                         <Input 
                             name="routeId"
                             label="Routing ID"
@@ -444,7 +457,7 @@ class FormBody extends React.Component {
                             placeholder="Enter Routing Gateway"
                         />
                     </FoldForm>
-                    <FoldForm header="Virtual Switch" >
+                    <FoldForm header="Virtual Switch" initState={switchInitState} >
                         <Checkbox 
                             name="purgeVirtualSwitch"
                             label="Virtual Switch"
@@ -454,7 +467,7 @@ class FormBody extends React.Component {
                             onChange={this.handleChange}
                         />
                     </FoldForm>
-                    <FoldForm header="HA" >
+                    <FoldForm header="HA" initState={haInitState} >
                         <Input 
                             name="haGroupName"
                             label="Group Name"

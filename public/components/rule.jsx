@@ -483,7 +483,7 @@ class FormBody extends React.Component {
                             placeholder="Enter Group ID"
                         />
                         <Input 
-                            name="haPrimary"
+                            name="haMode"
                             label="HA Mode"
                             labelClass="col-sm-3"
                             editorClass="col-sm-9"

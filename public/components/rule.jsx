@@ -19,6 +19,10 @@ let ruleStore = observable({
     rules: [],
 });
 
+autorun(function() {
+    console.log('store => ', ruleStore)
+});
+
 ruleStore.updateRules = action(function update(history) {
     return Fetch({
         method: 'GET',
@@ -248,6 +252,9 @@ class InterfaceTable extends React.Component {
             afterInsertRow: this.onAfterInsertRow,
             afterDeleteRow: this.onAfterDeleteRow,
         }
+        if (!this.props.appState.interfaces) {
+            this.props.appState.interfaces = []
+        }
     }
     onAfterInsertRow(row) {
         if (!this.props.appState.interfaces) {
@@ -280,6 +287,38 @@ class InterfaceTable extends React.Component {
 }
 
 const CancelButtonWithRouter = withRouter(CancelButton)
+
+class FoldForm extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = { show: true }
+        this.handleClick = this.handleClick.bind(this)
+    }
+    handleClick(e) {
+        const target = e.target
+        this.setState(prevState => ({
+            show: !prevState.show
+        }))
+    }
+    render() {
+        const Minus = <i className="fa fa-minus-square" aria-hidden="true"></i>
+        const Plus = <i className="fa fa-plus-square" aria-hidden="true"></i>
+        return (
+            <div>
+                <p 
+                    className="lead" 
+                    onClick={this.handleClick} 
+                >
+                    {this.state.show ? Minus : Plus} {this.props.header}
+                </p>
+                {
+                    this.state.show && 
+                    this.props.children
+                }
+            </div>
+        )
+    }
+}
 
 @observer
 class FormBody extends React.Component {
@@ -332,9 +371,12 @@ class FormBody extends React.Component {
     }
     handleClick(e) {
         const target = e.target
-        // this.setState(prevState => {
-        //     show: !prevState.show
-        // })
+        this.setState(prevState => ({
+            show: !prevState.show
+        }))
+        if (this.state.show) {
+
+        }
     }
     render() {
         // #/Home/Rule/xxxx
@@ -361,17 +403,10 @@ class FormBody extends React.Component {
                             onChange={this.handleChange}
                             placeholder="Enter FortiGate SN or IP"
                     />
-                    <div>
-                        <p className="lead">Interface</p>
+                    <FoldForm header="Interface" >
                         <InterfaceTable appState={this.selfState} />
-                    </div>
-                    <div>
-                        <p 
-                            className="lead" 
-                            onClick={this.handleClick} 
-                        >
-                            {this.state.show ? <i className="fa fa-minus-square" aria-hidden="true"></i> : <i className="fa fa-plus-square" aria-hidden="true"></i>} Routing
-                        </p>
+                    </FoldForm>
+                    <FoldForm header="Routing" >
                         <Input 
                             name="routeId"
                             label="Routing ID"
@@ -408,9 +443,8 @@ class FormBody extends React.Component {
                             onChange={this.handleChange}
                             placeholder="Enter Routing Gateway"
                         />
-                    </div>
-                    <div>
-                        <p className="lead">Virtual Switch</p>
+                    </FoldForm>
+                    <FoldForm header="Virtual Switch" >
                         <Checkbox 
                             name="purgeVirtualSwitch"
                             label="Virtual Switch"
@@ -419,117 +453,110 @@ class FormBody extends React.Component {
                             checked={this.selfState.purgeVirtualSwitch}
                             onChange={this.handleChange}
                         />
-                    </div>
-                    <div>
-                        <p className="lead">HA</p>
-                        <div>
-                            <Input 
-                                name="haGroupName"
-                                label="Group Name"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haGroupName}
-                                onChange={this.handleChange}
-                                placeholder="Enter Group Name"
-                            />
-                            <Input 
-                                name="haGroupPasswd"
-                                label="Password"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haGroupPasswd}
-                                onChange={this.handleChange}
-                                placeholder="Enter Group Password"
-                            />
-                            <Input 
-                                name="haGroupId"
-                                label="Group ID"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haGroupId}
-                                onChange={this.handleChange}
-                                placeholder="Enter Group ID"
-                            />
-                            <Input 
-                                name="haPrimary"
-                                label="HA Mode"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haMode}
-                                onChange={this.handleChange}
-                                placeholder="Enter HA Mode"
-                            />
-                            <Input 
-                                name="haPrimary"
-                                label="HA Device"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haPrimary}
-                                onChange={this.handleChange}
-                                placeholder="Enter HA Device"
-                            />
-                            <Input 
-                                name="haPriority"
-                                label="HA Priority"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haPriority}
-                                onChange={this.handleChange}
-                                placeholder="Enter HA Priority"
-                            />
-                        </div>
-                        <div>
-                            <Input 
-                                name="haMgmtIntf"
-                                label="HA Mgmt Interface"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haMgmtIntf}
-                                onChange={this.handleChange}
-                                placeholder="Enter HA Mgmt Interface"
-                            />
-                            <Input 
-                                name="haMgmtIntfGw"
-                                label="HA Mgmt Gateway"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haMgmtIntfGw}
-                                onChange={this.handleChange}
-                                placeholder="Enter HA Mgmt Gateway"
-                            />
-                            <Input 
-                                name="haMgmtIntfGw6"
-                                label="HA Mgmt Gateway6"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.haMgmtIntfGw6}
-                                onChange={this.handleChange}
-                                placeholder="Enter HA Mgmt Gateway6"
-                            />
-                        </div>
-                    </div>
+                    </FoldForm>
+                    <FoldForm header="HA" >
+                        <Input 
+                            name="haGroupName"
+                            label="Group Name"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haGroupName}
+                            onChange={this.handleChange}
+                            placeholder="Enter Group Name"
+                        />
+                        <Input 
+                            name="haGroupPasswd"
+                            label="Password"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haGroupPasswd}
+                            onChange={this.handleChange}
+                            placeholder="Enter Group Password"
+                        />
+                        <Input 
+                            name="haGroupId"
+                            label="Group ID"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haGroupId}
+                            onChange={this.handleChange}
+                            placeholder="Enter Group ID"
+                        />
+                        <Input 
+                            name="haPrimary"
+                            label="HA Mode"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haMode}
+                            onChange={this.handleChange}
+                            placeholder="Enter HA Mode"
+                        />
+                        <Input 
+                            name="haPrimary"
+                            label="HA Device"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haPrimary}
+                            onChange={this.handleChange}
+                            placeholder="Enter HA Device"
+                        />
+                        <Input 
+                            name="haPriority"
+                            label="HA Priority"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haPriority}
+                            onChange={this.handleChange}
+                            placeholder="Enter HA Priority"
+                        />
+                        <Input 
+                            name="haMgmtIntf"
+                            label="HA Mgmt Interface"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haMgmtIntf}
+                            onChange={this.handleChange}
+                            placeholder="Enter HA Mgmt Interface"
+                        />
+                        <Input 
+                            name="haMgmtIntfGw"
+                            label="HA Mgmt Gateway"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haMgmtIntfGw}
+                            onChange={this.handleChange}
+                            placeholder="Enter HA Mgmt Gateway"
+                        />
+                        <Input 
+                            name="haMgmtIntfGw6"
+                            label="HA Mgmt Gateway6"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.haMgmtIntfGw6}
+                            onChange={this.handleChange}
+                            placeholder="Enter HA Mgmt Gateway6"
+                        />
+                    </FoldForm>
                     <div>
                         <p className="lead">FortiManager</p>
-                        <div>
-                            <Input 
-                                name="fmgSn"
-                                label="FortiManager SN"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.fmgSn}
-                                onChange={this.handleChange}
-                                placeholder="Enter FortiManager SN"
-                            />
-                            <Input 
-                                name="fmgIp"
-                                label="FortiManager IP"
-                                labelClass="col-sm-3"
-                                editorClass="col-sm-9"
-                                value={this.selfState.fmgIp}
-                                onChange={this.handleChange}
-                                placeholder="Enter FortiManager IP"
-                            />
-                        </div>
+                        <Input 
+                            name="fmgSn"
+                            label="FortiManager SN"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.fmgSn}
+                            onChange={this.handleChange}
+                            placeholder="Enter FortiManager SN"
+                        />
+                        <Input 
+                            name="fmgIp"
+                            label="FortiManager IP"
+                            labelClass="col-sm-3"
+                            editorClass="col-sm-9"
+                            value={this.selfState.fmgIp}
+                            onChange={this.handleChange}
+                            placeholder="Enter FortiManager IP"
+                        />
                     </div>
                 </div>
                 <div className="box-footer">

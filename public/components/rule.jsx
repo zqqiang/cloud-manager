@@ -17,19 +17,21 @@ var _ = require('lodash');
 
 let ruleStore = observable({
     rules: [],
+    total: 0
 });
 
-autorun(function() {
-    console.log('store => ', ruleStore)
-});
-
-ruleStore.updateRules = action(function update(history) {
+ruleStore.updateRules = action(function update(history, page) {
+    let url = '/api/Rule'
+    if (page) {
+        url += ('?page=' + page)
+    }
     return Fetch({
         method: 'GET',
-        url: '/api/Rule',
+        url: url,
         history: history,
         cb: (json) => {
             ruleStore.rules = json.result
+            ruleStore.total = json.totalRecords
         }
     })
 });
@@ -150,19 +152,70 @@ class BoxBody extends React.Component {
 
 const BoxBodyWithRouter = withRouter(BoxBody)
 
-function BoxFooter() {
-    return (
-        <div className="box-footer clearfix">
-            <ul className="pagination pagination-sm no-margin pull-right">
-                <li><a href="#">«</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">»</a></li>
-            </ul>
-        </div>
-    )
+@observer
+class BoxFooter extends React.Component {
+    constructor(props) {
+        super(props)
+        this.left = this.left.bind(this)
+        this.page = this.page.bind(this)
+        this.right = this.right.bind(this)
+        this.state = {
+            current: 1
+        }
+    }
+    left(e) {
+        this.setState((prevState) => ({ current: (prevState.current - 5 > 0) ? prevState.current - 5 : 1 }))
+    }
+    page(e) {
+        const page = e.target.name
+        this.setState({
+            current: parseInt(page)
+        })
+        const { history } = this.props
+        ruleStore.updateRules(history, page)
+    }
+    right(e) {
+        const total = ruleStore.total
+        const pageSize = 10
+        const pageTotal = total / pageSize + 1
+        this.setState((prevState) => ({ current: (prevState.current + 5 < pageTotal) ? prevState.current + 5 : pageTotal }))
+    }
+    render() {
+        const total = ruleStore.total
+        const pageSize = 10
+        const pageTotal = total / pageSize + 1
+        let list = []
+        let range = []
+
+        let start = (this.state.current - 2 > 0) ? this.state.current - 2 : 1
+        let end = (start + 5 < pageTotal) ? start + 5 : pageTotal
+
+        if (start > 2) {
+            list.push(<li key="left" onClick={this.left}><a href="javascript:void(0);" name="left">«</a></li>)
+        }
+        range = _.range(start, end < pageTotal ? end : pageTotal)
+        list.push(range.map((page, index) => {
+            return (
+                <li key={index + 1} onClick={this.page} >
+                    <a href="javascript:void(0);" name={page}>{page}</a>
+                </li>
+            )
+        }))
+        if (end < pageTotal) {
+            list.push(<li key="right" onClick={this.right}><a href="javascript:void(0);" name="right">»</a></li>)
+        }
+
+        return (
+            <div className="box-footer clearfix">
+                <ul className="pagination pagination-sm no-margin pull-right">
+                    {list}
+                </ul>
+            </div>
+        )
+    }
 }
+
+const BoxFooterWithRouter = withRouter(BoxFooter)
 
 function TableContent() {
     return (
@@ -172,7 +225,7 @@ function TableContent() {
                     <div className="box">
                         <BoxHeader />
                         <BoxBodyWithRouter />
-                        <BoxFooter />
+                        <BoxFooterWithRouter />
                     </div>
                 </div>
             </div>

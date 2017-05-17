@@ -3,13 +3,17 @@ var router = express.Router();
 const net = require('net');
 
 router.get('/', function(req, res, next) {
+    let offset = 0;
+    if (req.query.page) {
+        offset = req.query.page - 1
+    }
     let payload = {
         method: "get",
         url: "/rules",
         filter: "",
         page: {
-            "offset": 0,
-            "limit": 50
+            "offset": offset,
+            "limit": 10
         }
     }
 

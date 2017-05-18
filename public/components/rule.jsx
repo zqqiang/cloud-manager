@@ -30,8 +30,12 @@ ruleStore.updateRules = action(function update(history, page) {
         url: url,
         history: history,
         cb: (json) => {
-            ruleStore.rules = json.result
-            ruleStore.total = json.totalRecords
+            if (json.code === 0) {
+                ruleStore.rules = json.result
+                ruleStore.total = json.totalRecords
+            } else {
+                alert(json.message)
+            }
         }
     })
 });
@@ -92,7 +96,11 @@ class RuleTableTr extends React.Component {
             url: url,
             history: history,
             cb: (json) => {
-                history.push('/Home/Rule')
+                if (json.code === 0) {
+                    history.push('/Home/Rule')
+                } else {
+                    alert(json.message)
+                }
             }
         })
     }
@@ -403,7 +411,11 @@ class FormBody extends React.Component {
             body: this.selfState,
             history: history,
             cb: (json) => {
-                history.push('/Home/Rule')
+                if (json.code === 0) {
+                    history.push('/Home/Rule')
+                } else {
+                    alert(json.message)
+                }
             }
         })
     }

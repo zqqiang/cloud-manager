@@ -88,9 +88,13 @@ const server = net.createServer((c) => {
                 message: "ok",
             }
         } else if (json.url === '/rules' && json.method === 'put') {
+            // payload = {
+            //     code: 0,
+            //     message: "ok",
+            // }
             payload = {
-                code: 0,
-                message: "ok",
+                code: -1,
+                message: "error config",
             }
         } else if (json.url === '/rules' && json.method === 'delete') {
             datas = _.filter(datas, function(o) {
@@ -104,7 +108,7 @@ const server = net.createServer((c) => {
             payload = {
                 code: 0,
                 message: "ok",
-                filename: "/var/log/auth.log",
+                filename: "/tmp/rule.restore.conf",
             }
         } else if (json.url === '/system/restore' && json.method === 'put') {
             payload = {

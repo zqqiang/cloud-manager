@@ -58,7 +58,11 @@ class Content extends React.Component {
             url: '/api/System',
             history: history,
             cb: (json) => {
-                this.setState(json.result)
+                if (json.code === 0) {
+                    this.setState(json.result)
+                } else {
+                    alert(json.message)
+                }
             }
         })
     }

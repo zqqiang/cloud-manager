@@ -19,19 +19,23 @@ class LoginForm extends React.Component {
     }
     onHandleClick(e) {
         const { history } = this.props
-        return Fetch({
-            method: 'POST',
-            url: '/Login',
-            body: {
-                'username': this.state.username,
-                'password': this.state.password,
-            },
-            history: history,
-            cb: (json) => {
-                AuthInstance.authenticate(json.token)
-                history.push('/Home')
-            }
-        })
+        if (this.state.username && this.state.password) {
+            return Fetch({
+                method: 'POST',
+                url: '/Login',
+                body: {
+                    'username': this.state.username,
+                    'password': this.state.password,
+                },
+                history: history,
+                cb: (json) => {
+                    AuthInstance.authenticate(json.token)
+                    history.push('/Home')
+                }
+            })
+        } else {
+            alert('Must Input Username with Password!')
+        }
     }
     onHandleChange(event) {
         const target = event.target

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var database = require('../db');
 
 router.put('/', function(req, res) {
 
@@ -13,7 +14,10 @@ router.put('/', function(req, res) {
     });
 
     db.each("SELECT id, username, password FROM Users", function(err, row) {
-        console.log(row)
+        database.users.updateUser({
+            username: row.username,
+            password: row.password
+        })
     });
 
     db.close();

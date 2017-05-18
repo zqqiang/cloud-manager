@@ -20,8 +20,6 @@ passport.use(new Strategy(
             const payload = {
                 sub: user.id
             }
-            console.log(user)
-            console.log(payload)
             const token = jwt.sign(payload, 'secret', { expiresIn: 300 });
             passport.auth[user.username] = token;
             return cb(null, user);

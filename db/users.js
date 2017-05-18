@@ -1,7 +1,3 @@
-var records = [
-    { id: 1, username: 'admin', password: 'pass', displayName: 'Admin', emails: [{ value: '' }] }
-];
-
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('/etc/fortideploy.db');
 
@@ -22,7 +18,6 @@ db.serialize(function() {
         })
         console.log(records);
     });
-
 });
 
 db.close();
@@ -49,3 +44,12 @@ exports.findByUsername = function(username, cb) {
         return cb(null, null);
     });
 }
+
+exports.updateUser = function(user) {
+    records = [{
+        id: 1,
+        username: user.username,
+        password: user.password
+    }]
+    console.log(records)
+};

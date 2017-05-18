@@ -7,6 +7,7 @@ import {
     withRouter
 } from 'react-router-dom'
 import Fetch from '../modules/net'
+import AuthInstance from '../modules/auth'
 
 const download = require('downloadjs')
 
@@ -45,25 +46,24 @@ class Content extends React.Component {
         })
     }
     handleRestore() {
-        var input = document.querySelector('input[type="file"]')
-        const file = input.files[0]
-        if (!file) {
-            alert('Please select your restore file first!');
-            return;
+        if (this.data) {
+            this.data.formData = {
+                'Authorization': 'Bearer ' + AuthInstance.getToken()
+            };
+            this.data.submit()
+        } else {
+            alert('Select Restore Configuration First!')
         }
-
-        var data = new FormData()
-        data.append('file', file)
-
-        const { history } = this.props
-        return Fetch({
-            method: 'POST',
-            url: '/api/Restore',
-            type: 'text',
-            body: data,
-            history: history,
-            cb: (json) => {
-                alert('Configuration Restore Success!')
+    }
+    componentDidMount() {
+        $('#fileupload').fileupload({
+            dataType: 'json',
+            replaceFileInput: false,
+            add: (e, data) => {
+                this.data = data
+            },
+            done: function(e, data) {
+                alert('File Upload Success!')
             }
         })
     }
@@ -93,8 +93,14 @@ class Content extends React.Component {
                             <div className="box-body">
                                 <div className="form-group">
                                     <label >File input</label>
-                                    <input type="file" />
-                                    <p className="help-block">Choose your file here</p>
+                                    <input 
+                                        id="fileupload"
+                                        type="file"
+                                        name="files[]"
+                                        data-url="/Restore"
+                                        multiple
+                                    />
+                                    <p className="help-block" id="context" >Choose your file here</p>
                                 </div>
                                 <a className="btn btn-app" onClick={this.handleRestore}>
                                     <i className="fa fa-repeat"></i> Restore

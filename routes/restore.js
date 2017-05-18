@@ -2,16 +2,23 @@ var express = require('express');
 var router = express.Router();
 const net = require('net');
 const fs = require('fs');
+var formidable = require('formidable');
 
 var S = require('string');
 
 router.post('/', function(req, res) {
-    let content = S(req.body).between('Content-Type: application/octet-stream', '------WebKitFormBoundary').s
+    var form = new formidable.IncomingForm();
+    form.uploadDir = '/tmp/';
 
-    fs.writeFile('/tmp/rule.restore.conf', content, (err) => {
-        if (err) throw err;
-        console.log('The file has been saved!');
+    form.on('file', function(field, file) {
+        fs.rename(file.path, '/tmp/rule.restore.conf');
+    });
 
+    form.on('error', function(err) {
+        console.log('An error has occured: \n' + err);
+    });
+
+    form.on('end', function() {
         let payload = {
             method: "put",
             url: "/system/restore",
@@ -29,6 +36,7 @@ router.post('/', function(req, res) {
         });
     });
 
+    form.parse(req);
 });
 
 module.exports = router;

@@ -520,16 +520,14 @@ class FormBody extends React.Component {
                             placeholder="Enter Routing Gateway"
                         />
                     </FoldForm>
-                    <FoldForm header="Virtual Switch" initState={switchInitState} >
-                        <Checkbox 
-                            name="purgeVirtualSwitch"
-                            label="Virtual Switch"
-                            labelOffset="col-sm-offset-3"
-                            editorClass="col-sm-9"
-                            checked={this.selfState.purgeVirtualSwitch}
-                            onChange={this.handleChange}
-                        />
-                    </FoldForm>
+                    <Checkbox 
+                        name="purgeVirtualSwitch"
+                        label="Virtual Switch"
+                        labelOffset="col-sm-offset-3"
+                        editorClass="col-sm-9"
+                        checked={this.selfState.purgeVirtualSwitch}
+                        onChange={this.handleChange}
+                    />
                     <FoldForm header="HA" initState={haInitState} >
                         <Input 
                             name="haGroupName"

@@ -88,13 +88,9 @@ const server = net.createServer((c) => {
                 message: "ok",
             }
         } else if (json.url === '/rules' && json.method === 'put') {
-            // payload = {
-            //     code: 0,
-            //     message: "ok",
-            // }
             payload = {
-                code: -1,
-                message: "error config",
+                code: 0,
+                message: "ok",
             }
         } else if (json.url === '/rules' && json.method === 'delete') {
             datas = _.filter(datas, function(o) {

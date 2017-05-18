@@ -8,13 +8,12 @@ router.put('/', function(req, res) {
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/etc/fortideploy.db');
 
-    db.serialize(function() {
-        var stmt = db.prepare("INSERT INTO Users VALUES (?,?)");
-        stmt.run(req.body.newUser, req.body.newPassword);
-        stmt.finalize();
-        db.each("SELECT rowid AS id, username, password FROM Users", function(err, row) {
-            console.log(row.id, row.username, row.password)
-        });
+    db.run('UPDATE Users SET username = ?, password = ? WHERE id = 1', req.body.newUser, req.body.newPassword, function(err, row) {
+        if (err) console.log(err);
+    });
+
+    db.each("SELECT id, username, password FROM Users", function(err, row) {
+        console.log(row)
     });
 
     db.close();

@@ -72,14 +72,7 @@ class LoginForm extends React.Component {
                     <span className="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <div className="row">
-                    <div className="col-xs-8">
-                        <div className="checkbox">
-                            <label>
-                                <input type="checkbox" /> Remember Me
-                            </label>
-                        </div>
-                    </div>
-                    <div className="col-xs-4">
+                    <div className="col-xs-12">
                         <a href="javascript:void(0);" 
                             className="btn btn-primary btn-block btn-flat" 
                             onClick={this.onHandleClick.bind(this)} 
@@ -99,15 +92,13 @@ const LoginBoxBody = ({ onClick }) => (
     <div className="login-box-body">
         <p className="login-box-msg">Sign in to start your session</p>
         <LoginFormWithRouter />
-        <a href="javascript:void(0);">I forgot my password</a><br />
-        <a href="javascript:void(0);" className="text-center">Register a new membership</a>
     </div>
 )
 
 const LoginBody = ({ onClick }) => (
     <div className="login-box">
         <div className="login-logo">
-            <a href="javascript:void(0);"><b>Cloud</b> Manager</a>
+            <a href="javascript:void(0);"><b>Forti</b> Deploy</a>
         </div>
         <LoginBoxBody />
     </div>

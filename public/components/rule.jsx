@@ -360,8 +360,8 @@ class FoldForm extends React.Component {
         }))
     }
     render() {
-        const Minus = <i className="fa fa-minus-square" aria-hidden="true"></i>
-        const Plus = <i className="fa fa-plus-square" aria-hidden="true"></i>
+        const Minus = <i href="javascript:void(0);" className="fa fa-minus-square" aria-hidden="true"></i>
+        const Plus = <i href="javascript:void(0);" className="fa fa-plus-square" aria-hidden="true"></i>
         return (
             <div>
                 <p 

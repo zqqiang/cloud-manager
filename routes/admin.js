@@ -7,6 +7,10 @@ router.put('/', function(req, res) {
 
     console.log(req.body)
 
+    // if (bcrypt.compareSync(req.body.oldPassword, )) {
+
+    // }
+
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/etc/fortideploy.db');
 

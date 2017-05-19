@@ -83,7 +83,10 @@ class Content extends React.Component {
             method: 'PUT',
             url: '/api/Admin',
             body: this.state,
-            history: history
+            history: history,
+            cb: (json) => {
+                alert('Password Change Success!')
+            }
         })
     }
     handleChange(e) {

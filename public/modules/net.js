@@ -54,6 +54,7 @@ const Fetch = function _fetch({ method, url, type, body, history, cb }) {
         .catch((error) => {
             let status = error.response.status
             if (status === 401) {
+                alert('User Unauthorized!')
                 AuthInstance.signOut()
                 history.push('/')
             } else {

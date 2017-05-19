@@ -62,7 +62,7 @@ class LoginForm extends React.Component {
                            onChange={this.onHandleChange.bind(this)}
                            onKeyPress={this.onHandleKeyPress.bind(this)}
                     />
-                    <span className="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    <span className="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div className="form-group has-feedback">
                     <input type="password" 

@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
         return res.status(401).end();
     }
     const token = req.headers.authorization.split(' ')[1];
-    return jwt.verify(token, 'secret', { maxAge: '5s' }, (err, decode) => {
+    return jwt.verify(token, 'secret', { maxAge: '5m' }, (err, decode) => {
         if (err) {
             console.log('jwt verify error', err)
             return res.status(401).end();

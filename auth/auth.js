@@ -22,7 +22,7 @@ passport.use(new Strategy(
             const payload = {
                 sub: user.id
             }
-            const token = jwt.sign(payload, 'secret', { expiresIn: '5s' });
+            const token = jwt.sign(payload, 'secret', { expiresIn: '5m' });
             passport.auth[user.username] = token;
             return cb(null, user);
         });

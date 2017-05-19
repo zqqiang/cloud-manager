@@ -7,10 +7,14 @@ router.get('/', function(req, res, next) {
     if (req.query.page) {
         offset = req.query.page - 1
     }
+    let filter = ''
+    if (req.query.filter) {
+        filter = req.query.filter
+    }
     let payload = {
         method: "get",
         url: "/rules",
-        filter: "",
+        filter: filter,
         page: {
             "offset": offset,
             "limit": 10

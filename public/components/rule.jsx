@@ -28,7 +28,7 @@ ruleStore.updateRules = action(function update({ history, page, search }) {
             url += ('&&search=' + search)
         }
     } else if (search) {
-        url += ('?search=' + search)
+        url += ('?filter=' + search)
     }
     return Fetch({
         method: 'GET',
@@ -74,8 +74,9 @@ class BoxHeader extends React.Component {
         const target = e.target
         const name = target.name
         const value = target.value
-        this.state[name] = value
-        console.log(name, value)
+        this.setState({
+            [name]: value
+        })
     }
     handleSearch(e) {
         const { history } = this.props

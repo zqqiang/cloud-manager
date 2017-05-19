@@ -73,12 +73,20 @@ const server = net.createServer((c) => {
         } else if (json.url === '/rules' && json.method === 'get') {
             const offset = json.page.offset
             const limit = json.page.limit
-
+            const filter = json.filter
+            let filterData = datas
+            if (filter) {
+                filterData = _.filter(datas, function(o) {
+                    console.log(o.fgtIpSn, filter)
+                    return _.startsWith(o.fgtIpSn, filter);
+                });
+            }
+            let result = _.slice(filterData, offset * limit, (offset + 1) * limit);
             payload = {
                 code: 0,
                 message: "ok",
-                totalRecords: 10000,
-                result: _.slice(datas, offset * limit, (offset + 1) * limit)
+                totalRecords: filterData.length,
+                result: result
             }
         } else if (json.url === '/rules' && json.method === 'post') {
             json.rule['id'] = datas.length + 1

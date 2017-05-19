@@ -76,6 +76,11 @@ function Content() {
 }
 
 class Home extends React.Component {
+    componentDidMount() {
+        $('body').mousemove(function(event) {
+            AuthInstance.reset()
+        })
+    }
     render() {
         if (AuthInstance.isAuthed()) {
             return (

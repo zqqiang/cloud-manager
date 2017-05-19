@@ -29,7 +29,11 @@ class LoginForm extends React.Component {
                 },
                 history: history,
                 cb: (json) => {
-                    AuthInstance.authenticate(json.token)
+                    AuthInstance.authenticate({
+                        username: this.state.username,
+                        password: this.state.password,
+                        token: json.token
+                    })
                     history.push('/Home')
                 }
             })

@@ -102,7 +102,7 @@ const LoginBoxBody = ({ onClick }) => (
 const LoginBody = ({ onClick }) => (
     <div className="login-box">
         <div className="login-logo">
-            <a href="javascript:void(0);"><b>Forti</b> Deploy</a>
+            <span><b>Forti</b>Deploy</span>
         </div>
         <LoginBoxBody />
     </div>

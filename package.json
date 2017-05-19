@@ -7,10 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-css": "lessc public/theme/project/less/main.less public/theme/project/css/main.css",
     "watch-js": "watchify public/main.js -d -o public/bundle.js -t [ babelify --presets [ es2015 react ] --plugins [transform-decorators-legacy] ] -v",
-    "watch": "npm run watch-js | npm run watch-css",
-    "build-css": "catw -c 'lessc -' 'public/theme/project/less/main.less' > public/theme/project/css/main.css",
-    "build-js": "browserify public/main.js > public/bundle.js",
-    "build": "npm run build-css && npm run build-js",
     "debug": "DEBUG=express:* supervisor -- index.js 'develop'",
     "start": "supervisor index.js"
   },

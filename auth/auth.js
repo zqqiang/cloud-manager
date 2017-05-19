@@ -1,6 +1,6 @@
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-const  jwt  =  require('jsonwebtoken');
+const jwt =  require('jsonwebtoken');
 var db = require('../db');
 var bcrypt = require('bcrypt');
 
@@ -22,7 +22,7 @@ passport.use(new Strategy(
             const payload = {
                 sub: user.id
             }
-            const token = jwt.sign(payload, 'secret', { expiresIn: 300 });
+            const token = jwt.sign(payload, 'secret', { expiresIn: '5s' });
             passport.auth[user.username] = token;
             return cb(null, user);
         });

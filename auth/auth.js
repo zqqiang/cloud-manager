@@ -2,6 +2,7 @@ var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 const  jwt  =  require('jsonwebtoken');
 var db = require('../db');
+var bcrypt = require('bcrypt');
 
 passport.auth = {};
 
@@ -14,7 +15,8 @@ passport.use(new Strategy(
             if (!user) {
                 return cb(null, false);
             }
-            if (user.password != password) {
+            console.log(user.password, password);
+            if (!bcrypt.compareSync(password, user.password)) {
                 return cb(null, false);
             }
             const payload = {
@@ -24,7 +26,8 @@ passport.use(new Strategy(
             passport.auth[user.username] = token;
             return cb(null, user);
         });
-    }));
+    }
+));
 
 passport.serializeUser(function(user, cb) {
     cb(null, user.id);

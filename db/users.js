@@ -1,14 +1,19 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('/etc/fortideploy.db');
+var bcrypt = require('bcrypt')
 
 var records = [];
+const saltRounds = 10;
 
 db.serialize(function() {
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY NOT NULL, username TEXT NOT NULL, password TEXT)");
 
-    db.run('INSERT INTO Users (id, username, password) VALUES (1, "admin", "pass")', function(err, row) {
-        if (err) console.log(err);
-    });
+    db.run('INSERT INTO Users (id, username, password) VALUES (1, "admin", ?)',
+        bcrypt.hashSync("pass", saltRounds),
+        function(err, row) {
+            if (err) console.log(err);
+        }
+    );
 
     db.each("SELECT id, username, password FROM Users", function(err, row) {
         records.push({

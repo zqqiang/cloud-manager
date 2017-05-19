@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var database = require('../db');
+var bcrypt = require('bcrypt');
 
 router.put('/', function(req, res) {
 
@@ -9,7 +10,10 @@ router.put('/', function(req, res) {
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/etc/fortideploy.db');
 
-    db.run('UPDATE Users SET username = ?, password = ? WHERE id = 1', req.body.newUser, req.body.newPassword, function(err, row) {
+    const saltRounds = 10;
+    const hash = bcrypt.hashSync(req.body.newPassword, saltRounds);
+
+    db.run('UPDATE Users SET username = ?, password = ? WHERE id = 1', req.body.newUser, hash, function(err, row) {
         if (err) console.log(err);
     });
 

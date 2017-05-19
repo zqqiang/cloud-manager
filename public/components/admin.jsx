@@ -78,6 +78,9 @@ class Content extends React.Component {
         history.push('/Home')
     }
     onSubmit() {
+        if (this.state.newPassword !== this.state.confirmPassword) {
+            return alert('New password and Re-enter password are different!')
+        }
         const { history } = this.props
         return Fetch({
             method: 'PUT',
@@ -85,7 +88,11 @@ class Content extends React.Component {
             body: this.state,
             history: history,
             cb: (json) => {
-                alert('Password Change Success!')
+                if (0 === json.code) {
+                    alert('Password Change Success!')
+                } else {
+                    alert(json.message)
+                }
             }
         })
     }

@@ -7,9 +7,12 @@ router.put('/', function(req, res) {
 
     console.log(req.body)
 
-    // if (bcrypt.compareSync(req.body.oldPassword, )) {
-
-    // }
+    if (!bcrypt.compareSync(req.body.oldPassword, database.users.getUser().password)) {
+        return res.json({
+            code: -1,
+            message: 'Old password is wrong!'
+        });
+    }
 
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/etc/fortideploy.db');
@@ -31,7 +34,8 @@ router.put('/', function(req, res) {
     db.close();
 
     res.json({
-        result: 'success'
+        code: 0,
+        message: 'success'
     });
 
 });

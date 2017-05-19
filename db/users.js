@@ -58,3 +58,7 @@ exports.updateUser = function(user) {
     }]
     console.log(records)
 };
+
+exports.getUser = function() {
+    return records[0]
+};

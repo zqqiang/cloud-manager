@@ -20,10 +20,15 @@ let ruleStore = observable({
     total: 0
 });
 
-ruleStore.updateRules = action(function update(history, page) {
+ruleStore.updateRules = action(function update({ history, page, search }) {
     let url = '/api/Rule'
     if (page) {
         url += ('?page=' + page)
+        if (search) {
+            url += ('&&search=' + search)
+        }
+    } else if (search) {
+        url += ('?search=' + search)
     }
     return Fetch({
         method: 'GET',
@@ -56,20 +61,60 @@ function TableHeader() {
     )
 }
 
-const BoxHeader = withRouter(({ history }) => {
-    return (
-        <div className="box-header with-border">
-            <h3 className="box-title">Rule Table</h3>
-            <div className="box-tools">
-                <button type="button" className="btn btn-block btn-primary" onClick={(e) => {
-                    history.push("/Home/New")
-                }}>
-                    <i className="fa fa-plus" aria-hidden="true"></i> Create New
-                </button>
+class BoxHeader extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleChange = this.handleChange.bind(this)
+        this.handleSearch = this.handleSearch.bind(this)
+        this.state = {
+            search: ''
+        }
+    }
+    handleChange(e) {
+        const target = e.target
+        const name = target.name
+        const value = target.value
+        this.state[name] = value
+        console.log(name, value)
+    }
+    handleSearch(e) {
+        const { history } = this.props
+        ruleStore.updateRules({ history: history, search: this.state.search })
+    }
+    render() {
+        const { history } = this.props
+
+        return (
+            <div className="box-header with-border">
+                <h3 className="box-title">Rule Table</h3>
+                <div className="box-tools">
+                    <div className="input-group input-group-sm" style={{width: '350px'}} >
+                        <input 
+                            type="text" 
+                            name="search" 
+                            value={this.state.search}
+                            onChange={this.handleChange}
+                            className="form-control pull-right" 
+                            placeholder="Search (sn=xxx,ip=xxxx)" 
+                        />
+                        <div className="input-group-btn">
+                            <button type="submit" className="btn btn-default" onClick={this.handleSearch} ><i className="fa fa-search"></i></button>
+                        </div>
+                        <div className="input-group-btn">
+                            <button type="button" className="btn btn-block btn-primary" onClick={(e) => {
+                                history.push("/Home/New")
+                            }}>
+                                <i className="fa fa-plus" aria-hidden="true"></i> Create New
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    )
-})
+        )
+    }
+}
+
+const BoxHeaderWithRouter = withRouter(BoxHeader)
 
 function RuleTableHeader() {
     return (
@@ -147,7 +192,7 @@ class BoxBody extends React.Component {
     constructor(props) {
         super(props)
         const { history } = this.props
-        ruleStore.updateRules(history)
+        ruleStore.updateRules({ history: history })
     }
     render() {
         return (
@@ -180,7 +225,7 @@ class BoxFooter extends React.Component {
             current: parseInt(page)
         })
         const { history } = this.props
-        ruleStore.updateRules(history, page)
+        ruleStore.updateRules({ history: history, page: page })
     }
     right(e) {
         const total = ruleStore.total
@@ -231,7 +276,7 @@ function TableContent() {
             <div className="row">
                 <div className="col-md-12">
                     <div className="box">
-                        <BoxHeader />
+                        <BoxHeaderWithRouter />
                         <BoxBodyWithRouter />
                         <BoxFooterWithRouter />
                     </div>

@@ -14,7 +14,7 @@ function MainHeaderLogo() {
     return (
         <Link to="/Home" className="logo">
             <span className="logo-lg">
-                <i className="fa fa-cloud" aria-hidden="true"></i> Cloud Manager
+                <i className="fa fa-cloud" aria-hidden="true"></i> FortiDeploy
             </span>
         </Link>
     );

@@ -31,7 +31,7 @@ class Content extends React.Component {
             ip: '',
             netmask: '',
             gateway: '',
-            defaultFortiManageIp: ''
+            defaultFortiManagerIp: ''
         }
     }
     onHandleChange(event) {
@@ -114,8 +114,8 @@ class Content extends React.Component {
                                     <input 
                                         type="text"
                                         className="form-control" 
-                                        name="defaultFortimanageIp" 
-                                        value={this.state.defaultFortiManageIp}
+                                        name="defaultFortiManagerIp" 
+                                        value={this.state.defaultFortiManagerIp}
                                         placeholder="Enter IP" 
                                         onChange={this.onHandleChange.bind(this)}
                                     />

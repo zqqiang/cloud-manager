@@ -62,7 +62,7 @@ const server = net.createServer((c) => {
                     ip: "192.168.0.10",
                     netmask: "255.255.255.0",
                     gateway: "192.168.0.1",
-                    defaultFortiManageIp: "192.168.0.200"
+                    defaultFortiManagerIp: "192.168.0.200"
                 }
             }
         } else if (json.url === '/system' && json.method === 'put') {

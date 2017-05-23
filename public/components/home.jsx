@@ -8,9 +8,10 @@ import {
 
 var Header = require('./header.jsx');
 var SystemSettings = require('./system.jsx');
+var Footer = require('./footer.jsx');
+
 import { Rule, RuleForm } from './rule.jsx'
 import Sidebar from './sidebar.jsx'
-var Footer = require('./footer.jsx');
 import Admin from './admin.jsx'
 import Backup from './backup.jsx'
 import AuthInstance from '../modules/auth'

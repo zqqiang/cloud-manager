@@ -89,14 +89,14 @@ class BoxHeader extends React.Component {
             <div className="box-header with-border">
                 <h3 className="box-title">Rule Table</h3>
                 <div className="box-tools">
-                    <div className="input-group input-group-sm" style={{width: '350px'}} >
+                    <div className="input-group input-group-sm" style={{width: '450px'}} >
                         <input 
                             type="text" 
                             name="search" 
                             value={this.state.search}
                             onChange={this.handleChange}
                             className="form-control pull-right" 
-                            placeholder="Search (sn=xxx,ip=xxxx)" 
+                            placeholder="Search (fgtIpSn=xxx,fgtIpSn=xxx,fgtIpSn=xxx,...)" 
                         />
                         <div className="input-group-btn">
                             <button type="submit" className="btn btn-default" onClick={this.handleSearch} ><i className="fa fa-search"></i></button>
@@ -239,13 +239,13 @@ class BoxFooter extends React.Component {
     doubleRight(e) {
         const total = ruleStore.total
         const pageSize = 10
-        const pageTotal = total / pageSize + 1
+        const pageTotal = Math.round(parseInt(total / pageSize, 10)) + 1
         this.setState((prevState) => ({ current: pageTotal }))
     }
     render() {
         const total = ruleStore.total
         const pageSize = 10
-        const pageTotal = total / pageSize + 1
+        const pageTotal = Math.round(parseInt(total / pageSize, 10)) + 1
         let list = []
         let range = []
 

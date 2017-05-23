@@ -41,7 +41,7 @@ function factory() {
     return datas;
 }
 
-const datas = factory();
+let datas = factory();
 
 const server = net.createServer((c) => {
     c.on('end', () => {

@@ -211,14 +211,19 @@ class BoxFooter extends React.Component {
     constructor(props) {
         super(props)
         this.left = this.left.bind(this)
+        this.doubleLeft = this.doubleLeft.bind(this)
         this.page = this.page.bind(this)
         this.right = this.right.bind(this)
+        this.doubleRight = this.doubleRight.bind(this)
         this.state = {
             current: 1
         }
     }
     left(e) {
-        this.setState((prevState) => ({ current: (prevState.current - 5 > 0) ? prevState.current - 5 : 1 }))
+        this.setState((prevState) => ({ current: prevState.current - 1 }))
+    }
+    doubleLeft(e) {
+        this.setState((prevState) => ({ current: 1 }))
     }
     page(e) {
         const page = e.target.name
@@ -229,10 +234,13 @@ class BoxFooter extends React.Component {
         ruleStore.updateRules({ history: history, page: page })
     }
     right(e) {
+        this.setState((prevState) => ({ current: prevState.current + 1 }))
+    }
+    doubleRight(e) {
         const total = ruleStore.total
         const pageSize = 10
         const pageTotal = total / pageSize + 1
-        this.setState((prevState) => ({ current: (prevState.current + 5 < pageTotal) ? prevState.current + 5 : pageTotal }))
+        this.setState((prevState) => ({ current: pageTotal }))
     }
     render() {
         const total = ruleStore.total
@@ -244,9 +252,13 @@ class BoxFooter extends React.Component {
         let start = (this.state.current - 2 > 0) ? this.state.current - 2 : 1
         let end = (start + 5 < pageTotal) ? start + 5 : pageTotal
 
-        if (start > 2) {
-            list.push(<li key="left" onClick={this.left}><a href="javascript:void(0);" name="left">«</a></li>)
+        if (start > 1) {
+            list.push(<li key="doubleLeft" onClick={this.doubleLeft}><a href="javascript:void(0);" name="doubleLeft"><i className="fa fa-angle-double-left" aria-hidden="true"></i></a></li>)
         }
+        if (this.state.current > 1) {
+            list.push(<li key="left" onClick={this.left}><a href="javascript:void(0);" name="left"><i className="fa fa-angle-left" aria-hidden="true"></i></a></li>)
+        }
+
         range = _.range(start, end < pageTotal ? end : pageTotal)
         list.push(range.map((page, index) => {
             return (
@@ -255,8 +267,12 @@ class BoxFooter extends React.Component {
                 </li>
             )
         }))
+
         if (end < pageTotal) {
-            list.push(<li key="right" onClick={this.right}><a href="javascript:void(0);" name="right">»</a></li>)
+            list.push(<li key="right" onClick={this.right}><a href="javascript:void(0);" name="right"><i className="fa fa-angle-right" aria-hidden="true"></i></a></li>)
+        }
+        if (pageTotal - this.state.current > 2) {
+            list.push(<li key="doubleRight" onClick={this.doubleRight}><a href="javascript:void(0);" name="doubleRight"><i className="fa fa-angle-double-right" aria-hidden="true"></i></a></li>)
         }
 
         return (

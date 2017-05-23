@@ -20,7 +20,7 @@ router.put('/', function(req, res) {
     const saltRounds = 10;
     const hash = bcrypt.hashSync(req.body.newPassword, saltRounds);
 
-    db.run('UPDATE Users SET username = ?, password = ? WHERE id = 1', req.body.newUser, hash, function(err, row) {
+    db.run('UPDATE Users SET password = ? WHERE id = 1', hash, function(err, row) {
         if (err) console.log(err);
     });
 

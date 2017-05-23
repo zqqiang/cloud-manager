@@ -34,7 +34,7 @@ class LoginForm extends React.Component {
                         password: this.state.password,
                         token: json.token
                     })
-                    history.push('/Home')
+                    history.push('/Home/Rule')
                 }
             })
         } else {

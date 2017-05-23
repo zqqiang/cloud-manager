@@ -30,7 +30,6 @@ class AdminForm extends React.Component {
         super(props)
     }
     render() {
-        const newUser = this.props.options.newUser
         const oldPassword = this.props.options.oldPassword
         const newPassword = this.props.options.newPassword
         const confirmPassword = this.props.options.confirmPassword
@@ -38,10 +37,6 @@ class AdminForm extends React.Component {
         return (
             <form className="form-horizontal">
                 <div className="box-body">
-                    <Input 
-                        labelClass="col-sm-3" label="New user" editorClass="col-sm-9" placeholder="New user" 
-                        name="newUser" value={newUser} onChange={handleChange}
-                    />
                     <Input 
                         labelClass="col-sm-3" label="Old password" editorClass="col-sm-9" placeholder="Old password"
                         name="oldPassword" type="password" value={oldPassword} onChange={handleChange}
@@ -67,7 +62,6 @@ class Content extends React.Component {
         this.onSubmit = this.onSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.state = {
-            newUser: '',
             oldPassword: '',
             newPassword: '',
             confirmPassword: '',
@@ -106,7 +100,6 @@ class Content extends React.Component {
     }
     render() {
         const options = {
-            newUser: this.state.newUser,
             oldPassword: this.state.oldPassword,
             newPassword: this.state.newPassword,
             confirmPassword: this.state.confirmPassword
@@ -117,7 +110,7 @@ class Content extends React.Component {
                     <div className="col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Admin System Settings</h3>
+                                <h3 className="box-title">Change Password</h3>
                             </div>
                             <AdminForm options={options} onChange={this.handleChange} />
                             <div className="box-footer">
@@ -137,7 +130,6 @@ const ContentWithRouter = withRouter(Content)
 function Admin() {
     return (
         <div className="">
-            <Header />
             <ContentWithRouter />
         </div>
     );

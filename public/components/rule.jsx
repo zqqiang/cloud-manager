@@ -306,7 +306,6 @@ function TableContent() {
 function Rule() {
     return (
         <div>
-            <TableHeader />
             <TableContent />
         </div>
     )
@@ -735,7 +734,6 @@ function FormContent() {
 function RuleForm() {
     return (
         <div>
-            <FormHeader />
             <FormContent />
         </div>
     )

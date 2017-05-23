@@ -120,7 +120,6 @@ class Backup extends React.Component {
     render() {
         return (
             <div className="">
-                <Header />
                 <ContentWithRouter />
             </div>
         )

@@ -133,7 +133,6 @@ const ContentWithRouter = withRouter(Content)
 function Form() {
     return (
         <div className="">
-            <Header />
             <ContentWithRouter />
         </div>
     );

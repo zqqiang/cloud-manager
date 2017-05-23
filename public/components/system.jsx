@@ -7,6 +7,7 @@ import {
     withRouter
 } from 'react-router-dom'
 import Fetch from '../modules/net'
+import { Input } from './editor.jsx'
 
 function Header() {
     return (
@@ -27,6 +28,7 @@ function Header() {
 class Content extends React.Component {
     constructor(props) {
         super(props)
+        this.onHandleChange = this.onHandleChange.bind(this)
         this.state = {
             ip: '',
             netmask: '',
@@ -76,50 +78,38 @@ class Content extends React.Component {
                                 <h3 className="box-title">Config System Settings</h3>
                             </div>
                             <div className="box-body">
-                                <div className="form-group">
-                                    <label>IP Address</label>
-                                    <input 
-                                        type="text"
-                                        className="form-control" 
-                                        name="ip" 
-                                        value={this.state.ip}
-                                        placeholder="Enter IP" 
-                                        onChange={this.onHandleChange.bind(this)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>IP Netmask</label>
-                                    <input 
-                                        type="text"
-                                        className="form-control" 
-                                        name="netmask" 
-                                        value={this.state.netmask}
-                                        placeholder="Enter Netmask" 
-                                        onChange={this.onHandleChange.bind(this)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Gateway</label>
-                                    <input 
-                                        type="text"
-                                        className="form-control" 
-                                        name="gateway" 
-                                        value={this.state.gateway}
-                                        placeholder="Enter Gateway" 
-                                        onChange={this.onHandleChange.bind(this)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>External FortiManager Server IP Address (Default FortiManager)</label>
-                                    <input 
-                                        type="text"
-                                        className="form-control" 
-                                        name="defaultFortiManagerIp" 
-                                        value={this.state.defaultFortiManagerIp}
-                                        placeholder="Enter IP" 
-                                        onChange={this.onHandleChange.bind(this)}
-                                    />
-                                </div>
+                                <Input 
+                                    label="IP Address"
+                                    name="ip"
+                                    value={this.state.ip}
+                                    placeholder="Enter IP"
+                                    validator="ipv4"
+                                    onChange={this.onHandleChange}
+                                />
+                                <Input 
+                                    label="IP Netmask"
+                                    name="netmask"
+                                    value={this.state.netmask}
+                                    placeholder="Enter Netmask"
+                                    validator="ipv4"
+                                    onChange={this.onHandleChange}
+                                />
+                                <Input 
+                                    label="Gateway"
+                                    name="gateway" 
+                                    value={this.state.gateway}
+                                    placeholder="Enter Gateway" 
+                                    validator="ipv4"
+                                    onChange={this.onHandleChange}
+                                />
+                                <Input 
+                                    label="External FortiManager Server IP Address (Default FortiManager)"
+                                    name="defaultFortiManagerIp" 
+                                    value={this.state.defaultFortiManagerIp}
+                                    placeholder="Enter IP" 
+                                    validator="ipv4"
+                                    onChange={this.onHandleChange}
+                                />
                             </div>
                             <div className="box-footer">
                                 <button 

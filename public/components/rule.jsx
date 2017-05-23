@@ -555,6 +555,7 @@ class FormBody extends React.Component {
                             value={this.selfState.routeDst}
                             onChange={this.handleChange}
                             placeholder="Enter Routing Dest"
+                            validator="ipv4mask"
                         />
                         <Input 
                             name="routeGw"
@@ -564,6 +565,7 @@ class FormBody extends React.Component {
                             value={this.selfState.routeGw}
                             onChange={this.handleChange}
                             placeholder="Enter Routing Gateway"
+                            validator="ipv4"
                         />
                     </FoldForm>
                     <Checkbox 
@@ -646,6 +648,7 @@ class FormBody extends React.Component {
                             value={this.selfState.haMgmtIntfGw}
                             onChange={this.handleChange}
                             placeholder="Enter HA Mgmt Gateway"
+                            validator="ipv4"
                         />
                         <Input 
                             name="haMgmtIntfGw6"
@@ -655,6 +658,7 @@ class FormBody extends React.Component {
                             value={this.selfState.haMgmtIntfGw6}
                             onChange={this.handleChange}
                             placeholder="Enter HA Mgmt Gateway6"
+                            validator="ipv6"
                         />
                     </FoldForm>
                     <div>
@@ -676,6 +680,7 @@ class FormBody extends React.Component {
                             value={this.selfState.fmgIp}
                             onChange={this.handleChange}
                             placeholder="Enter FortiManager IP"
+                            validator="ipv4"
                         />
                     </div>
                 </div>

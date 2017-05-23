@@ -66,6 +66,7 @@ class BoxHeader extends React.Component {
         super(props)
         this.handleChange = this.handleChange.bind(this)
         this.handleSearch = this.handleSearch.bind(this)
+        this.handleKeyPress = this.handleKeyPress.bind(this)
         this.state = {
             search: ''
         }
@@ -77,6 +78,11 @@ class BoxHeader extends React.Component {
         this.setState({
             [name]: value
         })
+    }
+    handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            this.handleSearch(event)
+        }
     }
     handleSearch(e) {
         const { history } = this.props
@@ -95,6 +101,7 @@ class BoxHeader extends React.Component {
                             name="search" 
                             value={this.state.search}
                             onChange={this.handleChange}
+                            onKeyPress={this.handleKeyPress}
                             className="form-control pull-right" 
                             placeholder="Search (fgtIpSn=xxx,fgtIpSn=xxx,fgtIpSn=xxx,...)" 
                         />

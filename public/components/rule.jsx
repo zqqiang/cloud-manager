@@ -36,7 +36,13 @@ ruleStore.updateRules = action(function update({ history, page, search }) {
         history: history,
         cb: (json) => {
             if (json.code === 0) {
-                ruleStore.rules = json.result
+                ruleStore.rules = _.map(json.result, function(rule) {
+                    return _.assign(rule, {
+                        inftChecked: rule.interfaces && (rule.interfaces.length != 0),
+                        routeChecked: rule.routeGw,
+                        haChecked: rule.haGroupName
+                    })
+                })
                 ruleStore.total = json.totalRecords
             } else {
                 alert(json.message)
@@ -418,28 +424,26 @@ const CancelButtonWithRouter = withRouter(CancelButton)
 class FoldForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { show: this.props.initState }
-        this.handleClick = this.handleClick.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
-    handleClick(e) {
-        const target = e.target
-        this.setState(prevState => ({
-            show: !prevState.show
-        }))
+    handleChange(e) {
+        this.props.onChange(e)
     }
     render() {
-        const Minus = <i href="javascript:void(0);" className="fa fa-minus-square" aria-hidden="true"></i>
-        const Plus = <i href="javascript:void(0);" className="fa fa-plus-square" aria-hidden="true"></i>
         return (
             <div>
                 <p 
                     className="lead" 
-                    onClick={this.handleClick} 
                 >
-                    {this.state.show ? Minus : Plus} {this.props.header}
+                    <input 
+                        name={this.props.name}
+                        type="checkbox" 
+                        checked={this.props.checked}
+                        onChange={this.handleChange}
+                    /> {this.props.header}
                 </p>
                 {
-                    this.state.show && 
+                    this.props.checked && 
                     this.props.children
                 }
             </div>
@@ -453,9 +457,28 @@ class FormBody extends React.Component {
         super(props)
         this.selfState = {}
         this.handleChange = this.handleChange.bind(this)
-        this.handleClick = this.handleClick.bind(this)
-        this.state = {
-            show: true
+
+        // #/Home/Rule/xxxx
+        const key = S(window.location.hash).strip('#/Home/Rule/').s;
+
+        if (key) {
+            let index = _.findIndex(ruleStore.rules, function(o) {
+                return o.id == key;
+            })
+            if (index >= 0) {
+                this.selfState = ruleStore.rules[index]
+                this.state = {
+                    inftChecked: this.selfState.interfaces && (this.selfState.interfaces.length != 0),
+                    routeChecked: this.selfState.routeGw,
+                    haChecked: this.selfState.haGroupName
+                }
+            } else {
+                this.state = {
+                    inftChecked: false,
+                    routeChecked: false,
+                    haChecked: false
+                }
+            }
         }
     }
     onHandleSubmit(event) {
@@ -491,71 +514,65 @@ class FormBody extends React.Component {
         const target = e.target
         const name = target.name
         const value = target.value
-
         const type = target.type
+
+        console.log(target, name, value, type)
+
         if (type === 'checkbox') {
             const checked = target.checked
-            this.selfState[name] = checked
+
+            if (name === 'inftChecked') {
+                this.setState({
+                    inftChecked: checked
+                })
+            } else if (name === 'routeChecked') {
+                this.setState({
+                    routeChecked: checked
+                })
+            } else if (name === 'haChecked') {
+                this.setState({
+                    haChecked: checked
+                })
+            } else {
+                this.selfState[name] = checked
+            }
+            console.log(name, checked)
         } else {
             this.selfState[name] = value
         }
     }
-    handleClick(e) {
-        const target = e.target
-        this.setState(prevState => ({
-            show: !prevState.show
-        }))
-        if (this.state.show) {
-
-        }
-    }
     render() {
-        // #/Home/Rule/xxxx
-        const key = S(window.location.hash).strip('#/Home/Rule/').s;
-
-        if (key) {
-            let index = _.findIndex(ruleStore.rules, function(o) {
-                return o.id == key;
-            })
-            if (index >= 0) {
-                this.selfState = ruleStore.rules[index];
-            }
-        }
-
-        const intfInitState = this.selfState.interfaces && this.selfState.interfaces.length != 0
-        const routeInitState = this.selfState.routeId || this.selfState.routeDst || this.selfState.routeIntf || this.selfState.routeGw
-        const switchInitState = this.selfState.purgeVirtualSwitch
-        const haInitState = this.selfState.haMode ||
-            this.selfState.haPriority ||
-            this.selfState.haPrimary ||
-            this.selfState.haGroupName ||
-            this.selfState.haGroupPasswd ||
-            this.selfState.haGroupId ||
-            this.selfState.haMgmtIntf ||
-            this.selfState.haMgmtIntfGw ||
-            this.selfState.haMgmtIntfGw6
-
         return (
             <div className="form-horizontal">
                 <div className="box-body">
                     <Input 
                             name="fgtIpSn"
-                            label="FortiGate SN or IP"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="FortiGateSN/IP"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.fgtIpSn}
                             onChange={this.handleChange}
                             placeholder="Enter FortiGate SN or IP"
                     />
-                    <FoldForm header="Interface" initState={intfInitState} >
+                    <FoldForm 
+                        name="inftChecked"
+                        header="Interface" 
+                        checked={this.state.inftChecked} 
+                        onChange={this.handleChange}
+                    >
                         <InterfaceTable appState={this.selfState} />
                     </FoldForm>
-                    <FoldForm header="Routing" initState={routeInitState}>
+                    <FoldForm 
+                        name="routeChecked"
+                        header="Routing" 
+                        checked={this.state.routeChecked}
+                        onChange={this.handleChange}
+                    >
                         <Input 
                             name="routeId"
-                            label="Routing ID"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="RoutingID"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.routeId}
                             onChange={this.handleChange}
                             placeholder="Enter Routing ID"
@@ -563,8 +580,8 @@ class FormBody extends React.Component {
                         <Input 
                             name="routeIntf"
                             label="Device"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.routeIntf}
                             onChange={this.handleChange}
                             placeholder="Enter Routing Device"
@@ -572,8 +589,8 @@ class FormBody extends React.Component {
                         <Input 
                             name="routeDst"
                             label="Dest"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.routeDst}
                             onChange={this.handleChange}
                             placeholder="Enter Routing Dest"
@@ -582,28 +599,25 @@ class FormBody extends React.Component {
                         <Input 
                             name="routeGw"
                             label="Gateway"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.routeGw}
                             onChange={this.handleChange}
                             placeholder="Enter Routing Gateway"
                             validator="ipv4"
                         />
                     </FoldForm>
-                    <Checkbox 
-                        name="purgeVirtualSwitch"
-                        label="Virtual Switch"
-                        labelOffset="col-sm-offset-3"
-                        editorClass="col-sm-9"
-                        checked={this.selfState.purgeVirtualSwitch}
+                    <FoldForm 
+                        name="haChecked"
+                        header="HA" 
+                        checked={this.state.haChecked}
                         onChange={this.handleChange}
-                    />
-                    <FoldForm header="HA" initState={haInitState} >
+                    >
                         <Input 
                             name="haGroupName"
-                            label="Group Name"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="GroupName"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haGroupName}
                             onChange={this.handleChange}
                             placeholder="Enter Group Name"
@@ -611,62 +625,62 @@ class FormBody extends React.Component {
                         <Input 
                             name="haGroupPasswd"
                             label="Password"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haGroupPasswd}
                             onChange={this.handleChange}
                             placeholder="Enter Group Password"
                         />
                         <Input 
                             name="haGroupId"
-                            label="Group ID"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="GroupID"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haGroupId}
                             onChange={this.handleChange}
                             placeholder="Enter Group ID"
                         />
                         <Select 
                             name="haMode"
-                            label="HA Mode"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="HaMode"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haMode}
                             onChange={this.handleChange}
                             options={['a-p', 'a-a']}
                         />
                         <Input 
                             name="haPrimary"
-                            label="HA Device"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="HaDevice"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haPrimary}
                             onChange={this.handleChange}
                             placeholder="Enter HA Device"
                         />
                         <Input 
                             name="haPriority"
-                            label="HA Priority"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="HaPriority"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haPriority}
                             onChange={this.handleChange}
                             placeholder="Enter HA Priority"
                         />
                         <Input 
                             name="haMgmtIntf"
-                            label="HA Mgmt Interface"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="HaMgmtInterface"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haMgmtIntf}
                             onChange={this.handleChange}
                             placeholder="Enter HA Mgmt Interface"
                         />
                         <Input 
                             name="haMgmtIntfGw"
-                            label="HA Mgmt Gateway"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="HaMgmtGateway"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haMgmtIntfGw}
                             onChange={this.handleChange}
                             placeholder="Enter HA Mgmt Gateway"
@@ -674,31 +688,38 @@ class FormBody extends React.Component {
                         />
                         <Input 
                             name="haMgmtIntfGw6"
-                            label="HA Mgmt Gateway6"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="HaMgmtGateway6"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.haMgmtIntfGw6}
                             onChange={this.handleChange}
                             placeholder="Enter HA Mgmt Gateway6"
                             validator="ipv6"
                         />
                     </FoldForm>
+                    <FoldForm 
+                        name="purgeVirtualSwitch"
+                        header="Purge Virtual Switch" 
+                        checked={this.selfState.purgeVirtualSwitch}
+                        onChange={this.handleChange}
+                    >
+                    </FoldForm>
                     <div>
                         <p className="lead">FortiManager</p>
                         <Input 
                             name="fmgSn"
-                            label="FortiManager SN"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="FortiManagerSN"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.fmgSn}
                             onChange={this.handleChange}
                             placeholder="Enter FortiManager SN"
                         />
                         <Input 
                             name="fmgIp"
-                            label="FortiManager IP"
-                            labelClass="col-sm-3"
-                            editorClass="col-sm-9"
+                            label="FortiManagerIP"
+                            labelClass="col-md-2"
+                            editorClass="col-md-10"
                             value={this.selfState.fmgIp}
                             onChange={this.handleChange}
                             placeholder="Enter FortiManager IP"
@@ -727,7 +748,7 @@ function FormContent() {
     return (
         <section className="content">
             <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <div className="box box-primary">
                         <FormTitle />
                         <FormBodyWithRouter />

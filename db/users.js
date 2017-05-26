@@ -1,5 +1,5 @@
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('/etc/fortideploy.db');
+var db = new sqlite3.Database('/opt/fortinet/forticloud/db/fortideploy.db');
 var bcrypt = require('bcrypt')
 
 var records = [];

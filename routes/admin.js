@@ -15,7 +15,7 @@ router.put('/', function(req, res) {
     }
 
     var sqlite3 = require('sqlite3').verbose();
-    var db = new sqlite3.Database('/etc/fortideploy.db');
+    var db = new sqlite3.Database('/opt/fortinet/forticloud/db/fortideploy.db');
 
     const saltRounds = 10;
     const hash = bcrypt.hashSync(req.body.newPassword, saltRounds);

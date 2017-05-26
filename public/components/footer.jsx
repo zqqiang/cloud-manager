@@ -6,7 +6,7 @@ function MainFooter() {
             <div className="pull-right hidden-xs">
               <b>Version</b> 1.0.0
             </div>
-            <strong>Copyright &copy; 2017 <a href="javascript:void(0);">FortiDeploy</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2017 <a href="javascript:void(0);">Fortinet, Inc</a>.</strong> All rights reserved.
         </footer>
     );
 }

@@ -17,6 +17,27 @@ var _ = require('lodash');
 
 let ruleStore = observable({
     rules: [],
+    new: {
+        haDev: '',
+        haGroupId: '',
+        haGroupName: '',
+        haGroupPasswd: '',
+        haMgmtIntf: '',
+        haMgmtIntfGw: '',
+        haMgmtIntfGw6: '',
+        haMgmtStatus: '',
+        haMode: '',
+        haPrimary: '',
+        haPriority: '',
+        intfIpMask: '',
+        intfName: '',
+        purgeVirtualSwitch: '',
+        routeDst: '',
+        routeGw: '',
+        routeId: '',
+        routeIntf: ''
+    },
+    pageSize: 20,
     total: 0
 });
 
@@ -251,14 +272,14 @@ class BoxFooter extends React.Component {
     }
     doubleRight(e) {
         const total = ruleStore.total
-        const pageSize = 10
-        const pageTotal = Math.round(parseInt(total / pageSize, 10)) + 1
+        const pageSize = ruleStore.pageSize
+        const pageTotal = Math.round(parseInt((total + (pageSize - 1)) / pageSize, 10))
         this.setState((prevState) => ({ current: pageTotal }))
     }
     render() {
         const total = ruleStore.total
-        const pageSize = 10
-        const pageTotal = Math.round(parseInt(total / pageSize, 10)) + 1
+        const pageSize = ruleStore.pageSize
+        const pageTotal = Math.round(parseInt((total + (pageSize - 1)) / pageSize, 10))
         let list = []
         let range = []
 
@@ -272,7 +293,7 @@ class BoxFooter extends React.Component {
             list.push(<li key="left" onClick={this.left}><a href="javascript:void(0);" name="left"><i className="fa fa-angle-left" aria-hidden="true"></i></a></li>)
         }
 
-        range = _.range(start, end < pageTotal ? end : pageTotal)
+        range = _.range(start, end < pageTotal ? end + 1 : pageTotal + 1)
         list.push(range.map((page, index) => {
             return (
                 <li key={index + 1} onClick={this.page} >
@@ -431,7 +452,7 @@ class FoldForm extends React.Component {
     }
     render() {
         return (
-            <div>
+            <div className="">
                 <p 
                     className="lead" 
                 >
@@ -443,9 +464,9 @@ class FoldForm extends React.Component {
                     /> {this.props.header}
                 </p>
                 {
-                    this.props.checked && 
-                    this.props.children
+                    this.props.checked ? this.props.children : ''
                 }
+                <hr />
             </div>
         )
     }
@@ -473,6 +494,7 @@ class FormBody extends React.Component {
                     haChecked: this.selfState.haGroupName
                 }
             } else {
+                this.selfState = ruleStore.new
                 this.state = {
                     inftChecked: false,
                     routeChecked: false,
@@ -486,6 +508,22 @@ class FormBody extends React.Component {
 
         let url = '';
         let method = '';
+
+        if (S(this.selfState.fgtIpSn).isEmpty()) {
+            return alert('Please enter fortigate IP or SN!')
+        }
+        if (S(this.selfState.fmgSn).isEmpty()) {
+            return alert('Please enter fortimanager SN!')
+        }
+        if (S(this.selfState.fmgIp).isEmpty()) {
+            return alert('Please enter fortimanager IP!')
+        }
+        if (this.state.routeChecked && S(this.selfState.routeGw).isEmpty()) {
+            return alert('Please enter route gateway!')
+        }
+        if (this.state.haChecked & S(this.selfState.haGroupName).isEmpty()) {
+            return alert('Please enter ha group name!')
+        }
 
         if (parseInt(key)) {
             url = '/api/Rule?key=' + key;
@@ -516,27 +554,32 @@ class FormBody extends React.Component {
         const value = target.value
         const type = target.type
 
-        console.log(target, name, value, type)
-
         if (type === 'checkbox') {
             const checked = target.checked
-
             if (name === 'inftChecked') {
                 this.setState({
                     inftChecked: checked
                 })
+                if (!checked) {
+                    this.selfState['interfaces'] = []
+                }
             } else if (name === 'routeChecked') {
                 this.setState({
                     routeChecked: checked
                 })
+                if (!checked) {
+                    this.selfState['routeGw'] = ''
+                }
             } else if (name === 'haChecked') {
                 this.setState({
                     haChecked: checked
                 })
+                if (!checked) {
+                    this.selfState['haGroupName'] = ''
+                }
             } else {
                 this.selfState[name] = checked
             }
-            console.log(name, checked)
         } else {
             this.selfState[name] = value
         }
@@ -624,6 +667,7 @@ class FormBody extends React.Component {
                         />
                         <Input 
                             name="haGroupPasswd"
+                            type="password"
                             label="Password"
                             labelClass="col-md-2"
                             editorClass="col-md-10"

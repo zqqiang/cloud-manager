@@ -1,4 +1,5 @@
 import React from 'react'
+var _ = require('lodash')
 
 const validate = {
     ipv4: /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/g,
@@ -16,14 +17,24 @@ export class Input extends React.Component {
     }
     handleChange(e) {
         this.props.onChange(e)
-        const validator = validate[this.props.validator]
-        if (validator) {
+        if (_.isFunction(this.props.validator)) {
             this.setState({
-                error: !e.target.value.match(validator)
+                error: this.props.validator()
             })
+        } else {
+            const validator = validate[this.props.validator]
+            if (validator) {
+                this.setState({
+                    error: !e.target.value.match(validator)
+                })
+            }
         }
     }
     render() {
+        let error = this.props.validator
+        if (_.isFunction(this.props.validator)) {
+            error = 'input'
+        }
         return (
             <div className={"form-group" + (this.state.error ? " has-error" : "")}>
                 <label className={this.props.labelClass + " control-label"}>{this.props.label}</label>
@@ -36,7 +47,7 @@ export class Input extends React.Component {
                         className="form-control" 
                         placeholder={this.props.placeholder} 
                     />
-                    {this.state.error && <span className="help-block">{"Invalid " + this.props.validator}</span>}
+                    {this.state.error && <span className="help-block">{"Invalid " + error}</span>}
                 </div>
             </div>
         )

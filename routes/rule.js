@@ -4,8 +4,9 @@ const net = require('net');
 
 router.get('/', function(req, res, next) {
     let offset = 0;
+    let recordPerPage = 20;
     if (req.query.page) {
-        offset = req.query.page - 1
+        offset = (req.query.page - 1) * recordPerPage;
     }
     let filter = ''
     if (req.query.filter) {
@@ -17,7 +18,7 @@ router.get('/', function(req, res, next) {
         filter: filter,
         page: {
             "offset": offset,
-            "limit": 10
+            "limit": recordPerPage
         }
     }
 

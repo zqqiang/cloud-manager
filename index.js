@@ -8,6 +8,9 @@ var favicon = require('serve-favicon');
 const dgram = require('dgram');
 var bodyParser = require('body-parser');
 var passport = require('./auth/auth');
+var process = require('process');
+var fs = require('fs');
+fs.writeFile("/var/run/nodeportal.pid", process.pid);
 
 var app = express();
 

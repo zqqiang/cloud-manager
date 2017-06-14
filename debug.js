@@ -43,6 +43,20 @@ function factory() {
 
 let datas = factory();
 
+function logFactory() {
+    let logs = [];
+    for (let i = 0; i < 10000; ++i) {
+        logs.push({
+            name: "FGT60D46130533" + i,
+            timestamp: 1497052637 + i*60*60,
+            fmgIp: "172.16.95." + i,
+            fmgSn: "FMG-VM0A110001" + i,
+            rawRule: ""
+        })
+    }
+    return logs;
+}
+
 const server = net.createServer((c) => {
     c.on('end', () => {
 
@@ -119,9 +133,18 @@ const server = net.createServer((c) => {
                 code: 0,
                 message: "ok",
             }
+        } else if (json.url === '/system/expireCheck' && json.method === 'get') {
+            payload = {
+                code: 0,
+                message: "ok",
+                expired: 0,
+                showAlert: 1,
+                expireDate: "Feb 2 23:22:22 2020 GMT"
+            }
         }
 
         c.write(JSON.stringify(payload))
+        c.pipe(c);
 
         console.log('send: ' + JSON.stringify(payload))
     })

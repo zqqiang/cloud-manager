@@ -9,6 +9,8 @@ import {
 import { Input, Button } from './editor.jsx'
 import Fetch from '../modules/net'
 
+var NotificationSystem = require('react-notification-system');
+
 function Header() {
     return (
         <section className="content-header">
@@ -61,11 +63,15 @@ class Content extends React.Component {
         this.onCancel = this.onCancel.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
+        this._notificationSystem = null
         this.state = {
             oldPassword: '',
             newPassword: '',
             confirmPassword: '',
         }
+    }
+    componentDidMount() {
+        this._notificationSystem = this.refs.notificationSystem;
     }
     onCancel() {
         const { history } = this.props
@@ -73,7 +79,10 @@ class Content extends React.Component {
     }
     onSubmit() {
         if (this.state.newPassword !== this.state.confirmPassword) {
-            return alert('New password and Re-enter password are different!')
+            return this._notificationSystem.addNotification({
+                message: 'New password and Re-enter password are different!',
+                level: 'warning'
+            })
         }
         const { history } = this.props
         return Fetch({
@@ -83,9 +92,15 @@ class Content extends React.Component {
             history: history,
             cb: (json) => {
                 if (0 === json.code) {
-                    alert('Password Change Success!')
+                    this._notificationSystem.addNotification({
+                        message: 'Password Change Success!',
+                        level: 'success'
+                    })
                 } else {
-                    alert(json.message)
+                    this._notificationSystem.addNotification({
+                        message: json.message,
+                        level: 'error'
+                    })
                 }
             }
         })
@@ -112,6 +127,7 @@ class Content extends React.Component {
                             <div className="box-header with-border">
                                 <h3 className="box-title">Change Password</h3>
                             </div>
+                            <NotificationSystem ref="notificationSystem" />
                             <AdminForm options={options} onChange={this.handleChange} />
                             <div className="box-footer">
                                 <Button buttonClass="btn-default" label="Cancel" action={this.onCancel} />

@@ -30,6 +30,8 @@ let SystemSetting = require('./routes/system');
 let Backup = require('./routes/backup');
 let Restore = require('./routes/restore');
 let Admin = require('./routes/admin');
+let Expire = require('./routes/expire');
+let Log = require('./routes/log');
 const Checker = require('./auth/checker');
 
 app.use('/Login', Login);
@@ -39,6 +41,8 @@ app.use('/api/Rule', Rule);
 app.use('/api/System', SystemSetting);
 app.use('/api/Backup', Backup);
 app.use('/api/Admin', Admin);
+app.use('/api/Expire', Expire);
+app.use('/api/Log', Log);
 
 app.use('/Restore', Restore);
 

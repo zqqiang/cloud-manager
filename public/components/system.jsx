@@ -63,7 +63,7 @@ class Content extends React.Component {
                 if (json.code === 0) {
                     this.setState(json.result)
                 } else {
-                    alert(json.message)
+                    console.log(json.message)
                 }
             }
         })

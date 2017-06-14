@@ -1,6 +1,6 @@
 import AuthInstance from '../modules/auth'
 
-const Fetch = function _fetch({ method, url, type, body, history, cb }) {
+const Fetch = function _fetch({ method, url, type, body, history, cb, notification }) {
     let acceptType = 'application/json'
     let contentType = 'application/json'
 
@@ -54,9 +54,19 @@ const Fetch = function _fetch({ method, url, type, body, history, cb }) {
         .catch((error) => {
             let status = error.response.status
             if (status === 401) {
-                alert('User Unauthorized!')
-                AuthInstance.signOut()
-                history.push('/')
+                if (notification) {
+                    notification.addNotification({
+                        message: 'User Unauthorized!',
+                        level: 'error',
+                        onRemove: function() {
+                            AuthInstance.signOut()
+                            history.push('/')
+                        }
+                    })
+                } else {
+                    AuthInstance.signOut()
+                    history.push('/')
+                }
             } else {
                 console.log(error)
             }

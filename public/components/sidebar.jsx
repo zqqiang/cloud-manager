@@ -30,6 +30,12 @@ function Sidebar() {
                             <span>Backup & Restore</span>
                         </Link>
                     </li>
+                    <li className="treeview">
+                        <Link to="/Home/Log">
+                            <i className="fa fa-bar-chart" aria-hidden="true"></i>
+                            <span>Log & Report</span>
+                        </Link>
+                    </li>
                 </ul>
             </section>
         </aside>

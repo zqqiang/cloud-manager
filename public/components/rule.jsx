@@ -14,6 +14,7 @@ import { Input, Checkbox, Select } from './editor.jsx'
 
 var S = require('string');
 var _ = require('lodash');
+var NotificationSystem = require('react-notification-system');
 
 let ruleStore = observable({
     rules: [],
@@ -66,7 +67,7 @@ ruleStore.updateRules = action(function update({ history, page, search }) {
                 })
                 ruleStore.total = json.totalRecords
             } else {
-                alert(json.message)
+                console.log(json.message)
             }
         }
     })
@@ -179,7 +180,7 @@ class RuleTableTr extends React.Component {
                 if (json.code === 0) {
                     history.push('/Home/Rule')
                 } else {
-                    alert(json.message)
+                    console.log(json.message)
                 }
             }
         })
@@ -478,6 +479,7 @@ class FormBody extends React.Component {
         super(props)
         this.selfState = {}
         this.handleChange = this.handleChange.bind(this)
+        this._notificationSystem = null
 
         // #/Home/Rule/xxxx
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
@@ -503,6 +505,9 @@ class FormBody extends React.Component {
             }
         }
     }
+    componentDidMount() {
+        this._notificationSystem = this.refs.notificationSystem;
+    }
     onHandleSubmit(event) {
         const key = S(window.location.hash).strip('#/Home/Rule/').s;
 
@@ -510,19 +515,34 @@ class FormBody extends React.Component {
         let method = '';
 
         if (S(this.selfState.fgtIpSn).isEmpty()) {
-            return alert('Please enter fortigate IP or SN!')
+            return this._notificationSystem.addNotification({
+                message: 'Please enter fortigate IP or SN!',
+                level: 'warning'
+            })
         }
         if (S(this.selfState.fmgSn).isEmpty()) {
-            return alert('Please enter fortimanager SN!')
+            return this._notificationSystem.addNotification({
+                message: 'Please enter fortimanager SN!',
+                level: 'warning'
+            })
         }
         if (S(this.selfState.fmgIp).isEmpty()) {
-            return alert('Please enter fortimanager IP!')
+            return this._notificationSystem.addNotification({
+                message: 'Please enter fortimanager IP!',
+                level: 'warning'
+            })
         }
         if (this.state.routeChecked && S(this.selfState.routeGw).isEmpty()) {
-            return alert('Please enter route gateway!')
+            return this._notificationSystem.addNotification({
+                message: 'Please enter route gateway!',
+                level: 'warning'
+            })
         }
         if (this.state.haChecked & S(this.selfState.haGroupName).isEmpty()) {
-            return alert('Please enter ha group name!')
+            return this._notificationSystem.addNotification({
+                message: 'Please enter ha group name!',
+                level: 'warning'
+            })
         }
 
         if (parseInt(key)) {
@@ -543,7 +563,7 @@ class FormBody extends React.Component {
                 if (json.code === 0) {
                     history.push('/Home/Rule')
                 } else {
-                    alert(json.message)
+                    console.log(json.message)
                 }
             }
         })
@@ -587,6 +607,7 @@ class FormBody extends React.Component {
     render() {
         return (
             <div className="form-horizontal">
+                <NotificationSystem ref="notificationSystem" />
                 <div className="box-body">
                     <Input 
                             name="fgtIpSn"

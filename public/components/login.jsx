@@ -9,17 +9,23 @@ import {
 import AuthInstance from '../modules/auth'
 import Fetch from '../modules/net'
 
+var NotificationSystem = require('react-notification-system');
+
 class LoginForm extends React.Component {
     constructor(props) {
         super(props)
+        this._notificationSystem = null
         this.state = {
             username: '',
             password: ''
         }
     }
+    componentDidMount() {
+        this._notificationSystem = this.refs.notificationSystem;
+    }
     onHandleClick(e) {
         const { history } = this.props
-        if (this.state.username && this.state.password) {
+        if (this.state.username) {
             return Fetch({
                 method: 'POST',
                 url: '/Login',
@@ -35,10 +41,14 @@ class LoginForm extends React.Component {
                         token: json.token
                     })
                     history.push('/Home/Rule')
-                }
+                },
+                notification: this._notificationSystem
             })
         } else {
-            alert('Must Input Username with Password!')
+            this._notificationSystem.addNotification({
+                message: 'Must Input Username with Password!',
+                level: 'warning'
+            })
         }
     }
     onHandleChange(event) {
@@ -57,6 +67,7 @@ class LoginForm extends React.Component {
     render() {
         return (
             <div className="">
+                <NotificationSystem ref="notificationSystem" />
                 <div className="form-group has-feedback">
                     <input type="text" 
                            name="username" 

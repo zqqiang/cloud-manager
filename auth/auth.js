@@ -1,8 +1,8 @@
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-const jwt =  require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 var db = require('../db');
-var bcrypt = require('bcrypt');
+var crypto = require('crypto');
 
 passport.auth = {};
 
@@ -16,9 +16,10 @@ passport.use(new Strategy(
                 return cb(null, false);
             }
             console.log(user.password, password);
-            if (!bcrypt.compareSync(password, user.password)) {
+            if (user.password != db.users.getPasswdHash(password)) {
                 return cb(null, false);
             }
+
             const payload = {
                 sub: user.id
             }

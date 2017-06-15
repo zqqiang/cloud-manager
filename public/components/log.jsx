@@ -41,13 +41,12 @@ class LogTable extends React.Component {
     constructor(props) {
         super(props)
         this.handleRefresh = this.handleRefresh.bind(this)
-        this.handleBack = this.handleBack.bind(this)
         this.handleDownload = this.handleDownload.bind(this)
         this.handleDelete = this.handleDelete.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleWheel = this.handleWheel.bind(this)
-        this.handleRowClick = this.handleRowClick.bind(this)
         this.handleModalClose = this.handleModalClose.bind(this)
+        this.ruleFormatter = this.ruleFormatter.bind(this)
         this._notificationSystem = null
         this.state = {
             modalText: [],
@@ -71,22 +70,24 @@ class LogTable extends React.Component {
             history: history,
             cb: (json) => {
                 if (json.code === 0) {
+                    let start = (json.ts.length > 1000) ? (json.ts.length - 1000) : 0
+                    let end = json.ts.length - 1
                     this.setState({
                         ts: json.ts,
-                        max: json.ts.length,
-                        range: [json.ts.length - 1000, json.ts.length - 1]
+                        max: json.ts.length - 1,
+                        range: [start, end]
                     })
-                    this.c3Gen()
+                    this.c3Gen([start, end])
                 } else {
                     console.log(json.message)
                 }
             }
         })
     }
-    c3Gen(datas) {
+    c3Gen(range) {
         let self = this
-        let start = this.state.ts[this.state.range[0] - 1]
-        let end = this.state.ts[this.state.range[1] - 1]
+        let start = this.state.ts[range[0]]
+        let end = this.state.ts[range[1]]
         const { history } = this.props
         Fetch({
             method: 'GET',
@@ -96,6 +97,9 @@ class LogTable extends React.Component {
                 if (json.code === 0) {
                     c3.generate({
                         bindto: '#chart',
+                        size: {
+                            height: 200
+                        },
                         data: {
                             x: 'x',
                             columns: [
@@ -111,24 +115,21 @@ class LogTable extends React.Component {
                         },
                         axis: {
                             x: {
-                                type: 'timeseries',
-                                tick: {
-                                    format: '%Y-%m-%d'
-                                }
+                                type: 'category',
                             }
                         }
                     });
-                    this.tableRefresh();
+                    this.tableRefresh([start, end]);
                 } else {
                     console.log(json.message)
                 }
             }
         })
     }
-    tableRefresh() {
+    tableRefresh(range) {
         let self = this
-        let start = this.state.ts[this.state.range[0] - 1]
-        let end = this.state.ts[this.state.range[1] - 1]
+        let start = range[0]
+        let end = range[1]
         const { history } = this.props
         Fetch({
             method: 'GET',
@@ -152,9 +153,6 @@ class LogTable extends React.Component {
             level: 'success'
         })
     }
-    handleBack(e) {
-        this.refresh()
-    }
     handleDownload() {
         const { history } = this.props
         return Fetch({
@@ -176,7 +174,6 @@ class LogTable extends React.Component {
             type: 'text',
             history: history,
             cb: (json) => {
-                console.log(json)
                 if (json.code === 0) {
                     this._notificationSystem.addNotification({
                         message: 'Delete Suceess!',
@@ -195,37 +192,53 @@ class LogTable extends React.Component {
         this.setState({
             range: domain
         })
-        this.c3Gen()
+        this.c3Gen(domain)
     }
     handleWheel(e) {
         e.preventDefault();
+        let step = Math.round((this.state.ts.length / 100) + 1)
         if (e.deltaY > 0) {
-            this.setState((prevState) => ({
-                range: [
-                    (prevState.range[0] - 10 > 0) ? (prevState.range[0] - 10) : (prevState.range[0]),
-                    (prevState.range[1] + 10 > this.state.ts.length) ? (prevState.range[1]) : (prevState.range[1] + 10)
-                ]
-            }))
+            this.setState((prevState) => {
+                let start = (prevState.range[0] - step >= 0) ? (prevState.range[0] - step) : (prevState.range[0])
+                let end = (prevState.range[1] + step > this.state.max) ? (prevState.range[1]) : (prevState.range[1] + step)
+                this.c3Gen([start, end])
+                return {
+                    range: [
+                        start,
+                        end
+                    ]
+                }
+            })
         } else {
-            this.setState((prevState) => ({
-                range: [
-                    (prevState.range[0] + 10 > prevState.range[1]) ? (prevState.range[0]) : (prevState.range[0] + 10),
-                    (prevState.range[1] - 10 > prevState.range[0]) ? (prevState.range[1] - 10) : (prevState.range[1])
-                ]
-            }))
+            this.setState((prevState) => {
+                let start = (prevState.range[0] + step > prevState.range[1] - step) ? (prevState.range[0]) : (prevState.range[0] + step)
+                let end = (prevState.range[1] - step >= prevState.range[0] + step) ? (prevState.range[1] - step) : (prevState.range[1])
+                this.c3Gen([start, end])
+                return {
+                    range: [
+                        start,
+                        end
+                    ]
+                }
+            })
         }
-        this.c3Gen()
-    }
-    handleRowClick(row) {
-        this.setState({ showModal: true, modalText: S(row.rawRule).parseCSV('\n') });
     }
     handleModalClose() {
         this.setState({ showModal: false });
     }
+    ruleFormatter(cell, row) {
+        let self = this
+
+        function handleCellClick(e) {
+            self.setState({ showModal: true, modalText: S(row.rawRule).parseCSV('\n') })
+        }
+        return (
+            <div onClick={handleCellClick}>
+                <a href="javascript:void(0);"><i className="fa fa-eye" aria-hidden="true" ></i></a>
+            </div>
+        )
+    }
     render() {
-        const options = {
-            onRowClick: this.handleRowClick
-        };
         return (
             <section className="content">
                 <NotificationSystem ref="notificationSystem" />
@@ -259,7 +272,6 @@ class LogTable extends React.Component {
                                             <MenuItem eventKey="30d" onSelect={this.handleDelete}>Delete Last 30 Days</MenuItem>
                                             <MenuItem eventKey="3m" onSelect={this.handleDelete}>Delete Last 3 Months</MenuItem>
                                         </DropdownButton>
-                                        <Button onClick={this.handleBack}>Back</Button>
                                         <Button onClick={this.handleRefresh}>Refresh</Button>
                                         <Button onClick={this.handleDownload}>Download</Button>
                                     </ButtonGroup>
@@ -271,7 +283,6 @@ class LogTable extends React.Component {
                                     <Range 
                                         max={this.state.max} 
                                         value={this.state.range} 
-                                        pushable={true} 
                                         tipFormatter={value => `${moment.unix(this.state.ts[value]).format('YYYY-MM-D')}`} 
                                         onChange={this.handleChange}
                                     />
@@ -280,7 +291,6 @@ class LogTable extends React.Component {
                             <div className="box-body">
                                 <BootstrapTable 
                                     data={ this.state.data } 
-                                    options={ options }
                                     pagination
                                 >
                                     <TableHeaderColumn 
@@ -308,7 +318,7 @@ class LogTable extends React.Component {
                                     >
                                         FortiManager IP
                                     </TableHeaderColumn>
-                                    <TableHeaderColumn dataField='rawRule'>Rule</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='rawRule' dataFormat={ this.ruleFormatter }>Rule</TableHeaderColumn>
                                 </BootstrapTable>
                             </div>
                         </div>

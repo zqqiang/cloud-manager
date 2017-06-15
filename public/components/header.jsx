@@ -6,6 +6,14 @@ import {
     Redirect,
     withRouter
 } from 'react-router-dom'
+import {
+    Button,
+    ButtonGroup,
+    DropdownButton,
+    MenuItem,
+    Dropdown,
+    Modal
+} from 'react-bootstrap';
 import AuthInstance from '../modules/auth'
 import Fetch from '../modules/net'
 
@@ -19,6 +27,24 @@ function MainHeaderLogo() {
             </span>
         </Link>
     );
+}
+
+class CustomToggle extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.handleClick = this.handleClick.bind(this);
+    }
+    handleClick(e) {
+        e.preventDefault();
+        this.props.onClick(e);
+    }
+    render() {
+        return (
+            <a href="javascript:void(0);" onClick={this.handleClick}>
+                {this.props.children}
+            </a>
+        );
+    }
 }
 
 class Notification extends React.Component {
@@ -40,7 +66,6 @@ class Notification extends React.Component {
             url: 'api/Expire',
             cb: (json) => {
                 if (json.code === 0) {
-                    console.log(json)
                     this.setState({
                         alert: json.showAlert,
                         message: json.message
@@ -53,30 +78,26 @@ class Notification extends React.Component {
     }
     render() {
         return (
-            <li className={"dropdown notifications-menu" + (this.state.open ? " open" : "")}>
-                <a 
-                    href="javascript:void(0);" 
-                    className="dropdown-toggle" 
-                    data-toggle="dropdown" 
-                    aria-expanded={this.state.open ? "true" : "false"}
-                    onClick={this.handleClick}
-                >
+            <Dropdown id="notification" className="notifications-menu" componentClass="li" >
+                <CustomToggle bsRole="toggle">
                     <i className="fa fa-bell-o"></i>
                     <span className="label label-danger">{this.state.alert ? 1 : ''}</span>
-                </a>
-                <ul className="dropdown-menu">
+                </CustomToggle>
+                <Dropdown.Menu className="super-colors">
                     <li className="header">You have {this.state.alert} notifications</li>
-                    <li>
-                        <ul className="menu">
-                            <li>
-                                <a href="javascript:void(0);">
-                                    <i className="fa fa-warning text-red"></i> {this.state.message}
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
+                    {this.state.alert > 0 &&
+                        <li>
+                            <ul className="menu">
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <i className="fa fa-warning text-red"></i> {this.state.message}
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                </Dropdown.Menu>
+            </Dropdown>
         )
     }
 }

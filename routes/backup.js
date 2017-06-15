@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const net = require('net');
 const fs = require('fs');
+const _ = require('lodash');
 
 router.get('/', function(req, res) {
     let payload = {
@@ -38,8 +39,15 @@ router.get('/Log', function(req, res) {
     db.all("SELECT ts, name, fmgsn, fmgip, rule FROM log", function(err, rows) {
         if (err) console.log(err);
         db.close();
-
-        fs.writeFile('/tmp/data.csv', JSON.stringify(rows), (err) => {
+        var file = '';
+        rows.forEach(function(row) {
+            var line = '';
+            _.each(row, function(value, key) {
+                line += (key + '=' + encodeURI(value) + ' ');
+            })
+            file += (line + '\r\n');
+        })
+        fs.writeFile('/tmp/data.csv', file, (err) => {
             if (err) throw err;
             res.download('/tmp/data.csv', 'backup.log', function(err) {
                 if (err) {

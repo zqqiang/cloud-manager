@@ -33,8 +33,11 @@ class Content extends React.Component {
         super(props)
         this.handleBackup = this.handleBackup.bind(this)
         this.handleRestore = this.handleRestore.bind(this)
-        this.handleAppend = this.handleAppend.bind(this)
+        this.handleAppendChange = this.handleAppendChange.bind(this)
         this._notificationSystem = null
+        this.state = {
+            append: false
+        }
     }
     handleBackup() {
         const { history } = this.props
@@ -51,6 +54,7 @@ class Content extends React.Component {
     handleRestore() {
         if (this.restore) {
             this.restore.formData = {
+                'append': this.state.append,
                 'Authorization': 'Bearer ' + AuthInstance.getToken()
             };
             this.restore.submit()
@@ -61,24 +65,15 @@ class Content extends React.Component {
             })
         }
     }
-    handleAppend() {
-        if (this.append) {
-            this.append.formData = {
-                'Authorization': 'Bearer ' + AuthInstance.getToken()
-            };
-            this.append.submit()
-        } else {
-            this._notificationSystem.addNotification({
-                message: 'Select Append Configuration First!',
-                level: 'warning'
-            })
-        }
+    handleAppendChange(e) {
+        this.setState((prevState) => ({ append: !prevState.append }))
     }
     componentDidMount() {
         this._notificationSystem = this.refs.notificationSystem
         let notify = this._notificationSystem
         $('#restoreUpload').fileupload({
             dataType: 'json',
+            url: '/Restore',
             replaceFileInput: false,
             add: (e, data) => {
                 this.restore = data
@@ -86,19 +81,6 @@ class Content extends React.Component {
             done: function(e, data) {
                 notify.addNotification({
                     message: 'File Upload Success!',
-                    level: 'success'
-                })
-            }
-        })
-        $('#appendUpload').fileupload({
-            dataType: 'json',
-            replaceFileInput: false,
-            add: (e, data) => {
-                this.append = data
-            },
-            done: function(e, data) {
-                notify.addNotification({
-                    message: 'File Append Success!',
                     level: 'success'
                 })
             }
@@ -112,11 +94,11 @@ class Content extends React.Component {
                     <div className="col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Configuration Backup</h3>
+                                <h3 className="box-title">Deploy Rule Export</h3>
                             </div>
                             <div className="box-body">
                                 <a className="btn btn-app" onClick={this.handleBackup}>
-                                    <i className="fa fa-save"></i> Backup
+                                    <i className="fa fa-save"></i> Export
                                 </a>
                             </div>
                         </div>
@@ -126,7 +108,7 @@ class Content extends React.Component {
                     <div className="col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Configuration Restore</h3>
+                                <h3 className="box-title">Deploy Rule Import</h3>
                             </div>
                             <div className="box-body">
                                 <div className="form-group">
@@ -135,38 +117,21 @@ class Content extends React.Component {
                                         id="restoreUpload"
                                         type="file"
                                         name="files[]"
-                                        data-url="/Restore"
                                         multiple
                                     />
                                     <p className="help-block" id="context" >Choose your file here</p>
+                                </div>
+                                <div className="checkbox">
+                                    <label>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={this.state.append} 
+                                            onChange={this.handleAppendChange}
+                                        /> Append import
+                                    </label>
                                 </div>
                                 <a className="btn btn-app" onClick={this.handleRestore}>
-                                    <i className="fa fa-repeat"></i> Restore
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Configuration Append</h3>
-                            </div>
-                            <div className="box-body">
-                                <div className="form-group">
-                                    <label >File input</label>
-                                    <input 
-                                        id="appendUpload"
-                                        type="file"
-                                        name="files[]"
-                                        data-url="/Restore/Append"
-                                        multiple
-                                    />
-                                    <p className="help-block" id="context" >Choose your file here</p>
-                                </div>
-                                <a className="btn btn-app" onClick={this.handleAppend}>
-                                    <i className="fa fa-repeat"></i> Append
+                                    <i className="fa fa-repeat"></i> Import
                                 </a>
                             </div>
                         </div>

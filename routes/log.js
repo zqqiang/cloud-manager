@@ -32,12 +32,16 @@ router.get('/Count', function(req, res) {
     var count = {};
     console.log(req.query);
     db.serialize(function() {
-        db.all("SELECT ts AS timestamp, COUNT(ts) AS count FROM log WHERE ts > ? AND ts < ? GROUP BY ts ORDER BY ts ASC",
+        db.all("SELECT ts AS timestamp, COUNT(ts) AS count FROM log WHERE ts >= ? AND ts <= ? GROUP BY ts ORDER BY ts ASC",
             req.query.start, req.query.end,
             function(err, rows) {
                 if (err) return console.log(err);
                 rows.forEach(function(row) {
-                    count[moment.unix(row.timestamp).format("YYYY-MM-D")] = row.count;
+                    if (count[moment.unix(row.timestamp).format("YYYY-MM-D")]) {
+                        count[moment.unix(row.timestamp).format("YYYY-MM-D")] += row.count;
+                    } else {
+                        count[moment.unix(row.timestamp).format("YYYY-MM-D")] = row.count;
+                    }
                 })
             });
     });
@@ -55,14 +59,14 @@ router.get('/Tables', function(req, res) {
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
     var records = [];
-    db.all("SELECT ts, name, fmgsn, fmgip, rule FROM log WHERE ts > ? AND ts < ? GROUP BY ts ORDER BY ts ASC",
+    db.all("SELECT ts, name, fmgsn, fmgip, rule FROM log WHERE ts >= ? AND ts <= ? ORDER BY ts ASC",
         req.query.start, req.query.end,
         function(err, rows) {
             if (err) return console.log(err);
             rows.forEach(function(row) {
                 records.push({
                     timestamp: row.ts,
-                    timestring: moment.unix(row.ts).format("MM-D-YYYY, h:mm:ss a"),
+                    timestring: moment.unix(row.ts).format("YYYY-MM-D, h:mm:ss a"),
                     timeYearMonth: moment.unix(row.ts).format("YYYY-MM"),
                     timeYearMonthDay: moment.unix(row.ts).format("YYYY-MM-D"),
                     name: row.name,
@@ -106,7 +110,7 @@ router.delete('/', function(req, res) {
     }
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
-    db.run("DELETE FROM log WHERE ts > " + start + " AND ts < " + end, function(err) {
+    db.run("DELETE FROM log WHERE ts >= " + start + " AND ts <= " + end, function(err) {
         if (err) console.log(err);
         db.close();
         var rsp = {

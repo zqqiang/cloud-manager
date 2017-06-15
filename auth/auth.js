@@ -15,7 +15,6 @@ passport.use(new Strategy(
             if (!user) {
                 return cb(null, false);
             }
-            console.log(user.password, password);
             if (user.password != db.users.getPasswdHash(password)) {
                 return cb(null, false);
             }

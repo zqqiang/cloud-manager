@@ -27,13 +27,13 @@ function Sidebar() {
                     <li className="treeview">
                         <Link to="/Home/Backup">
                             <i className="fa fa-undo" aria-hidden="true"></i>
-                            <span>Backup & Restore</span>
+                            <span>Import & Export</span>
                         </Link>
                     </li>
                     <li className="treeview">
                         <Link to="/Home/Log">
                             <i className="fa fa-bar-chart" aria-hidden="true"></i>
-                            <span>Log & Report</span>
+                            <span>Logs</span>
                         </Link>
                     </li>
                 </ul>

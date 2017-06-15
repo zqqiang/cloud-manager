@@ -12,13 +12,20 @@ import {
     Button,
     ButtonGroup,
     DropdownButton,
-    MenuItem
+    MenuItem,
+    Modal
 } from 'react-bootstrap';
 import c3 from 'c3';
+import Slider from 'rc-slider';
+
+const createSliderWithTooltip = Slider.createSliderWithTooltip;
+const Range = createSliderWithTooltip(Slider.Range);
 
 var NotificationSystem = require('react-notification-system');
 const download = require('downloadjs')
 var _ = require('lodash');
+var moment = require('moment');
+var S = require('string');
 
 function toArray(obj) {
     let array = []
@@ -32,46 +39,44 @@ function toArray(obj) {
 
 class LogTable extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.handleRefresh = this.handleRefresh.bind(this)
         this.handleBack = this.handleBack.bind(this)
         this.handleDownload = this.handleDownload.bind(this)
         this.handleDelete = this.handleDelete.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.handleWheel = this.handleWheel.bind(this)
         this.handleRowClick = this.handleRowClick.bind(this)
-        this.handleRowDbclick = this.handleRowDbclick.bind(this)
+        this.handleModalClose = this.handleModalClose.bind(this)
         this._notificationSystem = null
         this.state = {
-            data: [],
-            expanding: []
+            modalText: [],
+            showModal: false,
+            max: 0,
+            range: [],
+            ts: [],
+            data: []
         }
     }
-    dayRefresh(logs) {
-        let filterLogs = _.filter(logs, function(item) {
-            return item.timeYearMonth == event.point.category
-        })
-        let count = _.countBy(filterLogs, function(item) {
-            return item.timeYearMonthDay;
-        })
-        this.setState({
-            data: filterLogs,
-        })
+    componentDidMount() {
+        this._notificationSystem = this.refs.notificationSystem
+        this.refresh()
     }
     refresh() {
         let self = this
         const { history } = this.props
         Fetch({
             method: 'GET',
-            url: '/api/Log',
+            url: '/api/Log/Timeseries',
             history: history,
             cb: (json) => {
-                let count = _.countBy(json.logs, function(item) {
-                    return item.timeYearMonth;
-                });
                 if (json.code === 0) {
                     this.setState({
-                        data: json.logs,
+                        ts: json.ts,
+                        max: json.ts.length,
+                        range: [json.ts.length - 1000, json.ts.length - 1]
                     })
-                    this.c3Gen(json.logs);
+                    this.c3Gen()
                 } else {
                     console.log(json.message)
                 }
@@ -79,26 +84,66 @@ class LogTable extends React.Component {
         })
     }
     c3Gen(datas) {
-        let count = _.countBy(datas, function(item) {
-            return item.timeYearMonth
+        let self = this
+        let start = this.state.ts[this.state.range[0] - 1]
+        let end = this.state.ts[this.state.range[1] - 1]
+        const { history } = this.props
+        Fetch({
+            method: 'GET',
+            url: '/api/Log/Count?start=' + start + '&end=' + end,
+            history: history,
+            cb: (json) => {
+                if (json.code === 0) {
+                    c3.generate({
+                        bindto: '#chart',
+                        data: {
+                            x: 'x',
+                            columns: [
+                                _.concat('x', _.keys(json.counts)),
+                                _.concat('count', _.values(json.counts)),
+                            ],
+                            type: 'bar'
+                        },
+                        bar: {
+                            width: {
+                                ratio: 0.9
+                            }
+                        },
+                        axis: {
+                            x: {
+                                type: 'timeseries',
+                                tick: {
+                                    format: '%Y-%m-%d'
+                                }
+                            }
+                        }
+                    });
+                    this.tableRefresh();
+                } else {
+                    console.log(json.message)
+                }
+            }
         })
-        c3.generate({
-            bindto: '#chart',
-            data: {
-                json: toArray(count),
-                keys: {
-                    value: _.keys(count)
-                },
-                type: 'bar'
-            },
-            bar: {
-                width: 30
-            },
-        });
     }
-    componentDidMount() {
-        this._notificationSystem = this.refs.notificationSystem
-        this.refresh()
+    tableRefresh() {
+        let self = this
+        let start = this.state.ts[this.state.range[0] - 1]
+        let end = this.state.ts[this.state.range[1] - 1]
+        const { history } = this.props
+        Fetch({
+            method: 'GET',
+            url: '/api/Log/Tables?start=' + start + '&end=' + end,
+            history: history,
+            cb: (json) => {
+                if (json.code === 0) {
+                    this.setState({
+                        data: json.logs
+                    })
+                } else {
+                    console.log(json.message)
+                }
+            }
+        })
     }
     handleRefresh(e) {
         this.refresh()
@@ -146,33 +191,61 @@ class LogTable extends React.Component {
             }
         })
     }
-    isExpandableRow(row) {
-        return true
+    handleChange(domain) {
+        this.setState({
+            range: domain
+        })
+        this.c3Gen()
     }
-    expandComponent(row) {
-        return (
-            <textarea className="form-control" rows="3" defaultValue={row.rawRule} readOnly></textarea>
-        )
+    handleWheel(e) {
+        e.preventDefault();
+        if (e.deltaY > 0) {
+            this.setState((prevState) => ({
+                range: [
+                    (prevState.range[0] - 10 > 0) ? (prevState.range[0] - 10) : (prevState.range[0]),
+                    (prevState.range[1] + 10 > this.state.ts.length) ? (prevState.range[1]) : (prevState.range[1] + 10)
+                ]
+            }))
+        } else {
+            this.setState((prevState) => ({
+                range: [
+                    (prevState.range[0] + 10 > prevState.range[1]) ? (prevState.range[0]) : (prevState.range[0] + 10),
+                    (prevState.range[1] - 10 > prevState.range[0]) ? (prevState.range[1] - 10) : (prevState.range[1])
+                ]
+            }))
+        }
+        this.c3Gen()
     }
     handleRowClick(row) {
-        this.setState({
-            expanding: [row.timestring]
-        })
+        this.setState({ showModal: true, modalText: S(row.rawRule).parseCSV('\n') });
     }
-    handleRowDbclick(row) {
-        this.setState({
-            expanding: []
-        })
+    handleModalClose() {
+        this.setState({ showModal: false });
     }
     render() {
         const options = {
-            expanding: this.state.expanding,
-            onRowClick: this.handleRowClick,
-            onRowDoubleClick: this.handleRowDbclick
+            onRowClick: this.handleRowClick
         };
         return (
             <section className="content">
                 <NotificationSystem ref="notificationSystem" />
+                <Modal show={this.state.showModal} onHide={this.handleModalClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Config Rule</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <pre className="prettyprint">
+                            <code className="html">
+                                {this.state.modalText.map((line, index) => 
+                                    <p key={index}>{line}</p>
+                                )}
+                            </code>
+                        </pre>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.handleModalClose}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
                 <div className="row">
                     <div className="col-xs-12">
                         <div className="box">
@@ -192,25 +265,33 @@ class LogTable extends React.Component {
                                     </ButtonGroup>
                                 </div>
                             </div>
-                            <div className="box-body">
+                            <div className="box-body" onWheel={this.handleWheel}>
                                 <div id="chart"></div>
+                                <div>
+                                    <Range 
+                                        max={this.state.max} 
+                                        value={this.state.range} 
+                                        pushable={true} 
+                                        tipFormatter={value => `${moment.unix(this.state.ts[value]).format('YYYY-MM-D')}`} 
+                                        onChange={this.handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="box-body">
                                 <BootstrapTable 
                                     data={ this.state.data } 
                                     options={ options }
-                                    expandableRow={ this.isExpandableRow }
-                                    expandComponent={ this.expandComponent }
                                     pagination
                                 >
                                     <TableHeaderColumn 
                                         dataField='timestring' 
-                                        isKey 
                                         dataSort
-                                        filter={ { type: 'DateFilter', defaultValue: { date: new Date(), comparator: '>=' } } }
                                     >
                                         Date
                                     </TableHeaderColumn>
                                     <TableHeaderColumn 
                                         dataField='name' 
+                                        isKey
                                         filter={ { type: 'TextFilter', placeholder: 'Please enter a value' } }
                                     >
                                         FortiGate SN

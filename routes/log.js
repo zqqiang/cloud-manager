@@ -4,25 +4,76 @@ const net = require('net');
 var moment = require('moment');
 var _ = require('lodash');
 
-router.get('/', function(req, res) {
+router.get('/Timeseries', function(req, res) {
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
     var records = [];
-    db.all("SELECT ts, name, fmgsn, fmgip, rule FROM log", function(err, rows) {
-        if (err) console.log(err);
-        rows.forEach(function(row) {
-            records.push({
-                timestamp: row.ts,
-                timestring: moment.unix(row.ts).format("MM-D-YYYY, h:mm:ss a"),
-                timeYearMonth: moment.unix(row.ts).format("YYYY-MM"),
-                timeYearMonthDay: moment.unix(row.ts).format("YYYY-MM-D"),
-                name: row.name,
-                fmgIp: row.fmgip,
-                fmgSn: row.fmgsn,
-                rawRule: row.rule
+    db.serialize(function() {
+        db.all("SELECT DISTINCT(ts) AS timestamp FROM log ORDER BY ts ASC", function(err, rows) {
+            if (err) return console.log(err);
+            rows.forEach(function(row) {
+                records.push(row.timestamp);
             })
-        })
-        db.close();
+        });
+    });
+    db.close(function(err) {
+        if (err) return console.log(err);
+        res.json({
+            code: 0,
+            message: 'OK',
+            ts: records
+        });
+    });
+})
+
+router.get('/Count', function(req, res) {
+    var sqlite3 = require('sqlite3').verbose();
+    var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
+    var count = {};
+    console.log(req.query);
+    db.serialize(function() {
+        db.all("SELECT ts AS timestamp, COUNT(ts) AS count FROM log WHERE ts > ? AND ts < ? GROUP BY ts ORDER BY ts ASC",
+            req.query.start, req.query.end,
+            function(err, rows) {
+                if (err) return console.log(err);
+                rows.forEach(function(row) {
+                    count[moment.unix(row.timestamp).format("YYYY-MM-D")] = row.count;
+                })
+            });
+    });
+    db.close(function(err) {
+        if (err) return console.log(err);
+        res.json({
+            code: 0,
+            message: 'OK',
+            counts: count
+        });
+    });
+})
+
+router.get('/Tables', function(req, res) {
+    var sqlite3 = require('sqlite3').verbose();
+    var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
+    var records = [];
+    db.all("SELECT ts, name, fmgsn, fmgip, rule FROM log WHERE ts > ? AND ts < ? GROUP BY ts ORDER BY ts ASC",
+        req.query.start, req.query.end,
+        function(err, rows) {
+            if (err) return console.log(err);
+            rows.forEach(function(row) {
+                records.push({
+                    timestamp: row.ts,
+                    timestring: moment.unix(row.ts).format("MM-D-YYYY, h:mm:ss a"),
+                    timeYearMonth: moment.unix(row.ts).format("YYYY-MM"),
+                    timeYearMonthDay: moment.unix(row.ts).format("YYYY-MM-D"),
+                    name: row.name,
+                    fmgIp: row.fmgip,
+                    fmgSn: row.fmgsn,
+                    rawRule: row.rule
+                })
+            })
+        });
+    db.close(function(err) {
+        if (err) return console.log(err);
         res.json({
             code: 0,
             message: 'OK',

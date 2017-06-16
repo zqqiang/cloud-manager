@@ -54,6 +54,7 @@ class Notification extends React.Component {
         this.state = {
             open: false,
             alert: 0,
+            count: 0,
             message: ''
         }
     }
@@ -68,7 +69,8 @@ class Notification extends React.Component {
                 if (json.code === 0) {
                     this.setState({
                         alert: json.showAlert,
-                        message: json.message
+                        message: json.message,
+                        count: json.count
                     })
                 } else {
                     console.log(json.message)
@@ -77,20 +79,46 @@ class Notification extends React.Component {
         })
     }
     render() {
+        let count = 0;
+        const limit = 100;
+        if (this.state.alert) {
+            if (this.state.count > limit) {
+                count = 2;
+            } else {
+                count = 1;
+            }
+        } else {
+            if (this.state.count > limit) {
+                count = 1;
+            } else {
+                count = 0;
+            }
+        }
         return (
             <Dropdown id="notification" className="notifications-menu" componentClass="li" >
                 <CustomToggle bsRole="toggle">
                     <i className="fa fa-bell-o"></i>
-                    <span className="label label-danger">{this.state.alert ? 1 : ''}</span>
+                    <span className="label label-danger">{count ? count : ''}</span>
                 </CustomToggle>
                 <Dropdown.Menu className="super-colors">
-                    <li className="header">You have {this.state.alert} notifications</li>
+                    <li className="header">You have {count} notifications</li>
                     {this.state.alert > 0 &&
                         <li>
                             <ul className="menu">
                                 <li>
                                     <a href="javascript:void(0);">
                                         <i className="fa fa-warning text-red"></i> {this.state.message}
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    {this.state.count > limit &&
+                        <li>
+                            <ul className="menu">
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <i className="fa fa-warning text-red"></i>{"Too many logs, count " + this.state.count}
                                     </a>
                                 </li>
                             </ul>

@@ -13,9 +13,18 @@ router.get('/', function(req, res) {
     });
 
     client.on('data', (data) => {
-        console.log(data.toString());
-        res.json(JSON.parse(data));
-        client.end();
+        var sqlite3 = require('sqlite3').verbose();
+        var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
+        let json = JSON.parse(data);
+        db.all("SELECT COUNT(*) AS count FROM log", function(err, rows) {
+            if (err) return console.log(err);
+            json['count'] = rows[0].count;
+        });
+        db.close(function(err) {
+            if (err) return console.log(err);
+            res.json(json);
+            client.end();
+        });
     });
 });
 

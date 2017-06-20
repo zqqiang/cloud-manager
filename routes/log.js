@@ -91,26 +91,22 @@ router.delete('/', function(req, res) {
     var start = '';
     var end = '';
     switch (range) {
-        case '24h':
-            end = moment().unix();
-            start = moment().unix() - 24 * 60 * 60;
-            break;
-        case '7d':
-            end = moment().unix();
-            start = moment().unix() - 7 * 24 * 60 * 60;
-            break;
-        case '30d':
-            end = moment().unix();
-            start = moment().unix() - 30 * 24 * 60 * 60;
+        case '1m':
+            end = moment().unix() - 31 * 24 * 60 * 60;
             break;
         case '3m':
-            end = moment().unix();
-            start = moment().unix() - 3 * 31 * 24 * 60 * 60;
+            end = moment().unix() - 3 * 31 * 24 * 60 * 60;
+            break;
+        case '6m':
+            end = moment().unix() - 6 * 31 * 24 * 60 * 60;
+            break;
+        case '1y':
+            end = moment().unix() - 365 * 24 * 60 * 60;
             break;
     }
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
-    db.run("DELETE FROM log WHERE ts >= " + start + " AND ts <= " + end, function(err) {
+    db.run("DELETE FROM log WHERE ts <= " + end, function(err) {
         if (err) console.log(err);
         db.close();
         var rsp = {

@@ -15,7 +15,7 @@ function Sidebar() {
                     <li className="treeview">
                         <Link to="/Home/System">
                             <i className="fa fa-cog"></i>
-                            <span>System Settings</span>
+                            <span>System Info</span>
                         </Link>
                     </li>
                     <li className="treeview">
@@ -25,15 +25,15 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className="treeview">
-                        <Link to="/Home/Backup">
-                            <i className="fa fa-undo" aria-hidden="true"></i>
-                            <span>Import & Export</span>
-                        </Link>
-                    </li>
-                    <li className="treeview">
                         <Link to="/Home/Log">
                             <i className="fa fa-bar-chart" aria-hidden="true"></i>
                             <span>Logs</span>
+                        </Link>
+                    </li>
+                    <li className="treeview">
+                        <Link to="/Home/Backup">
+                            <i className="fa fa-undo" aria-hidden="true"></i>
+                            <span>Backup & Restore</span>
                         </Link>
                     </li>
                 </ul>

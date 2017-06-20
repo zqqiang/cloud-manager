@@ -43,7 +43,7 @@ let ruleStore = observable({
 });
 
 ruleStore.updateRules = action(function update({ history, page, search }) {
-    let url = '/api/Rule'
+    let url = '/gui/Rule'
     if (page) {
         url += ('?page=' + page)
         if (search) {
@@ -157,7 +157,6 @@ function RuleTableHeader() {
         <tr>
             <th style={{width: '10px'}}>#</th>
             <th>FortiGate SN/IP</th>
-            <th>FortiManager SN</th>
             <th>FortiManager IP</th>
             <th style={{width: '40px'}}></th>
             <th style={{width: '40px'}}></th>
@@ -171,7 +170,7 @@ class RuleTableTr extends React.Component {
     }
     onHandleClick(event) {
         const { history } = this.props
-        let url = '/api/Rule?key=' + this.props.row.id
+        let url = '/gui/Rule?key=' + this.props.row.id
         return Fetch({
             method: 'DELETE',
             url: url,
@@ -193,7 +192,6 @@ class RuleTableTr extends React.Component {
             <tr>
                 <td>{this.props.row.id}</td>
                 <td>{this.props.row.fgtIpSn}</td>
-                <td>{this.props.row.fmgSn}</td>
                 <td>{this.props.row.fmgIp}</td>
                 <td>
                     <Link to={location}><i className="fa fa-pencil fa-lg" aria-hidden="true"></i></Link>
@@ -520,12 +518,6 @@ class FormBody extends React.Component {
                 level: 'warning'
             })
         }
-        if (S(this.selfState.fmgSn).isEmpty()) {
-            return this._notificationSystem.addNotification({
-                message: 'Please enter fortimanager SN!',
-                level: 'warning'
-            })
-        }
         if (S(this.selfState.fmgIp).isEmpty()) {
             return this._notificationSystem.addNotification({
                 message: 'Please enter fortimanager IP!',
@@ -546,10 +538,10 @@ class FormBody extends React.Component {
         }
 
         if (parseInt(key)) {
-            url = '/api/Rule?key=' + key;
+            url = '/gui/Rule?key=' + key;
             method = 'PUT';
         } else {
-            url = '/api/Rule';
+            url = '/gui/Rule';
             method = 'POST';
         }
 
@@ -771,15 +763,6 @@ class FormBody extends React.Component {
                     </FoldForm>
                     <div>
                         <p className="lead">FortiManager</p>
-                        <Input 
-                            name="fmgSn"
-                            label="FortiManagerSN"
-                            labelClass="col-md-2"
-                            editorClass="col-md-10"
-                            value={this.selfState.fmgSn}
-                            onChange={this.handleChange}
-                            placeholder="Enter FortiManager SN"
-                        />
                         <Input 
                             name="fmgIp"
                             label="FortiManagerIP"

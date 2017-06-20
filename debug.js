@@ -141,6 +141,34 @@ const server = net.createServer((c) => {
                 showAlert: 1,
                 expireDate: "Feb 2 23:22:22 2020 GMT"
             }
+        } else if (json.url === '/system/status' && json.method === 'get') {
+            payload = {
+                code: 0,
+                message: "already expired",
+                licenseValid: 1,
+                serialNumber: "FDPVMX0000000001",
+                expireDate: "Feb 2 23:22:22 2020 GMT"
+            }
+        } else if (json.url === '/system/admin' && json.method === 'put' && json.password === 'pass' && json.action === 'login') {
+            payload = {
+                code: 0,
+                message: "ok",
+            }
+        } else if (json.url === '/system/admin' && json.method === 'put' && json.password !== 'pass' && json.action === 'login') {
+            payload = {
+                code: -1,
+                message: "password wrong",
+            }
+        } else if (json.url === '/system/admin' && json.method === 'put' && json.oldPassword === 'pass' && json.action === 'changePassword') {
+            payload = {
+                code: 0,
+                message: "ok",
+            }
+        } else if (json.url === '/system/admin' && json.method === 'put' && json.oldPassword !== 'pass' && json.action === 'changePassword') {
+            payload = {
+                code: -1,
+                message: "oldPassword wrong",
+            }
         }
 
         c.write(JSON.stringify(payload))

@@ -21,11 +21,11 @@ var S = require('string');
 
 function MainHeaderLogo() {
     return (
-        <Link to="/Home" className="logo">
+        <div className="logo">
             <span className="logo-lg">
                 <i className="fa fa-cloud" aria-hidden="true"></i> FortiDeploy
             </span>
-        </Link>
+        </div>
     );
 }
 
@@ -80,7 +80,7 @@ class Notification extends React.Component {
     }
     render() {
         let count = 0;
-        const limit = 100;
+        const limit = 10000;
         if (this.state.alert) {
             if (this.state.count > limit) {
                 count = 2;

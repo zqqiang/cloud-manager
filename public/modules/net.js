@@ -46,7 +46,6 @@ const Fetch = function _fetch({ method, url, type, body, history, cb, notificati
             }
         })
         .then(jsonOrBlob => {
-            // if (type !== 'text') console.log(jsonOrBlob)
             if (cb) {
                 cb(jsonOrBlob)
             }

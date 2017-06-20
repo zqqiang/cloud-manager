@@ -87,7 +87,7 @@ class Content extends React.Component {
         const { history } = this.props
         return Fetch({
             method: 'PUT',
-            url: '/api/Admin',
+            url: '/gui/Admin',
             body: this.state,
             history: history,
             cb: (json) => {

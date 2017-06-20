@@ -18,64 +18,7 @@ import Backup from './backup.jsx'
 import Log from './log.jsx'
 import AuthInstance from '../modules/auth'
 
-class Invoice extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            expire: ''
-        }
-    }
-    componentDidMount() {
-        Fetch({
-            method: 'GET',
-            url: 'api/Expire',
-            cb: (json) => {
-                if (json.code === 0) {
-                    console.log(json)
-                    this.setState({
-                        expire: json.expireDate
-                    })
-                } else {
-                    console.log(json.message)
-                }
-            }
-        })
-    }
-    render() {
-        return (
-            <div className="pad margin no-print">
-                <div className="callout callout-info" style={{marginBottom: "0!important"}}>
-                    <h4><i className="fa fa-info"></i> Note:</h4>
-                    {this.state.expire}
-                </div>
-            </div>
-        )
-    }
-}
-
-function Dashboard() {
-    return (
-        <div>
-            <section className="content-header">
-                <h1>
-                    Dashboard
-                    <small>Control panel</small>
-                </h1>
-                <ol className="breadcrumb">
-                    <li><a href="javascript:void(0);"><i className="fa fa-dashboard"></i> Home</a></li>
-                    <li className="active">Dashboard</li>
-                </ol>
-            </section>
-            <Invoice />
-        </div>
-    )
-}
-
 const routes = [{
-    path: '/Home',
-    exact: true,
-    main: () => <Dashboard />
-}, {
     path: '/Home/System',
     exact: true,
     main: () => <SystemSettings />

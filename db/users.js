@@ -1,22 +1,10 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('/opt/fortinet/forticloud/db/fortideploy.db');
-//var bcrypt = require('bcrypt');
 var crypto = require('crypto');
-
 var records = [];
-//const saltRounds = 10;
 
 db.serialize(function() {
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY NOT NULL, username TEXT NOT NULL, password TEXT)");
-/*
-    db.run('INSERT INTO Users (id, username, password) VALUES (1, "admin", ?)',
-        //bcrypt.hashSync("pass", saltRounds),
-        getPasswdHash("pass"),
-        function(err, row) {
-            if (err) console.log(err);
-        }
-    );
-*/
     db.each("SELECT id, username, password FROM Users", function(err, row) {
         records.push({
             id: row.id,
@@ -65,7 +53,6 @@ exports.getUser = function() {
     return records[0]
 };
 
-exports.getPasswdHash = function(passwd) {  
-    return crypto.createHash('sha256').update('fb70dd096ae96a44ba7247bee040095f').update(passwd).digest('base64');
-};
-
+// exports.getPasswdHash = function(passwd) {
+//     return crypto.createHash('sha256').update('fb70dd096ae96a44ba7247bee040095f').update(passwd).digest('base64');
+// };

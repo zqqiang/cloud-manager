@@ -66,7 +66,7 @@ class LogTable extends React.Component {
         const { history } = this.props
         Fetch({
             method: 'GET',
-            url: '/api/Log/Timeseries',
+            url: '/gui/Log/Timeseries',
             history: history,
             cb: (json) => {
                 if (json.code === 0) {
@@ -91,7 +91,7 @@ class LogTable extends React.Component {
         const { history } = this.props
         Fetch({
             method: 'GET',
-            url: '/api/Log/Count?start=' + start + '&end=' + end,
+            url: '/gui/Log/Count?start=' + start + '&end=' + end,
             history: history,
             cb: (json) => {
                 if (json.code === 0) {
@@ -133,7 +133,7 @@ class LogTable extends React.Component {
         const { history } = this.props
         Fetch({
             method: 'GET',
-            url: '/api/Log/Tables?start=' + start + '&end=' + end,
+            url: '/gui/Log/Tables?start=' + start + '&end=' + end,
             history: history,
             cb: (json) => {
                 if (json.code === 0) {
@@ -157,7 +157,7 @@ class LogTable extends React.Component {
         const { history } = this.props
         return Fetch({
             method: 'GET',
-            url: '/api/Backup/Log',
+            url: '/gui/Backup/Log',
             type: 'text',
             history: history,
             cb: (blob) => {
@@ -170,7 +170,7 @@ class LogTable extends React.Component {
         const { history } = this.props
         return Fetch({
             method: 'DELETE',
-            url: '/api/Log?range=' + eventKey,
+            url: '/gui/Log?range=' + eventKey,
             type: 'text',
             history: history,
             cb: (json) => {
@@ -267,10 +267,10 @@ class LogTable extends React.Component {
                                 <div className="box-tools">
                                     <ButtonGroup className="btn-group-sm">
                                         <DropdownButton title="Delete" id="bg-nested-dropdown" bsSize="small">
-                                            <MenuItem eventKey="24h" onSelect={this.handleDelete}>Delete Last 24 Hours</MenuItem>
-                                            <MenuItem eventKey="7d" onSelect={this.handleDelete}>Delete Last 7 Days</MenuItem>
-                                            <MenuItem eventKey="30d" onSelect={this.handleDelete}>Delete Last 30 Days</MenuItem>
-                                            <MenuItem eventKey="3m" onSelect={this.handleDelete}>Delete Last 3 Months</MenuItem>
+                                            <MenuItem eventKey="1m" onSelect={this.handleDelete}>Delete Older Than 1 Month</MenuItem>
+                                            <MenuItem eventKey="3m" onSelect={this.handleDelete}>Delete Older Than 3 Months</MenuItem>
+                                            <MenuItem eventKey="6m" onSelect={this.handleDelete}>Delete Older Than 6 Months</MenuItem>
+                                            <MenuItem eventKey="1y" onSelect={this.handleDelete}>Delete Older Than 1 Year</MenuItem>
                                         </DropdownButton>
                                         <Button onClick={this.handleRefresh}>Refresh</Button>
                                         <Button onClick={this.handleDownload}>Download</Button>
@@ -305,12 +305,6 @@ class LogTable extends React.Component {
                                         filter={ { type: 'TextFilter', placeholder: 'Please enter a value' } }
                                     >
                                         FortiGate SN
-                                    </TableHeaderColumn>
-                                    <TableHeaderColumn 
-                                        dataField='fmgSn' 
-                                        filter={ { type: 'TextFilter', placeholder: 'Please enter a value' } }
-                                    >
-                                        FortiManager SN
                                     </TableHeaderColumn>
                                     <TableHeaderColumn 
                                         dataField='fmgIp'

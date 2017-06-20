@@ -20,6 +20,24 @@ router.get('/', function(req, res) {
 
 });
 
+router.get('/Status', function(req, res) {
+    let payload = {
+        url: '/system/status',
+        method: 'get',
+    }
+
+    const client = net.connect({ port: 8080, host: '127.0.0.1' }, () => {
+        client.write(JSON.stringify(payload));
+    });
+
+    client.on('data', (data) => {
+        console.log(data.toString());
+        res.json(JSON.parse(data));
+        client.end();
+    });
+
+});
+
 router.put('/', function(req, res) {
     let payload = {
         method: "put",

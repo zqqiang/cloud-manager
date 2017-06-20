@@ -27,9 +27,7 @@ router.get('/', function(req, res) {
             }
             client.end();
         });
-
     });
-
 });
 
 router.get('/Log', function(req, res) {

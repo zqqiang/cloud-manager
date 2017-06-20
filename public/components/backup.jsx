@@ -43,7 +43,7 @@ class Content extends React.Component {
         const { history } = this.props
         return Fetch({
             method: 'GET',
-            url: '/api/Backup',
+            url: '/gui/Backup',
             type: 'text',
             history: history,
             cb: (blob) => {
@@ -94,11 +94,11 @@ class Content extends React.Component {
                     <div className="col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Deploy Rule Export</h3>
+                                <h3 className="box-title">Deploy Rule Backup</h3>
                             </div>
                             <div className="box-body">
                                 <a className="btn btn-app" onClick={this.handleBackup}>
-                                    <i className="fa fa-save"></i> Export
+                                    <i className="fa fa-save"></i> Backup
                                 </a>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ class Content extends React.Component {
                     <div className="col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Deploy Rule Import</h3>
+                                <h3 className="box-title">Deploy Rule Restore</h3>
                             </div>
                             <div className="box-body">
                                 <div className="form-group">
@@ -127,11 +127,11 @@ class Content extends React.Component {
                                             type="checkbox" 
                                             checked={this.state.append} 
                                             onChange={this.handleAppendChange}
-                                        /> Append import
+                                        /> Append restore
                                     </label>
                                 </div>
                                 <a className="btn btn-app" onClick={this.handleRestore}>
-                                    <i className="fa fa-repeat"></i> Import
+                                    <i className="fa fa-repeat"></i> Restore
                                 </a>
                             </div>
                         </div>

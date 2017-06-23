@@ -52,7 +52,3 @@ exports.updateUser = function(user) {
 exports.getUser = function() {
     return records[0]
 };
-
-// exports.getPasswdHash = function(passwd) {
-//     return crypto.createHash('sha256').update('fb70dd096ae96a44ba7247bee040095f').update(passwd).digest('base64');
-// };

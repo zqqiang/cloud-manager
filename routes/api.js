@@ -7,21 +7,29 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 var db = require('../db');
 
+var session = {};
+
 function checker(req, res, next) {
     if (!req.headers.authorization) {
         console.log('missing authorization header')
         return res.json({
             code: -1,
-            message: 'invalid signature'
+            message: 'unauthorized'
         });
     }
     const token = req.headers.authorization.split(' ')[1];
+    if (!token || !session[token]) {
+        return res.json({
+            code: -1,
+            message: 'unauthorized'
+        })
+    }
     return jwt.verify(token, 'secret', { maxAge: '5m' }, (err, decode) => {
         if (err) {
-            console.log('jwt verify error', err)
+            console.log('jwt verify error', err.message)
             return res.json({
                 code: -1,
-                message: 'invalid signature'
+                message: 'unauthorized'
             });
         }
         const userId = decode.sub;
@@ -30,19 +38,45 @@ function checker(req, res, next) {
                 console.log('findById', err, user)
                 return res.json({
                     code: -1,
-                    message: 'invalid signature'
+                    message: 'unauthorized'
                 });
             }
+            console.log('verify success')
             return next();
         });
     })
 }
 
-router.post('/auth', passport.authenticate('local'), function(req, res) {
+router.post('/auth', function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.json({
+                code: -1,
+                message: 'username or password error.'
+            });
+        }
+        return next();
+    })(req, res, next);
+})
+
+router.post('/auth', function(req, res) {
+    var token = passport.auth[req.body.username];
+    session[token] = true;
+    setTimeout((token) => {
+        if (session[token]) {
+            delete session[token];
+            console.log('timeout: delete token', token)
+            console.log(session)
+        }
+    }, 10 * 60 * 1000, token)
+    console.log(session);
     res.json({
         code: 0,
         message: 'OK',
-        accessToken: passport.auth[req.body.username],
+        accessToken: token,
         expiresIn: moment().unix() + (5 * 60)
     });
 });
@@ -78,7 +112,7 @@ router.get('/backup', function(req, res) {
     });
 });
 
-router.get('/restore', checker);
+router.post('/restore', checker);
 router.post('/restore', function(req, res) {
     fs.writeFile('/tmp/rule.restore.conf', Buffer.from(req.body.content, 'base64'), (err) => {
         if (err) {
@@ -106,5 +140,19 @@ router.post('/restore', function(req, res) {
         });
     });
 });
+
+router.post('/logout', checker);
+router.post('/logout', function(req, res) {
+    const token = req.headers.authorization.split(' ')[1];
+    if (token) {
+        delete session[token];
+    }
+    console.log(session);
+    console.log('logout')
+    res.json({
+        code: 0,
+        message: 'OK'
+    })
+})
 
 module.exports = router;

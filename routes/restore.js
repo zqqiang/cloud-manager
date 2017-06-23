@@ -46,6 +46,14 @@ router.post('/', function(req, res) {
             res.json(JSON.parse(data));
             client.end();
         });
+
+        client.on('error', (err) => {
+            console('error', err);
+        });
+
+        client.on('close', (err) => {
+            console('close', err);
+        });
     });
 
     form.parse(req);

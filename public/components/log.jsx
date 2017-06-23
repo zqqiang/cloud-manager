@@ -166,7 +166,6 @@ class LogTable extends React.Component {
         })
     }
     handleDelete(eventKey) {
-        console.log(eventKey)
         const { history } = this.props
         return Fetch({
             method: 'DELETE',
@@ -185,6 +184,7 @@ class LogTable extends React.Component {
                         level: 'error'
                     })
                 }
+                this.refresh()
             }
         })
     }
@@ -271,6 +271,7 @@ class LogTable extends React.Component {
                                             <MenuItem eventKey="3m" onSelect={this.handleDelete}>Delete Older Than 3 Months</MenuItem>
                                             <MenuItem eventKey="6m" onSelect={this.handleDelete}>Delete Older Than 6 Months</MenuItem>
                                             <MenuItem eventKey="1y" onSelect={this.handleDelete}>Delete Older Than 1 Year</MenuItem>
+                                            <MenuItem eventKey="all" onSelect={this.handleDelete}>Delete All</MenuItem>
                                         </DropdownButton>
                                         <Button onClick={this.handleRefresh}>Refresh</Button>
                                         <Button onClick={this.handleDownload}>Download</Button>

@@ -87,6 +87,7 @@ router.get('/Tables', function(req, res) {
 });
 
 router.delete('/', function(req, res) {
+    var sql = "DELETE FROM log ";
     var range = req.query.range;
     var start = '';
     var end = '';
@@ -104,9 +105,12 @@ router.delete('/', function(req, res) {
             end = moment().unix() - 365 * 24 * 60 * 60;
             break;
     }
+    if (end !== '') {
+        sql += (' WHERE ts <=' + end);
+    }
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('/opt/fortinet/forticloud/db/log.db');
-    db.run("DELETE FROM log WHERE ts <= " + end, function(err) {
+    db.run(sql, function(err) {
         if (err) console.log(err);
         db.close();
         var rsp = {
